@@ -106,6 +106,7 @@
 	windup_delay = 0.6 SECONDS
 	hud_state_empty = "battery_empty_flash"
 	fire_sound_vary = FALSE
+	armored_weapon_flags = MODULE_NOT_FABRICABLE
 
 /obj/item/armored_weapon/particle_lance/do_fire(turf/source_turf, ammo_override)
 	for(var/mob/living/viewer AS in cheap_get_living_near(source_turf, 9) + current_firer)

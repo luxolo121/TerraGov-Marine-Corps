@@ -43,6 +43,7 @@
 	resin_max_range = 4 //Hivemind can place resin structures from 4 tiles away
 
 	actions = list(
+		/datum/action/ability/xeno_action/blessing_menu,
 		/datum/action/ability/xeno_action/watch_xeno/hivemind,
 		/datum/action/ability/xeno_action/change_form,
 		/datum/action/ability/xeno_action/return_to_core,

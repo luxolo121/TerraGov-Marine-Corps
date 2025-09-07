@@ -7586,6 +7586,10 @@
 /obj/machinery/atmospherics/pipe/simple/green/hidden,
 /turf/open/floor/plating,
 /area/bluemoon/caves/facility/lambda/n)
+"iMA" = (
+/mob/living/carbon/xenomorph/queen,
+/turf/open/floor/plating/ground/ice,
+/area/bluemoon/caves/e)
 "iMI" = (
 /obj/machinery/vending/security,
 /obj/machinery/light,
@@ -41466,7 +41470,7 @@ nkm
 nkm
 nkm
 nkm
-nkm
+iMA
 uJX
 uJX
 uJX

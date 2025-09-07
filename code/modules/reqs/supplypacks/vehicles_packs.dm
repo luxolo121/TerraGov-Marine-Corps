@@ -139,6 +139,16 @@ VEHICLES
 	contains = list(/obj/item/ammo_magazine/tank/bfg)
 	cost = 200
 
+/datum/supply_packs/vehicles/som_lance
+	name = "SOM tank-mounted parcticle lance"
+	contains = list(/obj/item/ammo_magazine/tank/particle_lance)
+	cost = 1600
+
+/datum/supply_packs/vehicles/som_lance_ammo
+	name = "SOM tank particle lance energy cell"
+	contains = list(/obj/item/ammo_magazine/tank/particle_lance)
+	cost = 200
+
 /datum/supply_packs/vehicles/ltb_he_shell
 	name = "LTB High Explosive tank shell"
 	contains = list(/obj/item/ammo_magazine/tank/ltb_cannon)
