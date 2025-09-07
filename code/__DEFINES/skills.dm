@@ -125,6 +125,7 @@
 ///Pilot skill, hidden; affects dropship weapon usage (not called anywhere on Condor)
 #define SKILL_PILOT "pilot"
 
+// #define SKILL_PILOT_DEFAULT 0
 #define SKILL_PILOT_DEFAULT 0
 #define SKILL_PILOT_TRAINED 1
 
@@ -147,7 +148,8 @@
 ///Multitile vehicle skill; can you use the vehicle or not
 #define SKILL_LARGE_VEHICLE "large_vehicle"
 
-#define SKILL_LARGE_VEHICLE_DEFAULT 0
+// #define SKILL_LARGE_VEHICLE_DEFAULT 0
+#define SKILL_LARGE_VEHICLE_DEFAULT 1 // just changed default instead of giving it to every role cuz lazy
 #define SKILL_LARGE_VEHICLE_TRAINED 1
 #define SKILL_LARGE_VEHICLE_EXPERIENCED 2
 #define SKILL_LARGE_VEHICLE_VETERAN 3
@@ -155,7 +157,8 @@
 ///mech vehicle skill; can you use greyscale mechs or not
 #define SKILL_MECH "mech"
 
-#define SKILL_MECH_DEFAULT 0
+// #define SKILL_MECH_DEFAULT 0
+#define SKILL_MECH_DEFAULT 1 // just changed default instead of giving it to every role cuz lazy
 #define SKILL_MECH_TRAINED 1
 
 ///Stamina skill - you do cardio, right?; buff stamina-related things
