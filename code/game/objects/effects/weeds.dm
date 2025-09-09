@@ -5,7 +5,7 @@
 
 //Stat defines
 #define RESTING_BUFF 1.2
-#define WEED_SLOWDOWN 2
+#define WEED_SLOWDOWN 1.5
 
 // base weed type
 /obj/alien/weeds
@@ -17,7 +17,7 @@
 	density = FALSE
 	layer = XENO_WEEDS_LAYER
 	plane = FLOOR_PLANE
-	max_integrity = 25
+	max_integrity = 20
 	ignore_weed_destruction = TRUE
 
 	var/obj/alien/weeds/node/parent_node

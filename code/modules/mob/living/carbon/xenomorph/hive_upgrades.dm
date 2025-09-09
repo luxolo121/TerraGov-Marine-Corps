@@ -480,7 +480,7 @@ GLOBAL_LIST_INIT(tier_to_primo_upgrade, list(
 	if(!isxenoqueen(buyer) && !isxenoshrike(buyer) && !isxenoking(buyer))
 		if(!silent)
 			to_chat(buyer, span_xenonotice("You must be a ruler to buy this!"))
-		return FALSE
+		return TRUE
 
 
 /datum/hive_upgrade/primordial/tier_four

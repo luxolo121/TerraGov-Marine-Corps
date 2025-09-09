@@ -96,8 +96,8 @@
 ///Medical skill; higher levels means faster syringe use and better defibrillation
 #define SKILL_MEDICAL "medical"
 
-#define SKILL_MEDICAL_UNTRAINED 0
-#define SKILL_MEDICAL_NOVICE 1
+#define SKILL_MEDICAL_UNTRAINED 2
+#define SKILL_MEDICAL_NOVICE 2
 #define SKILL_MEDICAL_PRACTICED 2
 #define SKILL_MEDICAL_COMPETENT 3
 #define SKILL_MEDICAL_EXPERT 4

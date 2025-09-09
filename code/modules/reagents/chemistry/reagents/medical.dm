@@ -247,14 +247,14 @@
 
 /datum/reagent/medicine/kelotane/on_mob_life(mob/living/L, metabolism)
 	var/target_temp = L.get_standard_bodytemperature()
-	L.heal_overall_damage(0, effect_str)
+	L.heal_overall_damage(0, 1.5*effect_str)
 	if(L.bodytemperature > target_temp)
 		L.adjust_bodytemperature(-2.5*TEMPERATURE_DAMAGE_COEFFICIENT*effect_str, target_temp)
 	if(volume > 10)
 		L.reagent_pain_modifier -= PAIN_REDUCTION_VERY_LIGHT
 	if(volume > 20)
 		L.reagent_pain_modifier -= PAIN_REDUCTION_LIGHT
-		L.heal_overall_damage(0, 0.5*effect_str)
+		L.heal_overall_damage(0, 0.7*effect_str)
 	return ..()
 
 /datum/reagent/medicine/kelotane/overdose_process(mob/living/L, metabolism)
@@ -275,14 +275,14 @@
 
 /datum/reagent/medicine/dermaline/on_mob_life(mob/living/L, metabolism)
 	var/target_temp = L.get_standard_bodytemperature()
-	L.heal_overall_damage(0, 2*effect_str)
+	L.heal_overall_damage(0, 3*effect_str)
 	if(L.bodytemperature > target_temp)
 		L.adjust_bodytemperature(-5*TEMPERATURE_DAMAGE_COEFFICIENT*effect_str, target_temp)
 	if(volume > 5)
 		L.reagent_pain_modifier -= PAIN_REDUCTION_LIGHT
 	if(volume > 10)
 		L.reagent_pain_modifier -= PAIN_REDUCTION_LIGHT
-		L.heal_overall_damage(0, 1.5*effect_str)
+		L.heal_overall_damage(0, 2.5*effect_str)
 	return ..()
 
 /datum/reagent/medicine/dermaline/overdose_process(mob/living/L, metabolism)
@@ -393,7 +393,7 @@
 	reagent_ui_priority = REAGENT_UI_BKTT
 
 /datum/reagent/medicine/dylovene/on_mob_add(mob/living/L, metabolism)
-	L.add_stamina_regen_modifier(name, -0.5)
+	L.add_stamina_regen_modifier(name, -0.3)
 	return ..()
 
 /datum/reagent/medicine/dylovene/on_mob_delete(mob/living/L, metabolism)
@@ -402,7 +402,7 @@
 
 /datum/reagent/medicine/dylovene/on_mob_life(mob/living/L,metabolism)
 	L.hallucination = max(0, L.hallucination -  2.5*effect_str)
-	L.adjustToxLoss(-effect_str)
+	L.adjustToxLoss(-1.5*effect_str)
 	return ..()
 
 /datum/reagent/medicine/dylovene/overdose_process(mob/living/L, metabolism)
@@ -738,12 +738,12 @@
 	reagent_ui_priority = REAGENT_UI_BKTT
 
 /datum/reagent/medicine/bicaridine/on_mob_life(mob/living/L, metabolism)
-	L.heal_overall_damage(effect_str, 0)
+	L.heal_overall_damage(1.5*effect_str, 0)
 	if(volume > 10)
 		L.reagent_pain_modifier -= PAIN_REDUCTION_VERY_LIGHT
 	if(volume > 20)
 		L.reagent_pain_modifier -= PAIN_REDUCTION_LIGHT
-		L.heal_overall_damage(0.5*effect_str, 0)
+		L.heal_overall_damage(0.7*effect_str, 0)
 	return ..()
 
 
@@ -764,12 +764,12 @@
 	reagent_ui_priority = REAGENT_UI_BKTT
 
 /datum/reagent/medicine/meralyne/on_mob_life(mob/living/L, metabolism)
-	L.heal_overall_damage(2*effect_str, 0)
+	L.heal_overall_damage(3*effect_str, 0)
 	if(volume > 5)
 		L.reagent_pain_modifier -= PAIN_REDUCTION_LIGHT
 	if(volume > 10)
 		L.reagent_pain_modifier -= PAIN_REDUCTION_LIGHT
-		L.heal_overall_damage(1.5*effect_str, 0)
+		L.heal_overall_damage(2.5*effect_str, 0)
 	return ..()
 
 

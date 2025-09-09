@@ -163,9 +163,9 @@
 	if(isspacearea(targ_area))
 		to_chat(user, span_warning("Cannot fire into space."))
 		return FALSE
-	if(targ_area.ceiling >= CEILING_UNDERGROUND)
-		to_chat(user, span_warning("DEPTH WARNING: Target too deep for ordnance."))
-		return FALSE
+//	if(targ_area.ceiling >= CEILING_UNDERGROUND)
+//		to_chat(user, span_warning("DEPTH WARNING: Target too deep for ordnance."))
+//		return FALSE
 	return TRUE
 
 ///Checks if we can draw LOS to the target
