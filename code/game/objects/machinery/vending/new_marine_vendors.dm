@@ -64,7 +64,7 @@
 
 		var/obj/item/card/id/user_id = H.get_idcard()
 		if(!istype(user_id)) //not wearing an ID
-			return FALSE
+			return TRUE
 
 		if(user_id.registered_name != H.real_name)
 			return TRUE

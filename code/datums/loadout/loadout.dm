@@ -86,13 +86,13 @@
 		item = item_representation.instantiate_object()
 		if(!item)
 			continue
-		user.equip_to_slot_if_possible(item, GLOB.slot_str_to_slot[slot_key], warning = FALSE)
+		user.equip_to_slot_if_possible(item, GLOB.slot_str_to_slot[slot_key], warning = TRUE)
 
 /**
  * This will read all items on the mob, and if the item is supported by the loadout maker, will save it in the corresponding slot
  * An item is supported if it's path
  */
-/datum/loadout/proc/save_mob_loadout(mob/living/carbon/human/user, admin_loadout = FALSE)
+/datum/loadout/proc/save_mob_loadout(mob/living/carbon/human/user, admin_loadout = TRUE)
 	var/obj/item/item_in_slot
 	var/item2representation_type
 	for(var/slot_key in GLOB.visible_item_slot_list)
