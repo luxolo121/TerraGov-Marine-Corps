@@ -31,7 +31,7 @@
 	icon_state = "stun"
 	hud_state = "taser"
 	hud_state_empty = "battery_empty"
-	damage = 10
+	damage = 10 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 100
 	damage_type = STAMINA
 	ammo_behavior_flags = AMMO_ENERGY|AMMO_SKIPS_ALIENS
@@ -49,7 +49,7 @@
 	hud_state_empty = "battery_empty"
 	ammo_behavior_flags = AMMO_ENERGY|AMMO_SPECIAL_PROCESS
 	shell_speed = 0.1
-	damage = 20
+	damage = 20 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 20
 	bullet_color = COLOR_TESLA_BLUE
 
@@ -59,7 +59,7 @@
 /datum/ammo/energy/tesla/focused
 	ammo_behavior_flags = AMMO_ENERGY|AMMO_SPECIAL_PROCESS|AMMO_IFF
 	shell_speed = 0.1
-	damage = 10
+	damage = 10 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 10
 	bullet_color = COLOR_TESLA_BLUE
 
@@ -82,7 +82,7 @@
 	hud_state_empty = "electrothermal_empty"
 	ammo_behavior_flags = AMMO_ENERGY|AMMO_SPECIAL_PROCESS|AMMO_PASS_THROUGH_TURF|AMMO_PASS_THROUGH_MOVABLE
 	shell_speed = 0.2
-	damage = 150
+	damage = 150 * MARINE_DAMAGE_SCALING_HEAVY
 	penetration = 50
 	max_range = 20
 	bullet_color = COLOR_PALE_GREEN_GRAY
@@ -120,7 +120,7 @@
 	ammo_behavior_flags = AMMO_ENERGY|AMMO_HITSCAN
 	hud_state = "laser_overcharge"
 	armor_type = LASER
-	damage = 40
+	damage = 40 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 5
 	max_range = 7
 	hitscan_effect_icon = "beam_heavy"
@@ -143,7 +143,7 @@
 	ammo_behavior_flags = AMMO_ENERGY
 	shell_speed = 4
 	accurate_range = 15
-	damage = 20
+	damage = 20 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 10
 	max_range = 30
 	accuracy_var_low = 3
@@ -157,7 +157,7 @@
 	name = "overcharged laser bolt"
 	icon_state = "overchargedlaser"
 	hud_state = "laser_sniper"
-	damage = 40
+	damage = 40 * MARINE_DAMAGE_SCALING_LIGHT
 	max_range = 40
 	penetration = 50
 	sundering = 5
@@ -166,7 +166,7 @@
 	name = "microwave heat bolt"
 	icon_state = "microwavelaser"
 	hud_state = "laser_heat"
-	damage = 12 //requires mod with -0.15 multiplier should math out to 10
+	damage = 12 * MARINE_DAMAGE_SCALING_LIGHT //""""requires mod with -0.15 multiplier should math out to 10""" cry
 	penetration = 100 // It's a laser that burns the skin! The fire stacks go threw anyway.
 	ammo_behavior_flags = AMMO_ENERGY|AMMO_INCENDIARY
 	sundering = 1
@@ -182,7 +182,7 @@
 	accuracy_var_high = 9
 	accurate_range = 5
 	max_range = 5
-	damage = 42
+	damage = 42 * MARINE_DAMAGE_SCALING_LIGHT
 	damage_falloff = 10
 	penetration = 0
 	sundering = 5
@@ -195,7 +195,7 @@
 	accuracy_var_high = 9
 	accurate_range = 5
 	max_range = 5
-	damage = 35
+	damage = 35 * MARINE_DAMAGE_SCALING_LIGHT
 	damage_falloff = 10
 	penetration = 0
 
@@ -203,7 +203,7 @@
 	name = "disabler bolt"
 	icon_state = "disablershot"
 	hud_state = "laser_disabler"
-	damage = 45
+	damage = 45 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 0
 	damage_type = STAMINA
 	bullet_color = COLOR_DISABLER_BLUE
@@ -215,7 +215,7 @@
 	name = "pulse bolt"
 	icon_state = "pulse2"
 	hud_state = "pulse"
-	damage = 45 // this is gotta hurt...
+	damage = 45 * MARINE_DAMAGE_SCALING_LIGHT // """this is gotta hurt..."""" bro its 45dmg
 	max_range = 40
 	penetration = 100
 	sundering = 100
@@ -225,7 +225,7 @@
 	name = "practice laser bolt"
 	icon_state = "disablershot"
 	hud_state = "laser_disabler"
-	damage = 45
+	damage = 45 * MARINE_DAMAGE_SCALING_LIGHT // why would you use this
 	penetration = 0
 	damage_type = STAMINA
 	ammo_behavior_flags = AMMO_ENERGY
@@ -241,7 +241,7 @@
 
 /datum/ammo/energy/lasgun/marine
 	ammo_behavior_flags = AMMO_ENERGY|AMMO_HITSCAN
-	damage = 20
+	damage = 20 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 10
 	sundering = 1.5
 	max_range = 30
@@ -255,7 +255,7 @@
 	name = "overcharged laser bolt"
 	icon_state = "overchargedlaser"
 	hud_state = "laser_sniper"
-	damage = 40
+	damage = 40 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 20
 	sundering = 2
 	hitscan_effect_icon = "beam_heavy"
@@ -264,7 +264,7 @@
 	name = "weakening laser bolt"
 	icon_state = "overchargedlaser"
 	hud_state = "laser_efficiency"
-	damage = 30
+	damage = 30 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 10
 	sundering = 0
 	damage_type = STAMINA
@@ -285,7 +285,7 @@
 	name = "microwave laser bolt"
 	icon_state = "overchargedlaser"
 	hud_state = "laser_xray"
-	damage = 20
+	damage = 20 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 20
 	sundering = 2
 	hitscan_effect_icon = "beam_grass"
@@ -316,7 +316,7 @@
 	accuracy_var_high = 9
 	accurate_range = 3
 	max_range = 8
-	damage = 35
+	damage = 35 * MARINE_DAMAGE_SCALING_LIGHT
 	damage_falloff = 8
 	penetration = 20
 	sundering = 1
@@ -330,7 +330,7 @@
 	name = "impact laser blast"
 	icon_state = "overchargedlaser"
 	hud_state = "laser_impact"
-	damage = 35
+	damage = 35 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 10
 	sundering = 0
 	hitscan_effect_icon = "pu_laser"
@@ -344,7 +344,7 @@
 	name = "crippling laser blast"
 	icon_state = "overchargedlaser"
 	hud_state = "laser_disabler"
-	damage = 20
+	damage = 20 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 10
 	sundering = 0
 	hitscan_effect_icon = "blue_beam"
@@ -355,19 +355,19 @@
 
 /datum/ammo/energy/lasgun/marine/autolaser
 	name = "machine laser bolt"
-	damage = 18
+	damage = 18 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 15
 	sundering = 1
 
 /datum/ammo/energy/lasgun/marine/autolaser/burst
 	name = "burst machine laser bolt"
 	hud_state = "laser_efficiency"
-	damage = 12
+	damage = 12 * MARINE_DAMAGE_SCALING_LIGHT
 
 /datum/ammo/energy/lasgun/marine/autolaser/charge
 	name = "charged machine laser bolt"
 	hud_state = "laser_overcharge"
-	damage = 50
+	damage = 50 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 30
 	sundering = 3
 	hitscan_effect_icon = "beam_heavy"
@@ -381,7 +381,7 @@
 /datum/ammo/energy/lasgun/marine/autolaser/melting
 	name = "melting machine laser bolt"
 	hud_state = "laser_melting"
-	damage = 15
+	damage = 15 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 20
 	sundering = 0
 	hitscan_effect_icon = "beam_solar"
@@ -404,7 +404,7 @@
 /datum/ammo/energy/lasgun/marine/sniper
 	name = "sniper laser bolt"
 	hud_state = "laser_sniper"
-	damage = 60
+	damage = 60 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 30
 	accurate_range_min = 5
 	ammo_behavior_flags = AMMO_ENERGY|AMMO_HITSCAN|AMMO_BETTER_COVER_RNG|AMMO_SNIPER
@@ -417,7 +417,7 @@
 	name = "sniper heat bolt"
 	icon_state = "microwavelaser"
 	hud_state = "laser_heat"
-	damage = 40
+	damage = 40 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 10
 	accurate_range_min = 5
 	ammo_behavior_flags = AMMO_ENERGY|AMMO_INCENDIARY|AMMO_HITSCAN|AMMO_BETTER_COVER_RNG|AMMO_SNIPER
@@ -429,7 +429,7 @@
 	name = "sniper shattering bolt"
 	icon_state = "microwavelaser"
 	hud_state = "laser_impact"
-	damage = 40
+	damage = 40 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 30
 	accurate_range_min = 5
 	sundering = 10
@@ -453,7 +453,7 @@
 	name = "sniper laser bolt"
 	icon_state = "microwavelaser"
 	hud_state = "laser_disabler"
-	damage = 100
+	damage = 100 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 30
 	ammo_behavior_flags = AMMO_ENERGY|AMMO_HITSCAN|AMMO_BETTER_COVER_RNG|AMMO_SNIPER
 	sundering = 1
@@ -486,7 +486,7 @@
 /datum/ammo/energy/lasgun/marine/pistol
 	name = "pistol laser bolt"
 	hud_state = "laser_efficiency"
-	damage = 20
+	damage = 20 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 5
 	sundering = 1
 	hitscan_effect_icon = "beam_particle"
@@ -496,7 +496,7 @@
 	name = "disabler bolt"
 	icon_state = "disablershot"
 	hud_state = "laser_disabler"
-	damage = 70
+	damage = 70 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 0
 	damage_type = STAMINA
 	hitscan_effect_icon = "beam_stun"
@@ -506,7 +506,7 @@
 	name = "microwave heat bolt"
 	icon_state = "microwavelaser"
 	hud_state = "laser_heat"
-	damage = 20
+	damage = 20 * MARINE_DAMAGE_SCALING_LIGHT
 	shell_speed = 2.5
 	penetration = 10
 	ammo_behavior_flags = AMMO_ENERGY|AMMO_INCENDIARY|AMMO_HITSCAN
@@ -522,7 +522,7 @@
 	hud_state = "laser_heat"
 	icon_state = "u_laser"
 	ammo_behavior_flags = AMMO_ENERGY|AMMO_INCENDIARY|AMMO_HITSCAN
-	damage = 25
+	damage = 25 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 5
 	sundering = 1
 	max_range = 15
@@ -533,7 +533,7 @@
 	hud_state = "laser_xray"
 	icon_state = "xray"
 	ammo_behavior_flags = AMMO_ENERGY|AMMO_HITSCAN|AMMO_PASS_THROUGH_TURF|AMMO_PASS_THROUGH_MOVABLE
-	damage = 25
+	damage = 25 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 100
 	max_range = 10
 	hitscan_effect_icon = "xray_beam"
@@ -551,7 +551,7 @@
 /datum/ammo/energy/lasgun/marine/heavy_laser
 	ammo_behavior_flags = AMMO_TARGET_TURF|AMMO_BETTER_COVER_RNG|AMMO_ENERGY|AMMO_HITSCAN|AMMO_INCENDIARY
 	hud_state = "laser_overcharge"
-	damage = 60
+	damage = 60 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 10
 	sundering = 1
 	max_range = 30
@@ -579,7 +579,7 @@
 	name = "laser sentry bolt"
 	icon_state = "laser"
 	hud_state = "laser"
-	damage = 35
+	damage = 35 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 15
 	sundering = 2
 	ammo_behavior_flags = AMMO_ENERGY|AMMO_HITSCAN
@@ -597,7 +597,7 @@
 	shell_speed = 3
 
 /datum/ammo/energy/plasma/rifle_standard
-	damage = 25
+	damage = 25 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 20
 	sundering = 0.75
 
@@ -605,7 +605,7 @@
 	icon_state = "plasma_big"
 	hud_state = "plasma_blast"
 	ammo_behavior_flags = AMMO_ENERGY|AMMO_PASS_THROUGH_MOB
-	damage = 40
+	damage = 40 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 30
 	sundering = 2
 	damage_falloff = 0.5
@@ -621,7 +621,7 @@
 	name = "plasma blast"
 	icon_state = "plasma_ball_small"
 	hud_state = "plasma_blast"
-	damage = 30
+	damage = 30 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 10
 	sundering = 2
 	damage_falloff = 0.5
@@ -644,7 +644,7 @@
 	drop_nade(target_mob.loc)
 
 /datum/ammo/energy/plasma/blast/melting
-	damage = 40
+	damage = 40 * MARINE_DAMAGE_SCALING_LIGHT
 	sundering = 3
 	damage_falloff = 0.5
 	accurate_range = 7
@@ -661,7 +661,7 @@
 			living_victim.apply_status_effect(STATUS_EFFECT_MELTING, melting_stacks)
 
 /datum/ammo/energy/plasma/blast/shatter
-	damage = 40
+	damage = 40 * MARINE_DAMAGE_SCALING_LIGHT
 	sundering = 3
 	damage_falloff = 0.5
 	accurate_range = 9
@@ -674,7 +674,7 @@
 
 /datum/ammo/energy/plasma/blast/incendiary
 	name = "plasma glob"
-	damage = 30
+	damage = 30 * MARINE_DAMAGE_SCALING_LIGHT
 	ammo_behavior_flags = AMMO_ENERGY|AMMO_INCENDIARY
 	shell_speed = 2
 	icon_state = "plasma_big"
@@ -692,7 +692,7 @@
 	name = "plasma heavy glob"
 	icon_state = "plasma_ball_big"
 	hud_state = "plasma_sphere"
-	damage = 60
+	damage = 60 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 40
 	sundering = 10
 
@@ -737,7 +737,7 @@
 
 /datum/ammo/energy/plasma/smg_standard
 	icon_state = "plasma_ball_small"
-	damage = 14
+	damage = 14 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 10
 	sundering = 0.5
 	damage_falloff = 1.5
@@ -780,7 +780,7 @@
 	icon_state = "overchargedlaser_green"
 	hud_state = "electrothermal"
 	hud_state_empty = "electrothermal_empty"
-	damage = 40
+	damage = 40 * MARINE_DAMAGE_SCALING_LIGHT
 	max_range = 14
 	penetration = 5
 	shell_speed = 1.5

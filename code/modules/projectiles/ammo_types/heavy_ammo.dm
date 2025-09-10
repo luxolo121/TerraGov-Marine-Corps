@@ -121,7 +121,7 @@
 	ammo_behavior_flags = AMMO_BALLISTIC|AMMO_PASS_THROUGH_TURF|AMMO_PASS_THROUGH_MOVABLE
 	shell_speed = 4
 	max_range = 14
-	damage = 150
+	damage = 150 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 100
 	sundering = 20
 	bullet_color = COLOR_PULSE_BLUE
@@ -139,7 +139,7 @@
 	hud_state = "railgun_hvap"
 	shell_speed = 5
 	max_range = 21
-	damage = 100
+	damage = 100 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 30
 	sundering = 50
 
@@ -150,7 +150,7 @@
 	name = "smart armor piercing railgun slug"
 	hud_state = "railgun_smart"
 	ammo_behavior_flags = AMMO_BALLISTIC|AMMO_PASS_THROUGH_TURF|AMMO_PASS_THROUGH_MOVABLE|AMMO_IFF
-	damage = 100
+	damage = 100 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 20
 	sundering = 20
 

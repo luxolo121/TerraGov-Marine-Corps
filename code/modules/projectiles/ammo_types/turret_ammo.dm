@@ -12,7 +12,7 @@
 	hud_state_empty = "rifle_empty"
 	ammo_behavior_flags = AMMO_BALLISTIC
 	accurate_range = 10
-	damage = 25
+	damage = 25 * MARINE_DAMAGE_SCALING_HEAVY
 	penetration = 20
 	damage_falloff = 0.25
 
@@ -22,11 +22,11 @@
 /datum/ammo/bullet/turret/gauss
 	name = "heavy gauss turret slug"
 	hud_state = "rifle_heavy"
-	damage = 60
+	damage = 60 * MARINE_DAMAGE_SCALING_HEAVY
 
 /datum/ammo/bullet/turret/mini
 	name = "small caliber autocannon bullet"
-	damage = 20
+	damage = 20 * MARINE_DAMAGE_SCALING_HEAVY
 	penetration = 20
 	ammo_behavior_flags = AMMO_BALLISTIC
 
@@ -37,7 +37,7 @@
 	bullet_color = COLOR_SOFT_RED
 	ammo_behavior_flags = AMMO_SNIPER
 	accurate_range = 21
-	damage = 80
+	damage = 80 * MARINE_DAMAGE_SCALING_HEAVY
 	penetration = 50
 	sundering = 5
 
@@ -49,7 +49,7 @@
 	bonus_projectiles_amount = 6
 	bonus_projectiles_scatter = 5
 	max_range = 10
-	damage = 20
+	damage = 20 * MARINE_DAMAGE_SCALING_HEAVY
 	penetration = 40
 	damage_falloff = 1
 
@@ -59,7 +59,7 @@
 /datum/ammo/bullet/turret/spread
 	name = "additional buckshot"
 	max_range = 10
-	damage = 20
+	damage = 20 * MARINE_DAMAGE_SCALING_HEAVY
 	penetration = 40
 	damage_falloff = 1
 
@@ -71,7 +71,7 @@
 	damage_type = BURN
 	ammo_behavior_flags = AMMO_INCENDIARY|AMMO_FLAME
 	armor_type = FIRE
-	damage = 30
+	damage = 30 * MARINE_DAMAGE_SCALING_HEAVY
 	max_range = 7
 	bullet_color = LIGHT_COLOR_FIRE
 

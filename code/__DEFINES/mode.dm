@@ -107,6 +107,10 @@
 //Balance defines
 #define MARINE_GEAR_SCALING 30
 
+#define MARINE_DAMAGE_SCALING_HEAVY 1.05 // think before you fiddle, dr freeman
+
+#define MARINE_DAMAGE_SCALING_LIGHT 1.2
+
 #define MAX_TUNNELS_PER_MAP 10
 
 #define FOG_DELAY_INTERVAL 40 MINUTES

@@ -836,7 +836,7 @@
 // *********** Microwave
 // ***************************************
 ///amount of damage done per tick by the microwave status effect
-#define MICROWAVE_STATUS_DAMAGE_MULT 4
+#define MICROWAVE_STATUS_DAMAGE_MULT 4 * MARINE_DAMAGE_SCALING_DEBUFF
 ///duration of the microwave effect. Refreshed on application
 #define MICROWAVE_STATUS_DURATION 5 SECONDS
 

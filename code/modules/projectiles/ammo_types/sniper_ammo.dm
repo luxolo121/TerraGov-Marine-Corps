@@ -15,7 +15,7 @@
 	shell_speed = 4
 	accurate_range = 30
 	max_range = 40
-	damage = 90
+	damage = 90 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 50
 	sundering = 15
 
@@ -27,14 +27,14 @@
 	ammo_behavior_flags = AMMO_BALLISTIC|AMMO_INCENDIARY|AMMO_BETTER_COVER_RNG|AMMO_SNIPER
 	accuracy_var_high = 7
 	max_range = 20
-	damage = 70
+	damage = 70 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 30
 	sundering = 5
 
 /datum/ammo/bullet/sniper/flak
 	name = "flak sniper bullet"
 	hud_state = "sniper_flak"
-	damage = 90
+	damage = 90 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 0
 	sundering = 30
 	airburst_multiplier = 0.5
@@ -47,7 +47,7 @@
 	handful_icon_state = "crude_sniper"
 	hud_state = "sniper_crude"
 	handful_amount = 5
-	damage = 75
+	damage = 75 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 35
 	sundering = 15
 
@@ -57,7 +57,7 @@
 	hud_state = "sniper_crude"
 	handful_amount = 5
 	ammo_behavior_flags = AMMO_BALLISTIC
-	damage = 120
+	damage = 120 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 20
 	accurate_range_min = 0
 	///shatter effection duration when hitting mobs
@@ -75,7 +75,7 @@
 	hud_state = "sniper_supersonic"
 	ammo_behavior_flags = AMMO_BALLISTIC
 	accuracy = 20
-	damage = 100
+	damage = 100 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 60
 	sundering = 50
 
@@ -83,7 +83,7 @@
 	name = "high caliber rifle bullet"
 	hud_state = "sniper_heavy"
 	ammo_behavior_flags = AMMO_BALLISTIC|AMMO_BETTER_COVER_RNG|AMMO_SNIPER
-	damage = 80
+	damage = 80 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 30
 	sundering = 7.5
 	damage_falloff = 0.25
@@ -92,7 +92,7 @@
 	name = "high caliber flak rifle bullet"
 	hud_state = "sniper_heavy_flak"
 	ammo_behavior_flags = AMMO_BALLISTIC|AMMO_BETTER_COVER_RNG|AMMO_SNIPER
-	damage = 40
+	damage = 40 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 10
 	sundering = 10
 	damage_falloff = 0.25
@@ -105,7 +105,7 @@
 	name = "low velocity high caliber rifle bullet"
 	hud_state = "sniper_auto"
 	ammo_behavior_flags = AMMO_BALLISTIC|AMMO_BETTER_COVER_RNG|AMMO_SNIPER
-	damage = 50
+	damage = 50 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 30
 	sundering = 2
 	damage_falloff = 0.25
@@ -117,6 +117,6 @@
 	hud_state = "sniper_fire"
 	accurate_range_min = 4
 	shell_speed = 5
-	damage = 120
+	damage = 120 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 60
 	sundering = 20

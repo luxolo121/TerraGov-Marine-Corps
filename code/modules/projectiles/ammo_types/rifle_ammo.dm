@@ -10,35 +10,35 @@
 	hud_state_empty = "rifle_empty"
 	ammo_behavior_flags = AMMO_BALLISTIC
 	accurate_range = 12
-	damage = 25
+	damage = 25 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 5
 	sundering = 0.5
 
 /datum/ammo/bullet/rifle/ap
 	name = "armor-piercing rifle bullet"
 	hud_state = "rifle_ap"
-	damage = 20
+	damage = 20 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 25
 	sundering = 3
 
 /datum/ammo/bullet/rifle/hv
 	name = "high-velocity rifle bullet"
 	hud_state = "hivelo"
-	damage = 20
+	damage = 20 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 20
 	sundering = 0.5
 
 /datum/ammo/bullet/rifle/heavy
 	name = "heavy rifle bullet"
 	hud_state = "rifle_heavy"
-	damage = 30
+	damage = 30 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 10
 	sundering = 1.25
 
 /datum/ammo/bullet/rifle/repeater
 	name = "heavy impact rifle bullet"
 	hud_state = "sniper"
-	damage = 70
+	damage = 70 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 20
 	sundering = 1.25
 
@@ -56,14 +56,14 @@
 /datum/ammo/bullet/rifle/machinegun
 	name = "machinegun bullet"
 	hud_state = "rifle_heavy"
-	damage = 25
+	damage = 25 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 10
 	sundering = 0.75
 
 /datum/ammo/bullet/rifle/som_machinegun
 	name = "machinegun bullet"
 	hud_state = "rifle_heavy"
-	damage = 28
+	damage = 28 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 12.5
 	sundering = 1
 
@@ -77,7 +77,7 @@
 	damage_falloff = 0.5
 	accurate_range = 18
 	max_range = 30
-	damage = 60
+	damage = 60 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 20
 	sundering = 2
 
@@ -87,7 +87,7 @@
 /datum/ammo/bullet/rifle/som_big/incendiary
 	name = "heavy incendiary bullet"
 	hud_state = "hivelo_fire"
-	damage = 40
+	damage = 40 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 10
 	sundering = 1
 	ammo_behavior_flags = AMMO_BALLISTIC|AMMO_INCENDIARY
@@ -99,7 +99,7 @@
 /datum/ammo/bullet/rifle/som_big/anti_armour
 	name = "heavy AT bullet"
 	hud_state = "hivelo_impact"
-	damage = 40
+	damage = 40 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 45
 	sundering = 8
 	ammo_behavior_flags = AMMO_BALLISTIC|AMMO_PASS_THROUGH_MOVABLE
@@ -125,7 +125,7 @@
 	damage_falloff = 0
 	ammo_behavior_flags = AMMO_BALLISTIC
 	accurate_range = 15
-	damage = 40
+	damage = 40 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 30
 	sundering = 5
 	bullet_color = COLOR_SOFT_RED
@@ -134,7 +134,7 @@
 	name = "high velocity incendiary bullet"
 	hud_state = "hivelo_fire"
 	ammo_behavior_flags = AMMO_BALLISTIC|AMMO_INCENDIARY|AMMO_PASS_THROUGH_MOB
-	damage = 25
+	damage = 25 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 20
 	sundering = 2.5
 	bullet_color = LIGHT_COLOR_FIRE
@@ -142,7 +142,7 @@
 /datum/ammo/bullet/rifle/tx8/impact
 	name = "high velocity impact bullet"
 	hud_state = "hivelo_impact"
-	damage = 30
+	damage = 30 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 20
 	sundering = 6.5
 
@@ -153,7 +153,7 @@
 	name = "crude heavy rifle bullet"
 	hud_state = "rifle_crude"
 	ammo_behavior_flags = AMMO_BALLISTIC
-	damage = 30
+	damage = 30 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 15
 	sundering = 1.75
 
@@ -165,7 +165,7 @@
 	ammo_behavior_flags = AMMO_BALLISTIC|AMMO_SNIPER
 	accurate_range = 25
 	max_range = 40
-	damage = 65
+	damage = 65 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 17.5
 	sundering = 2
 
@@ -173,7 +173,7 @@
 	name = "heavy marksman bullet"
 	hud_state = "sniper"
 	ammo_behavior_flags = AMMO_BALLISTIC|AMMO_SNIPER
-	damage = 75
+	damage = 75 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 25
 	sundering = 1.25
 
@@ -183,13 +183,13 @@
 	hud_state_empty = "hivelo_empty"
 	ammo_behavior_flags = AMMO_BALLISTIC
 	penetration = 15
-	damage = 32.5
+	damage = 32.5 * MARINE_DAMAGE_SCALING_LIGHT
 	sundering = 1.25
 
 /datum/ammo/bullet/rifle/icc_confrontationrifle
 	name = "armor-piercing heavy rifle bullet"
 	hud_state = "rifle_ap"
 	ammo_behavior_flags = AMMO_BALLISTIC|AMMO_SNIPER
-	damage = 50
+	damage = 50 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 40
 	sundering = 3.5

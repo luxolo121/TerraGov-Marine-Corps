@@ -12,7 +12,7 @@
 	hud_state_empty = "smartgun_empty"
 	ammo_behavior_flags = AMMO_BALLISTIC
 	accurate_range = 12
-	damage = 20
+	damage = 20 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 15
 	sundering = 2
 
@@ -24,7 +24,7 @@
 	hud_state_empty = "smartgun_empty"
 	ammo_behavior_flags = AMMO_BALLISTIC
 	accurate_range = 12
-	damage = 10
+	damage = 10 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 25
 	sundering = 1
 	damage_falloff = 0.1
@@ -36,7 +36,7 @@
 	hud_state = "smartgun"
 	hud_state_empty = "smartgun_empty"
 	ammo_behavior_flags = AMMO_BALLISTIC
-	damage = 40
+	damage = 40 * MARINE_DAMAGE_SCALING_LIGHT
 	max_range = 40
 	penetration = 30
 	sundering = 5

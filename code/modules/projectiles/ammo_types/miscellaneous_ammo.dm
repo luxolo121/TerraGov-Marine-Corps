@@ -15,7 +15,7 @@
 	accuracy_var_low = 15
 	accuracy_var_high = 5
 	max_range = 6
-	damage = 30
+	damage = 30 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 20
 	sundering = 3
 	damage_falloff = 0
@@ -23,7 +23,7 @@
 /datum/ammo/bullet/atgun_spread/incendiary
 	name = "incendiary flechette"
 	ammo_behavior_flags = AMMO_BALLISTIC|AMMO_PASS_THROUGH_MOB|AMMO_INCENDIARY|AMMO_LEAVE_TURF
-	damage = 20
+	damage = 20 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 10
 	sundering = 1.5
 
@@ -52,11 +52,11 @@
 	accurate_range = 15
 	damage_type = STAMINA
 	armor_type = BIO
-	damage = 70
+	damage = 70 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 0
 	shrapnel_chance = 0
 	///percentage of xenos total plasma to drain when hit by a pepperball
-	var/drain_multiplier = 0.05
+	var/drain_multiplier = 0.05 * MARINE_DAMAGE_SCALING_LIGHT
 	///Flat plasma to drain, unaffected by caste plasma amount.
 	var/plasma_drain = 25
 
@@ -68,8 +68,8 @@
 			X.use_plasma(plasma_drain)
 
 /datum/ammo/bullet/pepperball/pepperball_mini
-	damage = 40
-	drain_multiplier = 0.03
+	damage = 40 * MARINE_DAMAGE_SCALING_LIGHT
+	drain_multiplier = 0.03 * MARINE_DAMAGE_SCALING_LIGHT
 	plasma_drain = 15
 
 /datum/ammo/alloy_spike
@@ -83,7 +83,7 @@
 	accuracy = 20
 	accurate_range = 15
 	max_range = 15
-	damage = 40
+	damage = 40 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 50
 	shrapnel_chance = 75
 
@@ -96,7 +96,7 @@
 	ammo_behavior_flags = AMMO_INCENDIARY|AMMO_FLAME|AMMO_TARGET_TURF
 	armor_type = FIRE
 	max_range = 7
-	damage = 31
+	damage = 31 * MARINE_DAMAGE_SCALING_LIGHT
 	damage_falloff = 0
 	incendiary_strength = 30 //Firestacks cap at 20, but that's after armor.
 	bullet_color = LIGHT_COLOR_FIRE
