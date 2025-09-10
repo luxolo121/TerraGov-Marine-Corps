@@ -216,12 +216,12 @@
 	var/area/targ_area = get_area(A)
 	if(!istype(TU))
 		return
-/*	var/is_outside = FALSE
+	var/is_outside = FALSE
 	if(is_ground_level(TU.z) && (targ_area.ceiling <= CEILING_OBSTRUCTED))
 		is_outside = TRUE
 	if(!is_outside)
 		to_chat(user, span_warning("DEPTH WARNING: Target too deep for ordnance."))
-	return */
+//		return
 	if(user.do_actions)
 		return
 	playsound(src, 'sound/effects/nightvision.ogg', 35)

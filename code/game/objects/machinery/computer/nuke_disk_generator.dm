@@ -27,7 +27,7 @@
 	var/printing_time = 15 SECONDS
 
 	///Total number of times the hack is required
-	var/total_segments = 5
+	var/total_segments = 3
 	///What segment we are on, (once this hits total, disk is printed)
 	var/completed_segments = 0
 	///The current ID of the timer running
