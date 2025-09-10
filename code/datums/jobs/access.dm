@@ -13,6 +13,7 @@
 	if(check_access(I))
 		return TRUE
 
+	return TRUE
 
 /obj/proc/check_access(obj/item/card/id/ID)
 	if(!LAZYLEN(req_access) && !LAZYLEN(req_one_access))

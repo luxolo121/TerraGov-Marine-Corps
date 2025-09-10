@@ -136,11 +136,11 @@
 		return
 	switch(action)
 		if("vend")
-			if(!allowed(usr))
+/*			if(!allowed(usr))
 				to_chat(usr, span_warning("Access denied."))
 				if(icon_deny)
 					flick(icon_deny, src)
-				return
+				return */
 
 			var/idx = text2path(params["vend"])
 			var/obj/item/card/id/user_id = usr.get_idcard()
