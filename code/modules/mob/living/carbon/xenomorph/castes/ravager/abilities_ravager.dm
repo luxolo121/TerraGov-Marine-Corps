@@ -248,7 +248,7 @@
 	/// While this ability is active, what amount should the owner's `get_crit_threshold` and `get_death_threshold` return?
 	var/endure_threshold = RAVAGER_ENDURE_HP_LIMIT
 	/// While this ability is active, what amount should be added to the number returned by `get_crit_threshold` and `get_death_threshold`? This is reset to zero when the ability ends.
-	var/bonus_endure_threshold = 0
+	var/bonus_endure_threshold = -20
 	/// Timer for Endure's duration.
 	var/endure_duration
 	/// Timer for Endure's warning.
@@ -372,7 +372,7 @@
 	/// The percentage of the owner's maximum health that the owner's current health must be under to activate the ability.
 	var/minimum_health_rage_threshold = RAVAGER_RAGE_MIN_HEALTH_THRESHOLD
 	/// The percentage of the owner's maximum health to use to further increase / calculate rage power. Higher means more rage power which then means it is easier to reach super rage.
-	var/rage_power_calculation_bonus = 0
+	var/rage_power_calculation_bonus = 0.2
 	/// Determines the power of Rage's many effects. Power scales inversely with the Ravager's HP. Ignoring calculation bonus, this can ranges from [0.25 at 50% health] and [0.5 at 0% health]. 0.5 and above triggers special effects.
 	var/rage_power
 	/// Determines the Sunder to impose when Rage ends.

@@ -6,7 +6,7 @@
 	fire_sound = 'sound/weapons/guns/fire/smg_heavy.ogg'
 	reload_sound = 'sound/weapons/guns/interact/smartgun_unload.ogg'
 
-	max_integrity = 200
+	max_integrity = 165
 	soft_armor = list(MELEE = 50, BULLET = 50, LASER = 50, ENERGY = 50, BOMB = 50, BIO = 100, FIRE = 80, ACID = 50)
 
 	fire_delay = 0.6 SECONDS

@@ -49,7 +49,7 @@
 	slowdown_stacks = 1.5
 	smoke_strength = 0.5
 	smoke_range = 0
-	reagent_transfer_amount = 4
+	reagent_transfer_amount = 6
 
 ///Set up the list of reagents the spit transfers upon impact
 /datum/ammo/xeno/toxin/proc/set_reagents()
@@ -106,24 +106,24 @@
 
 /datum/ammo/xeno/toxin/upgrade1
 	smoke_strength = 0.6
-	reagent_transfer_amount = 5
+	reagent_transfer_amount = 7
 
 /datum/ammo/xeno/toxin/upgrade2
 	smoke_strength = 0.7
-	reagent_transfer_amount = 6
+	reagent_transfer_amount = 8
 
 /datum/ammo/xeno/toxin/upgrade3
 	smoke_strength = 0.75
-	reagent_transfer_amount = 6.5
+	reagent_transfer_amount = 8.5
 
 
 /datum/ammo/xeno/toxin/heavy //Praetorian
 	name = "neurotoxic splash"
 	added_spit_delay = 0
 	spit_cost = 100
-	damage = 40
+	damage = 32
 	smoke_strength = 1
-	reagent_transfer_amount = 10
+	reagent_transfer_amount = 12
 
 
 /datum/ammo/xeno/sticky
@@ -226,7 +226,7 @@
 	spit_cost = 50
 	ammo_behavior_flags = AMMO_XENO|AMMO_TARGET_TURF
 	armor_type = ACID
-	damage = 22
+	damage = 18
 	max_range = 8
 	bullet_color = COLOR_PALE_GREEN_GRAY
 	///Duration of the acid puddles
@@ -244,7 +244,7 @@
 
 /datum/ammo/xeno/acid/medium
 	name = "acid spatter"
-	damage = 35
+	damage = 25 //holy fuck why were you 35
 	ammo_behavior_flags = AMMO_XENO
 
 /datum/ammo/xeno/acid/auto

@@ -31,7 +31,7 @@
 	maximum_active_caste = 1
 	evolve_min_xenos = 8
 	death_evolution_delay = 7 MINUTES
-	evolve_population_lock = 40 // Mech
+	evolve_population_lock = 2 // Mech
 
 	// *** Flags *** //
 	caste_flags = CASTE_IS_INTELLIGENT|CASTE_STAGGER_RESISTANT|CASTE_LEADER_TYPE|CASTE_INSTANT_EVOLUTION|CASTE_HAS_WOUND_MASK|CASTE_MUTATIONS_ALLOWED

@@ -77,6 +77,7 @@
 		/datum/action/ability/xeno_action/rally_minion,
 		/datum/action/ability/xeno_action/blessing_menu,
 		/datum/action/ability/activable/xeno/place_pattern,
+		/datum/action/ability/activable/xeno/shoot_xeno_artillery,
 	)
 
 	mutations = list(

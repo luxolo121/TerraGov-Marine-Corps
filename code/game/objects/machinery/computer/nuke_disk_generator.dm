@@ -20,7 +20,7 @@
 	resistance_flags = RESIST_ALL|DROPSHIP_IMMUNE
 
 	///Time needed for the machine to generate the disc
-	var/segment_time = 1.5 MINUTES
+	var/segment_time = 1 MINUTES
 	///Time to start a segment
 	var/start_time = 15 SECONDS
 	///Time to print a disk
