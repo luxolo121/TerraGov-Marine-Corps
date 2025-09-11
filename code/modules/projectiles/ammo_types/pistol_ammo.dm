@@ -55,7 +55,7 @@
 	name = "armor-piercing pistol bullet"
 	hud_state = "pistol_ap"
 	damage = 20 * MARINE_DAMAGE_SCALING_LIGHT
-	penetration = 12.5 * MARINE_PENETRATION_SCALING
+	penetration = 12.5 * MARINE_PENETRATION_SCALING_AP
 	shrapnel_chance = 15
 	sundering = 0.5
 
