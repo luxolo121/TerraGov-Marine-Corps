@@ -10,7 +10,7 @@
 	hud_state_empty = "pistol_empty"
 	ammo_behavior_flags = AMMO_BALLISTIC
 	damage = 20 * MARINE_DAMAGE_SCALING_LIGHT
-	penetration = 5
+	penetration = 5 * MARINE_PENETRATION_SCALING
 	accurate_range = 5
 	sundering = 1
 
@@ -18,14 +18,14 @@
 	name = "light pistol bullet"
 	hud_state = "pistol_light"
 	damage = 15 * MARINE_DAMAGE_SCALING_LIGHT
-	penetration = 5
+	penetration = 5 * MARINE_PENETRATION_SCALING
 	sundering = 0.5
 
 /datum/ammo/bullet/pistol/tiny/ap
 	name = "light pistol bullet"
 	hud_state = "pistol_lightap"
 	damage = 22.5 * MARINE_DAMAGE_SCALING_LIGHT
-	penetration = 15 //So it can actually hurt something.
+	penetration = 15 * MARINE_PENETRATION_SCALING //So it can actually hurt something.
 	sundering = 0.5
 	damage_falloff = 1.5
 
@@ -55,7 +55,7 @@
 	name = "armor-piercing pistol bullet"
 	hud_state = "pistol_ap"
 	damage = 20 * MARINE_DAMAGE_SCALING_LIGHT
-	penetration = 12.5
+	penetration = 12.5 * MARINE_PENETRATION_SCALING
 	shrapnel_chance = 15
 	sundering = 0.5
 
@@ -63,7 +63,7 @@
 	name = "heavy pistol bullet"
 	hud_state = "pistol_heavy"
 	damage = 30 * MARINE_DAMAGE_SCALING_LIGHT
-	penetration = 5
+	penetration = 5 * MARINE_PENETRATION_SCALING
 	shrapnel_chance = 25
 	sundering = 2.15
 
@@ -71,7 +71,7 @@
 	name = "high impact pistol bullet"
 	hud_state = "pistol_superheavy"
 	damage = 45 * MARINE_DAMAGE_SCALING_LIGHT
-	penetration = 15
+	penetration = 15 * MARINE_PENETRATION_SCALING
 	sundering = 3
 	damage_falloff = 0.75
 
@@ -98,7 +98,7 @@
 	hud_state = "pistol_squash"
 	accuracy = 5
 	damage = 32 * MARINE_DAMAGE_SCALING_LIGHT
-	penetration = 10
+	penetration = 10 * MARINE_PENETRATION_SCALING
 	shrapnel_chance = 25
 	sundering = 2
 

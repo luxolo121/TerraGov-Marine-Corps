@@ -28,20 +28,10 @@ SUBSYSTEM_DEF(persistence)
 	///Available gun seasons
 	var/list/seasons_buckets = list(
 		SEASONAL_GUNS = list(
-		/datum/season_datum/weapons/guns/pistol_seasonal_one,
-		/datum/season_datum/weapons/guns/rifle_seasonal_one,
-		/datum/season_datum/weapons/guns/rifle_seasonal_two,
-		/datum/season_datum/weapons/guns/rifle_seasonal_three,
-		/datum/season_datum/weapons/guns/copsandrobbers_seasonal,
-		/datum/season_datum/weapons/guns/shotgun_seasonal,
-		/datum/season_datum/weapons/guns/lever_seasonal,
+		/datum/season_datum/weapons/guns/everything,
 		),
 		SEASONAL_HEAVY = list(
-		/datum/season_datum/weapons/guns/heavy_defualt,
-		/datum/season_datum/weapons/guns/heavy_ff,
-		/datum/season_datum/weapons/guns/heavy_autorail,
-		/datum/season_datum/weapons/guns/heavy_shock,
-		/datum/season_datum/weapons/guns/heavy_explosions,
+		/datum/season_datum/weapons/guns/KABOOM,
 		),
 	)
 	///The saved list of custom outfits names
@@ -295,6 +285,64 @@ SUBSYSTEM_DEF(persistence)
 		/obj/item/ammo_magazine/shotgun/mbx900/tracking = -1,
 		)
 
+/datum/season_datum/weapons/guns/everything
+	name = "TEMPORAL RIFT"
+	description = "TOO MANY GUNS!!! WHERE THE FUCK ARE THESE COMING FROM"
+	item_list = list(
+		/obj/item/weapon/gun/rifle/mkh = -1,
+		/obj/item/ammo_magazine/rifle/mkh = -1,
+		/obj/item/weapon/gun/smg/ppsh = -1,
+		/obj/item/ammo_magazine/smg/ppsh = -1,
+		/obj/item/ammo_magazine/smg/ppsh/extended = -1,
+		/obj/item/weapon/gun/rifle/garand = -1,
+		/obj/item/ammo_magazine/rifle/garand = -1,
+		/obj/item/weapon/gun/pistol/m1911 = -1,
+		/obj/item/ammo_magazine/pistol/m1911 = -1,
+		/obj/item/weapon/gun/rifle/m412 = -1,
+		/obj/item/ammo_magazine/rifle = -1,
+		/obj/item/weapon/gun/rifle/m41a = -1,
+		/obj/item/ammo_magazine/rifle/m41a = -1,
+		/obj/item/weapon/gun/rifle/type71/seasonal = -1,
+		/obj/item/ammo_magazine/rifle/type71 = -1,
+		/obj/item/ammo_magazine/packet/pwarsaw = -1,
+		/obj/item/weapon/gun/rifle/alf_machinecarbine = -1,
+		/obj/item/ammo_magazine/rifle/alf_machinecarbine = -1,
+		/obj/item/weapon/gun/rifle/mpi_km= -1,
+		/obj/item/ammo_magazine/rifle/mpi_km/plum = -1,
+		/obj/item/ammo_magazine/packet/pwarsaw = -1,
+		/obj/item/weapon/gun/rifle/m16 = -1,
+		/obj/item/ammo_magazine/rifle/m16 = -1,
+		/obj/item/ammo_magazine/packet/pnato = -1,
+		/obj/item/weapon/gun/revolver/small = -1,
+		/obj/item/ammo_magazine/revolver/small = -1,
+		/obj/item/weapon/gun/revolver/single_action/m44 = -1,
+		/obj/item/ammo_magazine/revolver/single_action/m44 = -1,
+		/obj/item/weapon/gun/revolver/judge = -1,
+		/obj/item/ammo_magazine/revolver/judge = -1,
+		/obj/item/ammo_magazine/revolver/judge/buckshot = -1,
+		/obj/item/weapon/gun/revolver/upp = -1,
+		/obj/item/ammo_magazine/revolver/upp = -1,
+		/obj/item/weapon/gun/smg/uzi = -1,
+		/obj/item/ammo_magazine/smg/uzi = -1,
+		/obj/item/weapon/gun/smg/m25 = -1,
+		/obj/item/ammo_magazine/smg/m25 = -1,
+		/obj/item/storage/holster/m25 = -1,
+		/obj/item/weapon/gun/smg/mp7 = -1,
+		/obj/item/ammo_magazine/smg/mp7 = -1,
+		/obj/item/weapon/gun/smg/skorpion = -1,
+		/obj/item/ammo_magazine/smg/skorpion = -1,
+		/obj/item/weapon/gun/revolver/cmb = -1,
+		/obj/item/ammo_magazine/revolver/cmb = -1,
+		/obj/item/weapon/gun/shotgun/combat = -1,
+		/obj/item/weapon/gun/shotgun/pump = -1,
+		/obj/item/weapon/gun/shotgun/pump/cmb = -1,
+		/obj/item/weapon/gun/shotgun/pump/lever = -1,
+		/obj/item/weapon/gun/shotgun/pump/lever/mbx900 = -1,
+		/obj/item/ammo_magazine/shotgun/mbx900 = -1,
+		/obj/item/ammo_magazine/shotgun/mbx900/buckshot = -1,
+		/obj/item/ammo_magazine/shotgun/mbx900/tracking = -1,
+		)
+
 // Heavy Weapons Seasonals //
 
 /datum/season_datum/weapons/guns/heavy_defualt
@@ -359,4 +407,37 @@ SUBSYSTEM_DEF(persistence)
 		/obj/item/ammo_magazine/rocket/recoilless/heat = 16,
 		/obj/item/ammo_magazine/rocket/recoilless/cloak = 16,
 		/obj/item/ammo_magazine/rocket/recoilless/smoke = 16,
+	)
+
+/datum/season_datum/weapons/guns/KABOOM
+	name = "DAKKADAKKADAKKA BOOM SPLOSION"
+	description = "explosion3.ogg"
+	item_list = list(
+		/obj/structure/largecrate/supply/weapons/standard_atgun = 1,
+		/obj/item/storage/holster/backholster/rpg/full = 2,
+		/obj/item/ammo_magazine/rocket/recoilless = 4,
+		/obj/item/ammo_magazine/rocket/recoilless/light = 4,
+		/obj/item/ammo_magazine/rocket/recoilless/heat = 16,
+		/obj/item/ammo_magazine/rocket/recoilless/cloak = 16,
+		/obj/item/ammo_magazine/rocket/recoilless/smoke = 16,
+		/obj/item/ammo_magazine/rocket/recoilless/plasmaloss = 16,
+		/obj/item/weapon/gun/launcher/rocket/m57a4/t57/unloaded = 2,
+		/obj/item/ammo_magazine/rocket/m57a4 = 8,
+		/obj/structure/largecrate/supply/explosives/disposable = 1,
+		/obj/structure/largecrate/supply/weapons/standard_flakgun = 1,
+		/obj/item/weapon/gun/rifle/railgun/unloaded = 2,
+		/obj/item/ammo_magazine/railgun = 12,
+		/obj/item/ammo_magazine/railgun/smart = 6,
+		/obj/item/storage/holster/backholster/rpg/full = 2,
+		/obj/item/ammo_magazine/rocket/recoilless = 4,
+		/obj/item/ammo_magazine/rocket/recoilless/light = 4,
+		/obj/item/ammo_magazine/rocket/recoilless/heat = 16,
+		/obj/item/ammo_magazine/rocket/recoilless/cloak = 16,
+		/obj/item/ammo_magazine/rocket/recoilless/smoke = 16,
+		/obj/item/ammo_magazine/rocket/recoilless/plasmaloss = 16,
+		/obj/structure/closet/crate/mortar_ammo/mlrs_kit = 2,
+		/obj/item/storage/box/mlrs_rockets/gas = 4,
+		/obj/structure/largecrate/supply/weapons/heavy_flakgun = 1,
+		/obj/item/ammo_magazine/heavy_isg/he = 8,
+		/obj/item/ammo_magazine/heavy_isg/sabot = 5,
 	)

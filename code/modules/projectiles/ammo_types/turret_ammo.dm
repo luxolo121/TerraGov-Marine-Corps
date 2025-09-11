@@ -13,7 +13,7 @@
 	ammo_behavior_flags = AMMO_BALLISTIC
 	accurate_range = 10
 	damage = 25 * MARINE_DAMAGE_SCALING_HEAVY
-	penetration = 20
+	penetration = 20 * MARINE_PENETRATION_SCALING
 	damage_falloff = 0.25
 
 /datum/ammo/bullet/turret/dumb
@@ -27,7 +27,7 @@
 /datum/ammo/bullet/turret/mini
 	name = "small caliber autocannon bullet"
 	damage = 20 * MARINE_DAMAGE_SCALING_LIGHT
-	penetration = 20 * MARINE_DAMAGE_SCALING_LIGHT
+	penetration = 20 * MARINE_DAMAGE_SCALING_LIGHT * MARINE_PENETRATION_SCALING // Incalculable balance beyond your ailing mind.
 	ammo_behavior_flags = AMMO_BALLISTIC
 
 
@@ -38,7 +38,7 @@
 	ammo_behavior_flags = AMMO_SNIPER
 	accurate_range = 21
 	damage = 80 * MARINE_DAMAGE_SCALING_HEAVY
-	penetration = 50
+	penetration = 50 * MARINE_PENETRATION_SCALING
 	sundering = 5
 
 /datum/ammo/bullet/turret/buckshot
@@ -50,7 +50,7 @@
 	bonus_projectiles_scatter = 5
 	max_range = 10
 	damage = 20 * MARINE_DAMAGE_SCALING_HEAVY
-	penetration = 40
+	penetration = 40 * MARINE_PENETRATION_SCALING
 	damage_falloff = 1
 
 /datum/ammo/bullet/turret/buckshot/on_hit_mob(mob/target_mob, atom/movable/projectile/proj)
@@ -60,7 +60,7 @@
 	name = "additional buckshot"
 	max_range = 10
 	damage = 20 * MARINE_DAMAGE_SCALING_HEAVY
-	penetration = 40
+	penetration = 40 * MARINE_PENETRATION_SCALING
 	damage_falloff = 1
 
 /datum/ammo/flamer

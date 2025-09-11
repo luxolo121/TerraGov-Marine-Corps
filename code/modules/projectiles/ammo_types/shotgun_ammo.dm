@@ -18,7 +18,7 @@
 	shell_speed = 3
 	max_range = 15
 	damage = 100 * MARINE_DAMAGE_SCALING_LIGHT
-	penetration = 20
+	penetration = 20 * MARINE_PENETRATION_SCALING
 	sundering = 7.5
 
 /datum/ammo/bullet/shotgun/slug/on_hit_mob(mob/target_mob, atom/movable/projectile/proj)
@@ -47,7 +47,7 @@
 	ammo_behavior_flags = AMMO_BALLISTIC|AMMO_INCENDIARY
 	max_range = 15
 	damage = 70 * MARINE_DAMAGE_SCALING_LIGHT
-	penetration = 15
+	penetration = 15 * MARINE_PENETRATION_SCALING
 	sundering = 2
 	bullet_color = COLOR_TAN_ORANGE
 
@@ -68,7 +68,7 @@
 	max_range = 15
 	damage = 50 * MARINE_DAMAGE_SCALING_LIGHT
 	damage_falloff = 0.5
-	penetration = 15
+	penetration = 15 * MARINE_PENETRATION_SCALING
 	sundering = 7
 
 /datum/ammo/bullet/shotgun/flechette/flechette_spread
@@ -197,7 +197,7 @@
 	shell_speed = 4
 	max_range = 15
 	damage = 125 * MARINE_DAMAGE_SCALING_HEAVY
-	penetration = 50
+	penetration = 50 * MARINE_PENETRATION_SCALING
 	sundering = 15
 
 /datum/ammo/bullet/shotgun/barrikada/on_hit_mob(mob/target_mob, atom/movable/projectile/proj)
@@ -226,7 +226,7 @@
 	max_range = 15
 	damage = 15 * MARINE_DAMAGE_SCALING_LIGHT
 	damage_falloff = 0.5
-	penetration = 15
+	penetration = 15 * MARINE_PENETRATION_SCALING
 
 /datum/ammo/bullet/shotgun/sx16_flechette/spread
 	name = "additional flechette"
@@ -238,7 +238,7 @@
 	shell_speed = 3
 	max_range = 15
 	damage = 40 * MARINE_DAMAGE_SCALING_LIGHT
-	penetration = 20
+	penetration = 20 * MARINE_PENETRATION_SCALING
 
 /datum/ammo/bullet/shotgun/sx16_slug/on_hit_mob(mob/target_mob, atom/movable/projectile/proj)
 	staggerstun(target_mob, proj, slowdown = 1, knockback = 1)
@@ -255,7 +255,7 @@
 	max_range = 15
 	damage = 17 * MARINE_DAMAGE_SCALING_LIGHT
 	damage_falloff = 0.25
-	penetration = 15
+	penetration = 15 * MARINE_PENETRATION_SCALING
 	sundering = 1.5
 
 /datum/ammo/bullet/shotgun/tx15_flechette/spread
@@ -269,7 +269,7 @@
 	shell_speed = 3
 	max_range = 15
 	damage = 60 * MARINE_DAMAGE_SCALING_LIGHT
-	penetration = 30
+	penetration = 30 * MARINE_PENETRATION_SCALING
 	sundering = 3.5
 
 /datum/ammo/bullet/shotgun/tx15_slug/on_hit_mob(mob/target_mob, atom/movable/projectile/proj)
@@ -302,7 +302,7 @@
 	shell_speed = 5
 	max_range = 30
 	damage = 50 * MARINE_DAMAGE_SCALING_LIGHT
-	penetration = 40
+	penetration = 40 * MARINE_PENETRATION_SCALING
 	sundering = 3
 
 /datum/ammo/bullet/shotgun/mbx900_tracker
@@ -313,7 +313,7 @@
 	shell_speed = 4
 	max_range = 15
 	damage = 40 * MARINE_DAMAGE_SCALING_LIGHT
-	penetration = 30
+	penetration = 30 * MARINE_PENETRATION_SCALING
 
 /datum/ammo/bullet/shotgun/mbx900_tracker/on_hit_mob(mob/target_mob, atom/movable/projectile/proj)
 	target_mob.AddComponent(/datum/component/dripping, DRIP_ON_TIME, 60 SECONDS, 3 SECONDS)
@@ -326,7 +326,7 @@
 	shell_speed = 4
 	max_range = 15
 	damage = 90 * MARINE_DAMAGE_SCALING_LIGHT
-	penetration = 10
+	penetration = 10 * MARINE_PENETRATION_SCALING
 
 /datum/ammo/bullet/shotgun/tracker/on_hit_mob(mob/target_mob, atom/movable/projectile/proj)
 	target_mob.AddComponent(/datum/component/dripping, DRIP_ON_TIME, 60 SECONDS, 3 SECONDS)
@@ -462,5 +462,5 @@
 	shell_speed = 5
 	max_range = 30
 	damage = 50 * MARINE_DAMAGE_SCALING_LIGHT
-	penetration = 40
+	penetration = 40 * MARINE_PENETRATION_SCALING
 	sundering = 3

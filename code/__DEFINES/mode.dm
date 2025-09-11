@@ -111,7 +111,9 @@
 
 #define MARINE_DAMAGE_SCALING_LIGHT 1.2
 
-#define MARINE_DAMAGE_SCALING_DEBUFF 1.5 //fixed your shit, nerd
+#define MARINE_DAMAGE_SCALING_DEBUFF 1.5 //fixed your shit, nerd <= learn to balance
+
+# define MARINE_PENETRATION_SCALING 1.3
 
 #define MAX_TUNNELS_PER_MAP 10
 

@@ -16,7 +16,7 @@
 	accurate_range = 30
 	max_range = 40
 	damage = 90 * MARINE_DAMAGE_SCALING_LIGHT
-	penetration = 50
+	penetration = 50 * MARINE_PENETRATION_SCALING
 	sundering = 15
 
 /datum/ammo/bullet/sniper/incendiary
@@ -28,7 +28,7 @@
 	accuracy_var_high = 7
 	max_range = 20
 	damage = 70 * MARINE_DAMAGE_SCALING_LIGHT
-	penetration = 30
+	penetration = 30 * MARINE_PENETRATION_SCALING
 	sundering = 5
 
 /datum/ammo/bullet/sniper/flak
@@ -48,7 +48,7 @@
 	hud_state = "sniper_crude"
 	handful_amount = 5
 	damage = 75 * MARINE_DAMAGE_SCALING_LIGHT
-	penetration = 35
+	penetration = 35 * MARINE_PENETRATION_SCALING
 	sundering = 15
 
 /datum/ammo/bullet/sniper/martini
@@ -58,7 +58,7 @@
 	handful_amount = 5
 	ammo_behavior_flags = AMMO_BALLISTIC
 	damage = 120 * MARINE_DAMAGE_SCALING_LIGHT
-	penetration = 20
+	penetration = 20 * MARINE_PENETRATION_SCALING
 	accurate_range_min = 0
 	///shatter effection duration when hitting mobs
 	var/shatter_duration = 10 SECONDS
@@ -76,7 +76,7 @@
 	ammo_behavior_flags = AMMO_BALLISTIC
 	accuracy = 20
 	damage = 100 * MARINE_DAMAGE_SCALING_LIGHT
-	penetration = 60
+	penetration = 60 * MARINE_PENETRATION_SCALING
 	sundering = 50
 
 /datum/ammo/bullet/sniper/pfc
@@ -84,7 +84,7 @@
 	hud_state = "sniper_heavy"
 	ammo_behavior_flags = AMMO_BALLISTIC|AMMO_BETTER_COVER_RNG|AMMO_SNIPER
 	damage = 80 * MARINE_DAMAGE_SCALING_LIGHT
-	penetration = 30
+	penetration = 30 * MARINE_PENETRATION_SCALING
 	sundering = 7.5
 	damage_falloff = 0.25
 
@@ -93,7 +93,7 @@
 	hud_state = "sniper_heavy_flak"
 	ammo_behavior_flags = AMMO_BALLISTIC|AMMO_BETTER_COVER_RNG|AMMO_SNIPER
 	damage = 40 * MARINE_DAMAGE_SCALING_LIGHT
-	penetration = 10
+	penetration = 10 * MARINE_PENETRATION_SCALING
 	sundering = 10
 	damage_falloff = 0.25
 
@@ -106,7 +106,7 @@
 	hud_state = "sniper_auto"
 	ammo_behavior_flags = AMMO_BALLISTIC|AMMO_BETTER_COVER_RNG|AMMO_SNIPER
 	damage = 50 * MARINE_DAMAGE_SCALING_LIGHT
-	penetration = 30
+	penetration = 30 * MARINE_PENETRATION_SCALING
 	sundering = 2
 	damage_falloff = 0.25
 
@@ -118,5 +118,5 @@
 	accurate_range_min = 4
 	shell_speed = 5
 	damage = 120 * MARINE_DAMAGE_SCALING_LIGHT
-	penetration = 60
+	penetration = 60 * MARINE_PENETRATION_SCALING
 	sundering = 20

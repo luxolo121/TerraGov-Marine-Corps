@@ -13,7 +13,7 @@
 	ammo_behavior_flags = AMMO_BALLISTIC
 	accurate_range = 12
 	damage = 20 * MARINE_DAMAGE_SCALING_LIGHT
-	penetration = 15
+	penetration = 15 * MARINE_PENETRATION_SCALING
 	sundering = 2
 
 /datum/ammo/bullet/smart_minigun
@@ -25,7 +25,7 @@
 	ammo_behavior_flags = AMMO_BALLISTIC
 	accurate_range = 12
 	damage = 10 * MARINE_DAMAGE_SCALING_LIGHT
-	penetration = 25
+	penetration = 25 * MARINE_PENETRATION_SCALING
 	sundering = 1
 	damage_falloff = 0.1
 
@@ -38,7 +38,7 @@
 	ammo_behavior_flags = AMMO_BALLISTIC
 	damage = 40 * MARINE_DAMAGE_SCALING_LIGHT
 	max_range = 40
-	penetration = 30
+	penetration = 30 * MARINE_PENETRATION_SCALING
 	sundering = 5
 	shell_speed = 4
 	damage_falloff = 0.5
@@ -53,7 +53,7 @@
 	hud_state_empty = "smartgun_empty"
 	ammo_behavior_flags = AMMO_BALLISTIC|AMMO_IFF
 	accurate_range = 12
-	damage = 30
+	damage = 30 * MARINE_PENETRATION_SCALING
 	penetration = 10
 	sundering = 1
 
@@ -66,7 +66,7 @@
 	ammo_behavior_flags = AMMO_BALLISTIC
 	damage = 50
 	max_range = 40
-	penetration = 25
+	penetration = 25 * MARINE_PENETRATION_SCALING
 	sundering = 5
 	shell_speed = 4
 

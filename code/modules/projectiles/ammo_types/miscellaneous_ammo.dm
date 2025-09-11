@@ -16,7 +16,7 @@
 	accuracy_var_high = 5
 	max_range = 6
 	damage = 30 * MARINE_DAMAGE_SCALING_LIGHT
-	penetration = 20
+	penetration = 20 * MARINE_PENETRATION_SCALING
 	sundering = 3
 	damage_falloff = 0
 
@@ -24,7 +24,7 @@
 	name = "incendiary flechette"
 	ammo_behavior_flags = AMMO_BALLISTIC|AMMO_PASS_THROUGH_MOB|AMMO_INCENDIARY|AMMO_LEAVE_TURF
 	damage = 20 * MARINE_DAMAGE_SCALING_LIGHT
-	penetration = 10
+	penetration = 10 * MARINE_PENETRATION_SCALING
 	sundering = 1.5
 
 /datum/ammo/bullet/atgun_spread/incendiary/on_hit_mob(mob/target_mob, atom/movable/projectile/proj)

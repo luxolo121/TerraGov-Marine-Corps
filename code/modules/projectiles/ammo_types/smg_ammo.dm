@@ -15,13 +15,13 @@
 	accurate_range = 4
 	damage_falloff = 1
 	sundering = 0.5
-	penetration = 5
+	penetration = 5 * MARINE_PENETRATION_SCALING
 
 /datum/ammo/bullet/smg/ap
 	name = "armor-piercing submachinegun bullet"
 	hud_state = "smg_ap"
 	damage = 15 * MARINE_DAMAGE_SCALING_LIGHT
-	penetration = 30
+	penetration = 30 * MARINE_PENETRATION_SCALING
 	sundering = 3
 
 /datum/ammo/bullet/smg/ap/hv
@@ -42,7 +42,7 @@
 	hud_state = "pistol_squash"
 	ammo_behavior_flags = AMMO_BALLISTIC
 	damage = 15 * MARINE_DAMAGE_SCALING_LIGHT
-	penetration = 15
+	penetration = 15 * MARINE_PENETRATION_SCALING
 	armor_type = BOMB
 	sundering = 1
 	damage_falloff = 2
@@ -70,7 +70,7 @@
 	name = "radioactive submachinegun bullet"
 	hud_state = "smg_rad"
 	damage = 15 * MARINE_DAMAGE_SCALING_LIGHT
-	penetration = 15
+	penetration = 15 * MARINE_PENETRATION_SCALING
 	sundering = 1
 
 /datum/ammo/bullet/smg/rad/on_hit_mob(mob/target_mob, atom/movable/projectile/proj)
@@ -84,5 +84,5 @@
 /datum/ammo/bullet/smg/heavy
 	name = "heavy submachinegun bullet"
 	damage = 27.5 * MARINE_DAMAGE_SCALING_LIGHT
-	penetration = 10
+	penetration = 10 * MARINE_PENETRATION_SCALING
 	sundering = 1

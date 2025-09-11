@@ -13,7 +13,7 @@
 	hud_state_empty = "smartgun_empty"
 	accurate_range = 12
 	damage = 40 //Reduced damage due to vastly increased mobility
-	penetration = 40 //Reduced penetration due to vastly increased mobility
+	penetration = 40 * MARINE_PENETRATION_SCALING //Reduced penetration due to vastly increased mobility
 	accuracy = 5
 	barricade_clear_distance = 2
 	sundering = 5
@@ -27,7 +27,7 @@
 	accuracy_var_high = 3
 	accurate_range = 5
 	damage = 25
-	penetration = 15
+	penetration = 15 * MARINE_PENETRATION_SCALING
 	shrapnel_chance = 25
 	sundering = 2.5
 
@@ -37,7 +37,7 @@
 	hud_state_empty = "smartgun_empty"
 	accurate_range = 6
 	damage = 16
-	penetration = 15
+	penetration = 15 * MARINE_PENETRATION_SCALING
 	shrapnel_chance = 15
 	sundering = 1.5
 
@@ -140,7 +140,7 @@
 	shell_speed = 5
 	max_range = 21
 	damage = 100 * MARINE_DAMAGE_SCALING_LIGHT
-	penetration = 30
+	penetration = 30 * MARINE_PENETRATION_SCALING
 	sundering = 50
 
 /datum/ammo/bullet/railgun/hvap/on_hit_mob(mob/target_mob, atom/movable/projectile/proj)
@@ -151,7 +151,7 @@
 	hud_state = "railgun_smart"
 	ammo_behavior_flags = AMMO_BALLISTIC|AMMO_PASS_THROUGH_TURF|AMMO_PASS_THROUGH_MOVABLE|AMMO_IFF
 	damage = 100 * MARINE_DAMAGE_SCALING_LIGHT
-	penetration = 20
+	penetration = 20 * MARINE_PENETRATION_SCALING
 	sundering = 20
 
 /datum/ammo/bullet/railgun/smart/on_hit_mob(mob/target_mob, atom/movable/projectile/proj)
@@ -187,7 +187,7 @@
 	shell_speed = 5
 	max_range = 31
 	damage = 70
-	penetration = 35
+	penetration = 35 * MARINE_PENETRATION_SCALING
 	sundering = 5
 	bullet_color = COLOR_PULSE_BLUE
 	on_pierce_multiplier = 0.85

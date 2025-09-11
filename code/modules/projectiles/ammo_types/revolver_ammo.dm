@@ -11,7 +11,7 @@
 	handful_amount = 7
 	ammo_behavior_flags = AMMO_BALLISTIC
 	damage = 45 * MARINE_DAMAGE_SCALING_LIGHT
-	penetration = 10
+	penetration = 10 * MARINE_PENETRATION_SCALING
 	sundering = 3
 
 /datum/ammo/bullet/revolver/on_hit_mob(mob/target_mob, atom/movable/projectile/proj)
@@ -20,7 +20,7 @@
 /datum/ammo/bullet/revolver/tp44
 	name = "standard revolver bullet"
 	damage = 40 * MARINE_DAMAGE_SCALING_LIGHT
-	penetration = 15
+	penetration = 15 * MARINE_PENETRATION_SCALING
 	sundering = 1
 
 /datum/ammo/bullet/revolver/tp44/on_hit_mob(mob/target_mob, atom/movable/projectile/proj)
@@ -42,7 +42,7 @@
 	accuracy = 15
 	accurate_range = 15
 	damage = 30 * MARINE_DAMAGE_SCALING_LIGHT
-	penetration = 10
+	penetration = 10 * MARINE_PENETRATION_SCALING
 
 /datum/ammo/bullet/revolver/judge
 	name = "oversized revolver bullet"
@@ -52,13 +52,13 @@
 	accuracy = 15
 	accurate_range = 15
 	damage = 70 * MARINE_DAMAGE_SCALING_LIGHT
-	penetration = 10
+	penetration = 10 * MARINE_PENETRATION_SCALING
 
 /datum/ammo/bullet/revolver/heavy
 	name = "heavy revolver bullet"
 	hud_state = "revolver_heavy"
 	damage = 50 * MARINE_DAMAGE_SCALING_LIGHT
-	penetration = 5
+	penetration = 5 * MARINE_PENETRATION_SCALING
 	accuracy = -10
 
 /datum/ammo/bullet/revolver/heavy/incen
@@ -70,7 +70,7 @@
 	name = "magnum bullet"
 	handful_amount = 5
 	damage = 100 * MARINE_DAMAGE_SCALING_LIGHT
-	penetration = 40
+	penetration = 40 * MARINE_PENETRATION_SCALING
 	sundering = 0.5
 
 /datum/ammo/bullet/revolver/t76/on_hit_mob(mob/target_mob, atom/movable/projectile/proj)
@@ -81,7 +81,7 @@
 	hud_state = "revolver_impact"
 	handful_amount = 6
 	damage = 50 * MARINE_DAMAGE_SCALING_LIGHT
-	penetration = 20
+	penetration = 20 * MARINE_PENETRATION_SCALING
 	sundering = 3
 
 /datum/ammo/bullet/revolver/highimpact/on_hit_mob(mob/target_mob, atom/movable/projectile/proj)
