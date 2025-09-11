@@ -83,7 +83,7 @@
 	var/list/patient_limbs = patient.limbs.Copy()
 	patient_limbs -= affecting
 	while(affecting && amount)
-		if(!do_after(user, SKILL_TASK_VERY_EASY / (unskilled_penalty ** 2), NONE, patient, BUSY_ICON_FRIENDLY, BUSY_ICON_MEDICAL, extra_checks = CALLBACK(src, PROC_REF(can_affect_limb), affecting)))
+		if(!do_after(user, (SKILL_TASK_VERY_EASY / MEDICAL_APPLICATION_MULTIPLIER) / (unskilled_penalty ** 2), NONE, patient, BUSY_ICON_FRIENDLY, BUSY_ICON_MEDICAL, extra_checks = CALLBACK(src, PROC_REF(can_affect_limb), affecting)))
 			patient.balloon_alert(user, "Stopped tending")
 			return FALSE
 		var/affected = heal_limb(affecting, unskilled_penalty)
@@ -194,7 +194,7 @@
 	singular_name = "advanced trauma kit"
 	desc = "An advanced trauma kit for severe injuries."
 	icon_state = "traumakit"
-	heal_brute = 12
+	heal_brute = 18
 	heal_flags = BANDAGE | DISINFECT
 
 /obj/item/stack/medical/heal_pack/advanced/bruise_pack/generate_treatment_messages(mob/user, mob/patient, datum/limb/target_limb, success)
@@ -209,7 +209,7 @@
 	singular_name = "advanced burn kit"
 	desc = "An advanced treatment kit for severe burns."
 	icon_state = "burnkit"
-	heal_burn = 12
+	heal_burn = 18
 	heal_flags = SALVE | DISINFECT
 
 /obj/item/stack/medical/heal_pack/advanced/burn_pack/generate_treatment_messages(mob/user, mob/patient, datum/limb/target_limb, success)

@@ -102,7 +102,7 @@
 	var/obj/item/stack/barbed_wire/B = I
 
 	balloon_alert_to_viewers("Setting up wire...")
-	if(!do_after(user, 2 SECONDS, NONE, src, BUSY_ICON_BUILD) || !can_wire)
+	if(!do_after(user, 0.5 SECONDS, NONE, src, BUSY_ICON_BUILD) || !can_wire)
 		return
 
 	if(get_self_acid())

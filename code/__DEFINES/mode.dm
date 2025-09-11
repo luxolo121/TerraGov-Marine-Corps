@@ -113,7 +113,9 @@
 
 #define MARINE_DAMAGE_SCALING_DEBUFF 1.5 //fixed your shit, nerd <= learn to balance
 
-# define MARINE_PENETRATION_SCALING 1.3
+#define MARINE_PENETRATION_SCALING 1.3
+
+#define MEDICAL_APPLICATION_MULTIPLIER 2 //changes how fast healing items that take time to apply are used
 
 #define MAX_TUNNELS_PER_MAP 10
 
