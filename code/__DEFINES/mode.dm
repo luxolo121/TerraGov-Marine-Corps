@@ -107,15 +107,23 @@
 //Balance defines
 #define MARINE_GEAR_SCALING 30
 
+// Flat multiplier applied to the damage of heavy projectiles
 #define MARINE_DAMAGE_SCALING_HEAVY 1.05 // think before you fiddle, dr freeman
 
-#define MARINE_DAMAGE_SCALING_LIGHT 1.2
+// Flat multiplier applied to the damage of light projectiles
+#define MARINE_DAMAGE_SCALING_LIGHT 1.3
 
+// Flat multiplier applied to the damage of debuffs
 #define MARINE_DAMAGE_SCALING_DEBUFF 1.5 //fixed your shit, nerd <= learn to balance
 
+// Flat multiplier applied to the penetration of projectiles
 #define MARINE_PENETRATION_SCALING 1.3
 
-#define MEDICAL_APPLICATION_MULTIPLIER 2 //changes how fast healing items that take time to apply are used
+// Flat multiplier applied to the penetration of AP projectiles
+#define MARINE_PENETRATION_SCALING_AP 1.2
+
+//changes how fast healing items that take time to apply are used
+#define MEDICAL_APPLICATION_MULTIPLIER 2
 
 #define MAX_TUNNELS_PER_MAP 10
 

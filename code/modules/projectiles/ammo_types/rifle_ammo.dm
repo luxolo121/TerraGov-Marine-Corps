@@ -18,7 +18,7 @@
 	name = "armor-piercing rifle bullet"
 	hud_state = "rifle_ap"
 	damage = 20 * MARINE_DAMAGE_SCALING_LIGHT
-	penetration = 25 * MARINE_PENETRATION_SCALING
+	penetration = 25 * MARINE_PENETRATION_SCALING_AP
 	sundering = 3
 
 /datum/ammo/bullet/rifle/hv

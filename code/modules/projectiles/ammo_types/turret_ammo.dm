@@ -26,8 +26,8 @@
 
 /datum/ammo/bullet/turret/mini
 	name = "small caliber autocannon bullet"
-	damage = 20 * MARINE_DAMAGE_SCALING_LIGHT
-	penetration = 20 * MARINE_DAMAGE_SCALING_LIGHT * MARINE_PENETRATION_SCALING // Incalculable balance beyond your ailing mind.
+	damage = 20 * MARINE_DAMAGE_SCALING_HEAVY
+	penetration = 20 * MARINE_PENETRATION_SCALING // Incalculable balance beyond your ailing mind. -> ohhhh brother.
 	ammo_behavior_flags = AMMO_BALLISTIC
 
 

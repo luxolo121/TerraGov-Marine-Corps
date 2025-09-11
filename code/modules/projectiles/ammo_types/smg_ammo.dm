@@ -21,7 +21,7 @@
 	name = "armor-piercing submachinegun bullet"
 	hud_state = "smg_ap"
 	damage = 15 * MARINE_DAMAGE_SCALING_LIGHT
-	penetration = 30 * MARINE_PENETRATION_SCALING
+	penetration = 20 * MARINE_PENETRATION_SCALING_AP
 	sundering = 3
 
 /datum/ammo/bullet/smg/ap/hv
