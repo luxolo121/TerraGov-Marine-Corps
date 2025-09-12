@@ -403,7 +403,7 @@ GLOBAL_DATUM(rail_gun, /obj/structure/ship_rail_gun)
 /obj/structure/ob_ammo/warhead/cluster/warhead_impact(turf/target, inaccuracy_amt = 0)
 	set waitfor = FALSE
 	. = ..()
-	var/range_num = max(9 - inaccuracy_amt, 6)
+	var/range_num = max(12 - inaccuracy_amt, 9)
 	var/list/turf_list = RANGE_TURFS(range_num, target)
 	var/total_amt = max(25 - inaccuracy_amt, 20)
 	for(var/i = 1 to total_amt)
