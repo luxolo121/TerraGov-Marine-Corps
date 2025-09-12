@@ -174,6 +174,8 @@
 //railgun cooldown define
 #define COOLDOWN_RAILGUN_FIRE 90 SECONDS
 
+#define COOLDOWN_ORBITAL_FIRE 180 SECONDS
+
 //AI bioscan cooldown define
 #define COOLDOWN_AI_BIOSCAN 10 MINUTES
 

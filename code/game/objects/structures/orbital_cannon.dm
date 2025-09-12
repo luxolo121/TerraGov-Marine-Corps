@@ -23,6 +23,9 @@ GLOBAL_DATUM(rail_gun, /obj/structure/ship_rail_gun)
 	var/chambered_tray = FALSE
 	var/loaded_tray = FALSE
 	var/ob_cannon_busy = FALSE
+	var/orb_shots_left = 0
+	var/mag_capacity = 3
+	var/last_firing = 0
 
 /obj/structure/orbital_cannon/Initialize(mapload)
 	. = ..()
@@ -166,6 +169,8 @@ GLOBAL_DATUM(rail_gun, /obj/structure/ship_rail_gun)
 
 	chambered_tray = TRUE
 
+	orb_shots_left = mag_capacity
+
 	update_icon()
 
 /// Handles the playing of the Orbital Bombardment incoming sound and other visual and auditory effects of the cannon, usually a spiraling whistle noise but can be overridden.
@@ -193,7 +198,7 @@ GLOBAL_DATUM(rail_gun, /obj/structure/ship_rail_gun)
 	if(ob_cannon_busy)
 		return
 
-	if(!chambered_tray || !loaded_tray || !tray || !tray.warhead)
+	if(!chambered_tray || !loaded_tray || !tray || !tray.warhead )
 		return
 
 	ob_cannon_busy = TRUE
@@ -237,13 +242,22 @@ GLOBAL_DATUM(rail_gun, /obj/structure/ship_rail_gun)
 	tray.warhead.warhead_impact(target, inaccurate_fuel)
 
 	ob_cannon_busy = FALSE
-	chambered_tray = FALSE
-	tray.fuel_amt = 0
-	if(tray.warhead)
-		QDEL_NULL(tray.warhead)
-	tray.update_icon()
+	last_firing = world.time
 
-	update_icon()
+//brace your eyes for the worst shitcode known to man
+	if(orb_shots_left - 1 > 0)
+		orb_shots_left = orb_shots_left - 1
+		return
+
+	else
+
+		chambered_tray = FALSE
+		tray.fuel_amt = 0
+		if(tray.warhead)
+			QDEL_NULL(tray.warhead)
+		tray.update_icon()
+
+		update_icon()
 
 /obj/structure/orbital_tray
 	name = "loading tray"

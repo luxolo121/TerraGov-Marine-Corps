@@ -48,6 +48,7 @@
 	var/list/obj/machinery/deployable/mortar/linked_mortars = list()
 	/// Selected mortar index
 	var/selected_mortar = 1
+	var/ob_cooldown_remaining = 0
 
 /obj/item/binoculars/tactical/Initialize(mapload)
 	. = ..()
@@ -220,7 +221,7 @@
 	if(is_ground_level(TU.z) && (targ_area.ceiling <= CEILING_OBSTRUCTED))
 		is_outside = TRUE
 	if(!is_outside)
-		to_chat(user, span_warning("DEPTH WARNING: Target too deep for ordnance."))
+		to_chat(user, span_warning("DEPTH WARNING: Target too deep for traditional ordnance, mounting penetrator cap."))
 //		return
 	if(user.do_actions)
 		return
@@ -261,7 +262,8 @@
 				return
 			to_chat(user, span_notice("ACQUIRING TARGET. RAILGUN TRIANGULATING. DON'T MOVE."))
 			if((GLOB.rail_gun?.last_firing + COOLDOWN_RAILGUN_FIRE) > world.time)
-				to_chat(user, "[icon2html(src, user)] [span_warning("The Rail Gun hasn't cooled down yet!")]")
+				ob_cooldown_remaining = round((GLOB.rail_gun?.last_firing + COOLDOWN_RAILGUN_FIRE - world.time)  / 10, 1)
+				to_chat(user, "[icon2html(src, user)] [span_warning("The Rail Gun hasn't cooled down yet! [ob_cooldown_remaining] seconds left.")]")
 			else if(!targ_area)
 				to_chat(user, "[icon2html(src, user)] [span_warning("No target detected!")]")
 			else
@@ -283,6 +285,9 @@
 			log_game("[key_name(user)] has begun to laze an Orbital Bombardment mission at [AREACOORD(TU)].")
 			if(!targ_area)
 				to_chat(user, "[icon2html(src, user)] [span_warning("No target detected!")]")
+			else if((GLOB.orbital_cannon?.last_firing + COOLDOWN_ORBITAL_FIRE) > world.time)
+				ob_cooldown_remaining = round((GLOB.orbital_cannon.last_firing + COOLDOWN_ORBITAL_FIRE - world.time) / 10, 1)
+				to_chat(user, "[icon2html(src, user)] [span_warning("ERROR: SHIP TRAJECTORY DISRUPTED, CANNON MISALIGNED. RCS THRUSTERS RECALIBRATING... [ob_cooldown_remaining] SECONDS REMAINING.")]")
 			else
 				var/obj/effect/overlay/temp/laser_target/ob/OBL = new (TU, 0, laz_name, S)
 				laser = OBL
