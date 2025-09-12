@@ -77,7 +77,7 @@
 	l_pocket = /obj/item/storage/pouch/medkit/firstaid
 	r_pocket = /obj/item/storage/pouch/magazine/pistol/large/mateba
 	back = /obj/item/storage/backpack/lightpack
-	
+
 	backpack_contents = list(
 		/obj/item/reagent_containers/food/snacks/enrg_bar = 2,
 	)
@@ -86,3 +86,5 @@
 		/obj/item/explosive/grenade = 1,
 		/obj/item/explosive/grenade/incendiary = 1,
 	)
+
+

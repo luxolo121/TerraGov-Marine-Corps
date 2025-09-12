@@ -25,7 +25,7 @@
 	ammo_behavior_flags = AMMO_BALLISTIC
 	accurate_range = 12
 	damage = 10 * MARINE_DAMAGE_SCALING_LIGHT
-	penetration = 25 * MARINE_PENETRATION_SCALING
+	penetration = 25 * MARINE_PENETRATION_SCALING_AP
 	sundering = 1
 	damage_falloff = 0.1
 
@@ -36,9 +36,9 @@
 	hud_state = "smartgun"
 	hud_state_empty = "smartgun_empty"
 	ammo_behavior_flags = AMMO_BALLISTIC
-	damage = 40 * MARINE_DAMAGE_SCALING_LIGHT
+	damage = 40 * MARINE_DAMAGE_SCALING_HEAVY
 	max_range = 40
-	penetration = 30 * MARINE_PENETRATION_SCALING
+	penetration = 30 * MARINE_PENETRATION_SCALING_AP
 	sundering = 5
 	shell_speed = 4
 	damage_falloff = 0.5

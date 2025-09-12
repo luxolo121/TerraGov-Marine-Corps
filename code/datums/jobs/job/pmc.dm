@@ -37,3 +37,18 @@
 	paygrade = "PMC4"
 	skills_type = /datum/skills/sl/pmc
 	outfit = /datum/outfit/job/pmc/leader
+
+/datum/job/volksturm
+	job_category = JOB_CAT_MARINE
+	access = ALL_PMC_ACCESS
+	minimal_access = ALL_PMC_ACCESS
+	skills_type = /datum/skills/smartgunner/pmc
+	faction = FACTION_TERRAGOV
+	minimap_icon = "freelancer"
+
+
+/datum/job/volksturm/guardsman
+	title = "PMC Guardsman"
+	paygrade = "PMC1"
+	outfit = /datum/outfit/job/volksturm/guardsman
+

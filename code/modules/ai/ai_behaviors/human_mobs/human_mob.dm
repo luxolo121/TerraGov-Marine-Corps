@@ -21,7 +21,7 @@
 	///Chat lines when following a new target
 	var/list/new_follow_chat = list("Following.", "Following you.", "I got your back!", "Take the lead.", "Let's move!", "Let's go!", "Group up!.", "In formation.", "Where to?",)
 	///Chat lines when engaging a new target
-	var/list/new_target_chat = list("Get some!!", "Engaging!", "You're mine!", "Bring it on!", "Hostiles!", "Take them out!", "Kill 'em!", "Lets rock!", "Go go go!!", "Waste 'em!", "Intercepting.", "Weapons free!", "Fuck you!!", "Moving in!")
+	var/list/new_target_chat = list("Get some!!", "CADIA!!", "Engaging!", "You're mine!", "Bring it on!", "Hostiles!", "Take them out!", "Kill 'em!", "Lets rock!", "Go go go!!", "Waste 'em!", "Intercepting.", "Weapons free!", "Fuck you!!", "Moving in!")
 	///Chat lines for retreating on low health
 	var/list/retreating_chat = list("Falling back!", "Cover me, I'm hit!", "I'm hit!", "Cover me!", "Disengaging!", "Help me!", "Need a little help here!", "Tactical withdrawal.", "Repositioning.", "Taking fire!", "Taking heavy fire!", "Run for it!")
 	///General acknowledgement of receiving an order

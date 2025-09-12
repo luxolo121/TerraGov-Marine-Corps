@@ -264,6 +264,18 @@ GLOBAL_LIST_INIT(ai_infection_heal_items, list(
 
 ///List of squads that can be spawned, and the roles in them, sorted in spawn order
 GLOBAL_LIST_INIT(ai_squad_presets, list(
+	"Astra militarum" = list(
+		"PMC Guardsman",
+		"PMC Guardsman",
+		"PMC Guardsman",
+		"PMC Guardsman",
+		"PMC Guardsman",
+		"PMC Guardsman",
+		"PMC Guardsman",
+		"PMC Guardsman",
+		"PMC Guardsman",
+		"PMC Guardsman",
+	),
 	"SOM breachers" = list(
 		"SOM Breacher",
 		"SOM Breacher",

@@ -193,3 +193,55 @@
 		/obj/item/explosive/grenade/smokebomb/drain = 1,
 		/obj/item/explosive/grenade/smokebomb/cloak = 1,
 	)
+
+/datum/outfit/job/volksturm/guardsman
+	name = "PMC Guardsman"
+	jobtype = /datum/job/volksturm/guardsman
+
+	id = /obj/item/card/id/silver
+	belt = /obj/item/storage/belt/marine
+	ears = /obj/item/radio/headset/mainship/marine
+	w_uniform = /obj/item/clothing/under/marine/veteran/pmc/holster
+	shoes = /obj/item/clothing/shoes/marine/imperial
+	wear_suit = /obj/item/clothing/suit/storage/marine/imperial
+	gloves = /obj/item/clothing/gloves/marine/veteran/pmc
+	head = /obj/item/clothing/head/helmet/marine/imperial
+	mask = /obj/item/clothing/mask/gas/pmc/leader
+	suit_store = /obj/item/weapon/gun/rifle/standard_smarttargetrifle/cadia
+	r_pocket = /obj/item/storage/pouch/grenade
+	l_pocket = /obj/item/storage/pouch/medical_injectors/firstaid
+	back = /obj/item/storage/backpack/satchel
+
+	backpack_contents = list(
+		/obj/item/radio = 1,
+		/obj/item/tool/crowbar/red = 1,
+		/obj/item/storage/box/m94 = 1,
+		/obj/item/reagent_containers/food/snacks/sliceable/sandwiches/meatbread = 1,
+		/obj/item/stack/medical/heal_pack/gauze = 1,
+		/obj/item/stack/medical/heal_pack/ointment = 1,
+		/obj/item/explosive/plastique = 1,
+	)
+
+	suit_contents = list(
+		/obj/item/ammo_magazine/rifle/standard_smarttargetrifle = 2,
+	)
+
+	head_contents = list(
+		/obj/item/reagent_containers/hypospray/autoinjector/combat_advanced = 1,
+		/obj/item/reagent_containers/food/snacks/enrg_bar = 1,
+	)
+
+	belt_contents = list(
+		/obj/item/ammo_magazine/rifle/standard_smarttargetrifle = 6,
+	)
+
+	webbing_contents = list(
+		/obj/item/ammo_magazine/pistol/vp70 = 3,
+		/obj/item/weapon/gun/pistol/vp70/tactical = 1,
+	)
+
+	r_pocket_contents = list(
+		/obj/item/explosive/grenade/pmc = 4,
+		/obj/item/explosive/grenade/smokebomb/drain = 1,
+		/obj/item/explosive/grenade/smokebomb/cloak = 1,
+	)

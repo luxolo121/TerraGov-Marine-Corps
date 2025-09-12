@@ -37,3 +37,4 @@
 	paygrade = "Commissar"
 	outfit = /datum/outfit/job/imperial/commissar
 
+
