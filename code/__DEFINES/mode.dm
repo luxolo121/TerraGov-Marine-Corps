@@ -107,20 +107,23 @@
 //Balance defines
 #define MARINE_GEAR_SCALING 30
 
+// Flat multiplier applied to xenomorph move speed
+#define XENO_SPEED_MULTIPLIER 0.75
+
 // Flat multiplier applied to the damage of heavy projectiles
 #define MARINE_DAMAGE_SCALING_HEAVY 1.05 // think before you fiddle, dr freeman
 
 // Flat multiplier applied to the damage of light projectiles
-#define MARINE_DAMAGE_SCALING_LIGHT 1.4
-
-// Flat multiplier applied to the damage of debuffs
-#define MARINE_DAMAGE_SCALING_DEBUFF 1.5 //fixed your shit, nerd <= learn to balance
+#define MARINE_DAMAGE_SCALING_LIGHT 1.3
 
 // Flat multiplier applied to the penetration of projectiles
-#define MARINE_PENETRATION_SCALING 1.5
+#define MARINE_PENETRATION_SCALING 1.4
 
 // Flat multiplier applied to the penetration of AP projectiles
 #define MARINE_PENETRATION_SCALING_AP 1.1
+
+// Flat multiplier applied to the damage of debuffs
+#define MARINE_DAMAGE_SCALING_DEBUFF 1.5 //fixed your shit, nerd <= learn to balance
 
 //changes how fast healing items that take time to apply are used
 #define MEDICAL_APPLICATION_MULTIPLIER 2
