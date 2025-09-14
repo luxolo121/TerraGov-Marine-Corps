@@ -129,4 +129,5 @@
 		/datum/action/ability/xeno_action/blessing_menu,
 		/datum/action/ability/activable/xeno/psychic_vortex,
 		/datum/action/ability/activable/xeno/place_pattern,
+		/datum/action/ability/activable/xeno/shoot_xeno_artillery,
 	)

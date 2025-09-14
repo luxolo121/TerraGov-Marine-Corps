@@ -6,8 +6,8 @@
 	desc = "A menacing looking construct of resin, it seems to be alive. It fires acid against intruders."
 	bound_width = 32
 	bound_height = 32
-	obj_integrity = 600
-	max_integrity = 1500
+	obj_integrity = 200
+	max_integrity = 400
 	layer = ABOVE_MOB_LAYER
 	density = TRUE
 	resistance_flags = UNACIDABLE | DROPSHIP_IMMUNE |PORTAL_IMMUNE

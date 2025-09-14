@@ -40,7 +40,7 @@
 	minimap_icon = "spitter"
 
 	// *** Ranged Attack *** //
-	spit_delay = 0.5 SECONDS
+	spit_delay = 0.65 SECONDS
 	spit_types = list(/datum/ammo/xeno/acid/medium) //Gotta give them their own version of heavy acid; kludgy but necessary as 100 plasma is way too costly.
 
 	acid_spray_duration = 10 SECONDS
@@ -75,7 +75,7 @@
 	primordial_message = "Our suppression is unmatched! Let nothing show its head!"
 	caste_flags = CASTE_EVOLUTION_ALLOWED|CASTE_ACID_BLOOD|CASTE_MUTATIONS_ALLOWED
 
-	spit_delay = 0.3 SECONDS
+	spit_delay = 0.45 SECONDS
 	spit_types = list(/datum/ammo/xeno/acid/auto, /datum/ammo/xeno/acid/medium)
 
 /datum/xeno_caste/spitter/globadier

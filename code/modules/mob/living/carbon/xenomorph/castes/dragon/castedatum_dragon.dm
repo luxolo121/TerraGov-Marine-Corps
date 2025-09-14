@@ -30,7 +30,7 @@
 	maximum_active_caste = 1
 	evolve_min_xenos = 1
 	death_evolution_delay = 15 MINUTES
-	evolve_population_lock = 2 // Tank
+	evolve_population_lock = 4 // Tank
 
 	// *** Flags *** //
 	caste_flags = CASTE_FIRE_IMMUNE|CASTE_IS_INTELLIGENT|CASTE_INSTANT_EVOLUTION|CASTE_LEADER_TYPE|CASTE_MUTATIONS_ALLOWED
