@@ -17,7 +17,7 @@
 	attack_delay = 7
 
 	// *** Speed *** //
-	speed = -0.9
+	speed = -0.9 * XENO_SPEED_MULTIPLIER
 
 	// *** Plasma *** //
 	plasma_max = 325

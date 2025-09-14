@@ -18,7 +18,7 @@
 	attack_delay = 7
 
 	// *** Speed *** //
-	speed = -1.4
+	speed = -1.4 * XENO_SPEED_MULTIPLIER
 	weeds_speed_mod = -0.1
 
 	// *** Plasma *** //

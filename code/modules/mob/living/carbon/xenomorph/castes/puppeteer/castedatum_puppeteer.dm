@@ -10,7 +10,7 @@
 	tier = XENO_TIER_TWO
 	upgrade = XENO_UPGRADE_BASETYPE
 	wound_type = "puppeteer"
-	speed = -0.8
+	speed = -0.8 * XENO_SPEED_MULTIPLIER
 	melee_damage = 18
 	plasma_max = 750
 	plasma_gain = 0

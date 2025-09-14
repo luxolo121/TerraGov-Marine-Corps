@@ -13,7 +13,7 @@
 	melee_damage = 24
 
 	// *** Speed *** //
-	speed = -0.8
+	speed = -0.8 * XENO_SPEED_MULTIPLIER
 
 	// *** Plasma *** //
 	plasma_max = 340 //High plasma is need for charging

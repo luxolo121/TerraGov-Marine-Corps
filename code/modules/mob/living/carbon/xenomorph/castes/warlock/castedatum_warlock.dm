@@ -10,7 +10,7 @@
 	upgrade = XENO_UPGRADE_BASETYPE
 	wound_type = "warlock"
 	melee_damage = 18
-	speed = -0.5
+	speed = -0.5 * XENO_SPEED_MULTIPLIER
 	plasma_max = 1700
 	plasma_gain = 60
 	max_health = 325

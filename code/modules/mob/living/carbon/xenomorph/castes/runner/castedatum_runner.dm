@@ -17,7 +17,7 @@
 	attack_delay = 6
 
 	// *** Speed *** //
-	speed = -1.4
+	speed = -1.4 * XENO_SPEED_MULTIPLIER
 
 	// *** Plasma *** //
 	plasma_max = 200
@@ -99,7 +99,7 @@
 	melee_damage_armor = ACID
 
 	// Gain acid blood for less speed (0.2).
-	speed = -1.2
+	speed = -1.2 * XENO_SPEED_MULTIPLIER
 	caste_flags = CASTE_ACID_BLOOD|CASTE_EVOLUTION_ALLOWED|CASTE_MUTATIONS_ALLOWED
 
 	// +50 health

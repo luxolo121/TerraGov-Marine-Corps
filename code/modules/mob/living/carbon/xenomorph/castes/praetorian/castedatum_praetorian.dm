@@ -13,7 +13,7 @@
 	melee_damage = 23
 
 	// *** Speed *** //
-	speed = -0.5
+	speed = -0.5 * XENO_SPEED_MULTIPLIER
 
 	// *** Plasma *** //
 	plasma_max = 1000
@@ -113,7 +113,7 @@
 	max_health = 420
 
 	// Gains more speed (-0.2).
-	speed = -0.7
+	speed = -0.7 * XENO_SPEED_MULTIPLIER
 
 	// +10 melee armor
 	soft_armor = list(MELEE = 55, BULLET = 50, LASER = 50, ENERGY = 50, BOMB = 10, BIO = 40, FIRE = 50, ACID = 40)

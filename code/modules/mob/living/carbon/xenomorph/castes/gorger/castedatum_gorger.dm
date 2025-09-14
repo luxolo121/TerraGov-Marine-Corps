@@ -15,7 +15,7 @@
 	melee_damage = 22
 
 	// *** Speed *** //
-	speed = -0.4
+	speed = -0.4 * XENO_SPEED_MULTIPLIER
 	weeds_speed_mod = -0.2
 
 	// *** Plasma *** //
