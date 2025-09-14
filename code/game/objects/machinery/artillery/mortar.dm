@@ -28,7 +28,7 @@
 	var/reload_sound = 'sound/weapons/guns/interact/mortar_reload.ogg' // Our reload sound.
 	var/fall_sound = 'sound/weapons/guns/misc/mortar_long_whistle.ogg' //The sound the shell makes when falling.
 	///Minimum range to fire
-	var/minimum_range = 15
+	var/minimum_range = 10
 	///Time it takes for the mortar to cool off to fire
 	var/cool_off_time = 1 SECONDS
 	///How long to wait before next shot

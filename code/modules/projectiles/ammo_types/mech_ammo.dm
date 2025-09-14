@@ -10,13 +10,13 @@
 /datum/ammo/tx54/mech
 	name = "30mm fragmentation grenade"
 	bonus_projectiles_type = /datum/ammo/bullet/tx54_spread/mech
-	damage = 15
-	penetration = 10
+	damage = 15 * MARINE_DAMAGE_SCALING_LIGHT
+	penetration = 10 * MARINE_PENETRATION_SCALING
 	projectile_greyscale_colors = "#4f0303"
 
 /datum/ammo/bullet/tx54_spread/mech
-	damage = 15
-	penetration = 10
+	damage = 15 * MARINE_DAMAGE_SCALING_LIGHT
+	penetration = 10 * MARINE_PENETRATION_SCALING
 	sundering = 0.5
 
 /datum/ammo/bullet/tx54_spread/mech/on_hit_mob(mob/target_mob, atom/movable/projectile/proj)
@@ -29,8 +29,8 @@
 */
 /datum/ammo/rocket/mech
 	name = "large light explosive rocket"
-	damage = 10
-	penetration = 15
+	damage = 10 * MARINE_DAMAGE_SCALING_LIGHT
+	penetration = 15 * MARINE_PENETRATION_SCALING
 	max_range = 30
 	sundering = 15
 
@@ -39,8 +39,8 @@
 
 /datum/ammo/rocket/mech/heavy
 	name = "large heavy explosive rocket"
-	damage = 30
-	penetration = 30
+	damage = 30 * MARINE_DAMAGE_SCALING_LIGHT
+	penetration = 30 * MARINE_PENETRATION_SCALING
 
 /datum/ammo/rocket/mech/heavy/drop_nade(turf/T)
 	explosion(T, 0, 2, 4, 0, 0, explosion_cause=src)
@@ -53,53 +53,53 @@
 
 /datum/ammo/bullet/minigun/mech
 	name = "vulcan bullet"
-	damage = 30
-	penetration = 10
+	damage = 30  * MARINE_DAMAGE_SCALING_LIGHT
+	penetration = 10 * MARINE_PENETRATION_SCALING
 	sundering = 0.5
 
 /datum/ammo/bullet/sniper/mech
 	name = "light anti-tank bullet"
 	ammo_behavior_flags = AMMO_BALLISTIC|AMMO_BETTER_COVER_RNG|AMMO_SNIPER
-	damage = 100
-	penetration = 35
+	damage = 100  * MARINE_DAMAGE_SCALING_HEAVY
+	penetration = 35 * MARINE_PENETRATION_SCALING
 	sundering = 0
 	damage_falloff = 0.3
 
 /datum/ammo/bullet/pistol/mech
 	name = "super-heavy pistol bullet"
 	hud_state = "pistol_superheavy"
-	damage = 45
-	penetration = 20
+	damage = 45 * MARINE_DAMAGE_SCALING_LIGHT
+	penetration = 20 * MARINE_PENETRATION_SCALING
 	sundering = 1
 
 /datum/ammo/bullet/pistol/mech/burst
 	name = "super-heavy pistol bullet"
-	damage = 35
-	penetration = 10
+	damage = 35 * MARINE_DAMAGE_SCALING_LIGHT
+	penetration = 10 * MARINE_PENETRATION_SCALING
 	sundering = 0.5
 	damage_falloff = 0.4
 
 /datum/ammo/bullet/rifle/mech
 	name = "super-heavy rifle bullet"
-	damage = 35
-	penetration = 10
+	damage = 35 * MARINE_DAMAGE_SCALING_LIGHT
+	penetration = 10 * MARINE_PENETRATION_SCALING
 	sundering = 1
 	damage_falloff = 0.2
 
 /datum/ammo/bullet/rifle/mech/burst
-	damage = 35
-	penetration = 10
+	damage = 35 * MARINE_DAMAGE_SCALING_LIGHT
+	penetration = 10 * MARINE_PENETRATION_SCALING
 
 /datum/ammo/bullet/rifle/mech/lmg
-	damage = 20
-	penetration = 20
+	damage = 20 * MARINE_DAMAGE_SCALING_LIGHT
+	penetration = 20 * MARINE_PENETRATION_SCALING
 	damage_falloff = 0.7
 
 /datum/ammo/bullet/smg/mech
 	name = "super-heavy submachinegun bullet"
-	damage = 25
+	damage = 25 * MARINE_DAMAGE_SCALING_LIGHT
 	sundering = 0.5
-	penetration = 5
+	penetration = 5 * MARINE_PENETRATION_SCALING
 	damage_falloff = 0.4
 
 /datum/ammo/bullet/shotgun/mech
@@ -113,17 +113,17 @@
 	accuracy_var_high = 10
 	max_range = 10
 	sundering = 5
-	penetration = 15
-	damage = 75
+	penetration = 15 * MARINE_PENETRATION_SCALING
+	damage = 75 * MARINE_DAMAGE_SCALING_HEAVY
 	damage_falloff = 4
 
 /datum/ammo/bullet/shotgun/mech/spread
 	name = "super-heavy additional buckshot"
 	icon_state = "buckshot"
 	max_range = 10
-	damage = 60
+	damage = 60 * MARINE_DAMAGE_SCALING_HEAVY
 	sundering = 2.5
-	penetration = 15
+	penetration = 15 * MARINE_PENETRATION_SCALING
 	damage_falloff = 8
 
 /datum/ammo/bullet/shotgun/mech/on_hit_mob(mob/target_mob, atom/movable/projectile/proj)
@@ -131,30 +131,30 @@
 
 /datum/ammo/energy/lasgun/marine/mech
 	name = "superheated laser bolt"
-	damage = 45
-	penetration = 20
+	damage = 45 * MARINE_DAMAGE_SCALING_LIGHT
+	penetration = 20 * MARINE_PENETRATION_SCALING
 	sundering = 1
 	damage_falloff = 0.5
 
 /datum/ammo/energy/lasgun/marine/mech/burst
-	damage = 30
-	penetration = 10
+	damage = 30 * MARINE_DAMAGE_SCALING_LIGHT
+	penetration = 10 * MARINE_PENETRATION_SCALING
 	sundering = 0.75
 	damage_falloff = 0.6
 
 /datum/ammo/energy/lasgun/marine/mech/smg
 	name = "superheated pulsed laser bolt"
-	damage = 15
-	penetration = 10
+	damage = 15 * MARINE_DAMAGE_SCALING_LIGHT
+	penetration = 10 * MARINE_PENETRATION_SCALING
 	hitscan_effect_icon = "beam_particle"
 
 /datum/ammo/energy/lasgun/marine/mech/lance_strike
 	name = "particle lance"
 	ammo_behavior_flags = AMMO_ENERGY|AMMO_BETTER_COVER_RNG|AMMO_HITSCAN|AMMO_PASS_THROUGH_MOVABLE|AMMO_PASS_THROUGH_MOB
 	damage_type = BRUTE
-	damage = 100
+	damage = 100 * MARINE_DAMAGE_SCALING_HEAVY
 	armor_type = MELEE
-	penetration = 25
+	penetration = 25 * MARINE_PENETRATION_SCALING
 	sundering = 8
 	damage_falloff = -12.5 //damage increases per turf crossed
 	max_range = 4
