@@ -345,17 +345,51 @@
 	density = FALSE
 	wrenchable = FALSE
 	products = list(
-		/obj/item/reagent_containers/hypospray/autoinjector/bicaridine = 1,
-		/obj/item/reagent_containers/hypospray/autoinjector/kelotane = 1,
-		/obj/item/reagent_containers/hypospray/autoinjector/tramadol = 1,
-		/obj/item/reagent_containers/hypospray/autoinjector/tricordrazine = 1,
-		/obj/item/reagent_containers/hypospray/autoinjector/dylovene = 1,
-		/obj/item/reagent_containers/hypospray/autoinjector/combat = 1,
-		/obj/item/reagent_containers/hypospray/autoinjector/hypervene = 1,
-		/obj/item/stack/medical/heal_pack/gauze = 2,
-		/obj/item/stack/medical/heal_pack/ointment = 2,
-		/obj/item/healthanalyzer = 1,
-		/obj/item/stack/medical/splint = 1,
+				"Pill Bottles" = list(
+			/obj/item/storage/pill_bottle/bicaridine = -1,
+			/obj/item/storage/pill_bottle/kelotane = -1,
+			/obj/item/storage/pill_bottle/tramadol = -1,
+			/obj/item/storage/pill_bottle/tricordrazine = -1,
+			/obj/item/storage/pill_bottle/dylovene = -1,
+			/obj/item/storage/pill_bottle/paracetamol = -1,
+			/obj/item/storage/pill_bottle/isotonic = -1,
+			/obj/item/storage/pill_bottle = -1,
+		),
+		"Auto Injector" = list(
+			/obj/item/reagent_containers/hypospray/autoinjector/bicaridine = -1,
+			/obj/item/reagent_containers/hypospray/autoinjector/kelotane = -1,
+			/obj/item/reagent_containers/hypospray/autoinjector/tramadol = -1,
+			/obj/item/reagent_containers/hypospray/autoinjector/tricordrazine = -1,
+			/obj/item/reagent_containers/hypospray/autoinjector/dylovene = -1,
+			/obj/item/reagent_containers/hypospray/autoinjector/combat = -1,
+			/obj/item/reagent_containers/hypospray/autoinjector/isotonic = -1,
+			/obj/item/reagent_containers/hypospray/autoinjector/inaprovaline = -1,
+			/obj/item/reagent_containers/hypospray/autoinjector/oxycodone = 30,
+			/obj/item/reagent_containers/hypospray/autoinjector/spaceacillin = 20,
+			/obj/item/reagent_containers/hypospray/autoinjector/hypervene = 20,
+			/obj/item/reagent_containers/hypospray/autoinjector/alkysine = 20,
+			/obj/item/reagent_containers/hypospray/autoinjector/imidazoline = 20,
+			/obj/item/reagent_containers/hypospray/autoinjector/quickclot = 10,
+			/obj/item/reagent_containers/hypospray/autoinjector/medicalnanites = 20,
+		),
+		"hypospray" = list(
+			/obj/item/reagent_containers/hypospray/advanced/meralyne = -1,
+			/obj/item/reagent_containers/hypospray/advanced/dermaline = -1,
+			/obj/item/reagent_containers/hypospray/advanced/meraderm = -1,
+			/obj/item/reagent_containers/hypospray/autoinjector/peridaxon_plus = -1,
+		),
+		"Heal Pack" = list(
+			/obj/item/stack/medical/heal_pack/gauze = -1,
+			/obj/item/stack/medical/heal_pack/ointment = -1,
+			/obj/item/stack/medical/splint = -1,
+			/obj/item/stack/medical/heal_pack/advanced/bruise_pack = 50,
+			/obj/item/stack/medical/heal_pack/advanced/burn_pack = 50,
+		),
+		"Misc" = list(
+			/obj/item/defibrillator = 8,
+			/obj/item/healthanalyzer = 16,
+			/obj/item/bodybag/cryobag = 24,
+		),
 	)
 	mouse_over_pointer = MOUSE_HAND_POINTER
 

@@ -2152,6 +2152,10 @@
 	dir = 4
 	},
 /area/outpost/dormitories)
+"kj" = (
+/mob/living/carbon/xenomorph/queen,
+/turf/open/floor/plating/ground/mars/random/cave,
+/area/outpost/caves/north_east)
 "kk" = (
 /turf/open/floor/tile/dark/brown2{
 	dir = 1
@@ -27375,7 +27379,7 @@ yW
 ja
 zJ
 Yx
-Yx
+kj
 Yx
 zJ
 pJ

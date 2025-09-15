@@ -3611,6 +3611,10 @@
 	},
 /turf/open/floor/tile/bar,
 /area/lv624/lazarus/fitness)
+"sF" = (
+/mob/living/carbon/xenomorph/queen,
+/turf/open/floor/plating/dmg3,
+/area/lv624/lazarus/crashed_ship/desparity)
 "sG" = (
 /turf/open/ground/coast/corner{
 	dir = 1
@@ -11830,7 +11834,7 @@ wh
 wh
 bT
 xJ
-tK
+sF
 tK
 mU
 Oh
