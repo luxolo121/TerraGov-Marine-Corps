@@ -15,7 +15,7 @@
 	accurate_range = 4
 	damage_falloff = 1
 	sundering = 0.5
-	penetration = 5 * MARINE_PENETRATION_SCALING
+	penetration = 2 * MARINE_PENETRATION_SCALING
 
 /datum/ammo/bullet/smg/ap
 	name = "armor-piercing submachinegun bullet"
@@ -42,9 +42,9 @@
 	hud_state = "pistol_squash"
 	ammo_behavior_flags = AMMO_BALLISTIC
 	damage = 15 * MARINE_DAMAGE_SCALING_LIGHT
-	penetration = 15 * MARINE_PENETRATION_SCALING
+	penetration = 20 * MARINE_PENETRATION_SCALING
 	armor_type = BOMB
-	sundering = 1
+	sundering = 2
 	damage_falloff = 2
 	shrapnel_chance = 0
 	///shatter effection duration when hitting mobs
@@ -69,17 +69,17 @@
 /datum/ammo/bullet/smg/rad
 	name = "radioactive submachinegun bullet"
 	hud_state = "smg_rad"
-	damage = 15 * MARINE_DAMAGE_SCALING_LIGHT
-	penetration = 15 * MARINE_PENETRATION_SCALING
+	damage = 12 * MARINE_DAMAGE_SCALING_LIGHT
+	penetration = 20 * MARINE_PENETRATION_SCALING
 	sundering = 1
 
 /datum/ammo/bullet/smg/rad/on_hit_mob(mob/target_mob, atom/movable/projectile/proj)
 	if(!isliving(target_mob))
 		return
 	var/mob/living/living_victim = target_mob
-	if(!prob(living_victim.modify_by_armor(proj.damage, BIO, penetration, proj.def_zone)))
+	if(!prob(living_victim.modify_by_armor(proj.damage, BIO, 30, proj.def_zone)))
 		return
-	living_victim.apply_radiation(2, 2)
+	living_victim.apply_radiation(8, 2)
 
 /datum/ammo/bullet/smg/heavy
 	name = "heavy submachinegun bullet"

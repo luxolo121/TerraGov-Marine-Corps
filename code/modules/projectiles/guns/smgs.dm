@@ -45,7 +45,7 @@
 	equip_slot_flags = ITEM_SLOT_BACK|ITEM_SLOT_BELT
 	type_of_casings = null
 	default_ammo_type = /obj/item/ammo_magazine/smg/standard_machinepistol
-	allowed_ammo_types = list(/obj/item/ammo_magazine/smg/standard_machinepistol)
+	allowed_ammo_types = list(/obj/item/ammo_magazine/smg/standard_machinepistol, /obj/item/ammo_magazine/smg/standard_machinepistol/rad)
 
 	w_class = WEIGHT_CLASS_NORMAL
 	attachable_allowed = list(
@@ -71,7 +71,7 @@
 	accuracy_mult = 1.1
 	accuracy_mult_unwielded = 0.9
 	recoil_unwielded = 0
-	fire_delay = 0.15 SECONDS
+	fire_delay = 0.12 SECONDS
 
 	scatter = 0
 	scatter_unwielded = 4
@@ -81,7 +81,7 @@
 
 	akimbo_scatter_mod = 24
 	burst_amount = 5
-	burst_delay = 0.1 SECONDS
+	burst_delay = 0.07 SECONDS
 	akimbo_additional_delay = 20 // Literally do not even bother to try
 
 /obj/item/weapon/gun/smg/standard_machinepistol/compact
@@ -109,7 +109,7 @@
 	force = 20
 	type_of_casings = null
 	default_ammo_type = /obj/item/ammo_magazine/smg/standard_smg
-	allowed_ammo_types = list(/obj/item/ammo_magazine/smg/standard_smg, /obj/item/ammo_magazine/smg/standard_smg/ap)
+	allowed_ammo_types = list(/obj/item/ammo_magazine/smg/standard_smg, /obj/item/ammo_magazine/smg/standard_smg/ap, /obj/item/ammo_magazine/smg/standard_smg/rad)
 	attachable_allowed = list(
 		/obj/item/attachable/suppressor,
 		/obj/item/attachable/reddot,
@@ -133,7 +133,7 @@
 	accuracy_mult = 1.05
 	accuracy_mult_unwielded = 0.9
 	scatter = 1
-	fire_delay = 0.15 SECONDS
+	fire_delay = 0.1 SECONDS
 	scatter_unwielded = 8
 	aim_slowdown = 0.2
 	burst_amount = 0
@@ -201,7 +201,7 @@
 	accuracy_mult = 1.15
 	accuracy_mult_unwielded = 0.85
 	fire_delay = 0.25 SECONDS
-	burst_delay =  0.2 SECONDS
+	burst_delay =  0.15 SECONDS
 	burst_amount = 3
 	scatter = 2
 	scatter_unwielded = 11

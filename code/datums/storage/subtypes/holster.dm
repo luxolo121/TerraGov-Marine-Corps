@@ -154,6 +154,7 @@
 	set_holdable(can_hold_list = list(
 		/obj/item/weapon/gun/smg/standard_machinepistol,
 		/obj/item/ammo_magazine/smg/standard_machinepistol,
+		/obj/item/ammo_magazine/smg/standard_machinepistol/rad,
 	))
 
 /datum/storage/holster/flarepouch

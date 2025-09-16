@@ -35,8 +35,10 @@
 		"SMGs" = list(
 			/obj/item/weapon/gun/smg/standard_smg = -1,
 			/obj/item/ammo_magazine/smg/standard_smg = -1,
+			/obj/item/ammo_magazine/smg/standard_smg/rad = -1,
 			/obj/item/weapon/gun/smg/standard_machinepistol = -1,
 			/obj/item/ammo_magazine/smg/standard_machinepistol = -1,
+			/obj/item/ammo_magazine/smg/standard_machinepistol/rad = -1,
 			/obj/item/weapon/gun/smg/standard_heavysmg = -1,
 			/obj/item/ammo_magazine/smg/standard_heavysmg = -1,
 			/obj/item/ammo_magazine/smg/standard_heavysmg/squashhead = -1,

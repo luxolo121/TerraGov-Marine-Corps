@@ -43,6 +43,12 @@
 	max_rounds = 45
 	w_class = WEIGHT_CLASS_SMALL
 
+/obj/item/ammo_magazine/smg/standard_machinepistol/rad
+	name = "\improper MP-19 DU machinepistol magazine (10x20mm)"
+	desc = "A 10x20mm DU caseless machine pistol magazine."
+	icon_state = "t19_rad"
+	default_ammo = /datum/ammo/bullet/smg/rad
+
 //-------------------------------------------------------
 //SMG-90 SMG ammo
 
@@ -60,6 +66,13 @@
 	desc = "A 10x20mm AP caseless submachine gun magazine."
 	icon_state = "t90_ap"
 	default_ammo = /datum/ammo/bullet/smg/ap
+
+/obj/item/ammo_magazine/smg/standard_smg/rad
+
+	name = "\improper SMG-90 submachine gun DU magazine (10x20mm)"
+	desc = "A 10x20mm DU caseless submachine gun magazine."
+	icon_state = "t90_rad"
+	default_ammo = /datum/ammo/bullet/smg/rad
 
 //-------------------------------------------------------
 //SMG-45 SMG ammo
