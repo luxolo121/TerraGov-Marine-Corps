@@ -820,6 +820,38 @@ Note that this means that snipers will have a slowdown of 3, due to the scope
 	default_ammo_type = /obj/item/ammo_magazine/rocket/recoilless/heam
 
 //-------------------------------------------------------
+//RL-222 Recoilless Rifle. Its effectively an RPG codewise.
+
+/obj/item/weapon/gun/launcher/rocket/recoillessrifle/auto
+	name = "\improper RL-222 recoilless rifle"
+	desc = "The RL-222 recoilless rifle is a medium range rapid explosive ordanance device used by the TGMC used to fire explosive shells in quick succession. Uses a variety of 45mm shells designed for various purposes."
+	icon = 'icons/obj/items/guns/special64.dmi'
+	icon_state = "rl222"
+	worn_icon_state = "rl222"
+	max_chamber_items = 4 // five rounds counting chamber
+	max_shells = 5 //codex
+	caliber = CALIBER_45MM //codex
+	load_method = SINGLE_CASING //codex
+	default_ammo_type = null
+	reciever_flags = AMMO_RECIEVER_HANDFULS|AMMO_RECIEVER_AUTO_EJECT|AMMO_RECIEVER_AUTO_EJECT_LOCKED
+	equip_slot_flags = NONE
+	w_class = WEIGHT_CLASS_HUGE
+	force = 15
+	wield_delay = 1 SECONDS
+	wield_penalty = 1.6 SECONDS
+	aim_slowdown = 1
+	general_codex_key = "explosive weapons"
+	attachable_allowed = list(
+		/obj/item/attachable/magnetic_harness,
+		/obj/item/attachable/buildasentry,
+	)
+
+	attachable_offset = list("muzzle_x" = 33, "muzzle_y" = 18,"rail_x" = 15, "rail_y" = 19, "under_x" = 19, "under_y" = 14, "stock_x" = 19, "stock_y" = 14)
+
+	fire_delay = 0.5 SECONDS
+	scatter = -10
+
+//-------------------------------------------------------
 //Disposable RPG
 
 /obj/item/weapon/gun/launcher/rocket/oneuse

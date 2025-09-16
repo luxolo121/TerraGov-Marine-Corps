@@ -320,6 +320,45 @@ WEAPONS
 	cost = 30
 	available_against_xeno_only = TRUE
 
+/datum/supply_packs/weapons/autorecoillesskit
+	name = "RL-222 automatic recoilless rifle kit"
+	contains = list(/obj/item/storage/holster/backholster/rpg/auto/full)
+	cost = 400
+	available_against_xeno_only = TRUE
+
+/datum/supply_packs/weapons/autorocket_regular
+	name = "RL-222 ARR AP shell (3x5)"
+	contains = list(/obj/item/ammo_magazine/handful/autorocket,
+					/obj/item/ammo_magazine/handful/autorocket,
+					/obj/item/ammo_magazine/handful/autorocket,
+				)
+	cost = 100
+	available_against_xeno_only = TRUE
+
+/datum/supply_packs/weapons/autorocket/explosive
+	name = "RL-222 ARR HE shell (3x5)"
+	contains = list(/obj/item/ammo_magazine/handful/autorocket/le,
+					/obj/item/ammo_magazine/handful/autorocket/le,
+					/obj/item/ammo_magazine/handful/autorocket/le,
+				)
+	cost = 100
+
+/datum/supply_packs/weapons/autorocket/incendiary
+	name = "RL-222 ARR Incendiary shell (3x5)"
+	contains = list(/obj/item/ammo_magazine/handful/autorocket/incendiary,
+					/obj/item/ammo_magazine/handful/autorocket/incendiary,
+					/obj/item/ammo_magazine/handful/autorocket/incendiary,
+				)
+	cost = 300
+
+/datum/supply_packs/weapons/autorocket/aphe
+	name = "RL-222 ARR APHE shell (3x5)"
+	contains = list(/obj/item/ammo_magazine/handful/autorocket/aphe,
+					/obj/item/ammo_magazine/handful/autorocket/aphe,
+					/obj/item/ammo_magazine/handful/autorocket/aphe,
+				)
+	cost = 300
+
 /datum/supply_packs/weapons/pepperball
 	name = "PB-12 pepperball gun"
 	contains = list(/obj/item/weapon/gun/rifle/pepperball)

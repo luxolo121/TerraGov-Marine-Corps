@@ -330,6 +330,37 @@
 	icon_state_mini = "40mm_blue"
 	default_ammo = /datum/ammo/bullet/micro_rail/smoke_burst
 
+/obj/item/ammo_magazine/handful/autorocket
+	name = "45mm Armor-Piercing shell link"
+	desc = "A link of penetrating shells for the RL-222 automatic recoilless rifle. Intended for highly armored targets. Requires specialized storage to carry."
+	caliber = CALIBER_45MM
+	icon_state = "ap_autorocket"
+	w_class = WEIGHT_CLASS_BULKY
+	max_rounds = 5
+	current_rounds = 5
+	default_ammo = /datum/ammo/bullet/autorocket
+
+/obj/item/ammo_magazine/handful/autorocket/le
+	name = "45mm Light-Explosive shell link"
+	desc = "A link of explosive shells for the RL-222 automatic recoilless rifle. Causes a light explosion over a modest area. Requires specialized storage to carry."
+	icon_state = "le_autorocket"
+	default_ammo = /datum/ammo/bullet/autorocket/le
+
+
+/obj/item/ammo_magazine/handful/autorocket/incendiary
+	name = "45mm incendiary shell link"
+	desc = "A link of indecary shells for the RL-222 automatic recoilless rifle. Lights targets on fire and can penetrate fortifications. Requires specialized storage to carry."
+	icon_state = "inc_autorocket"
+	default_ammo = /datum/ammo/bullet/autorocket/incendiary
+
+
+/obj/item/ammo_magazine/handful/autorocket/aphe
+	name = "45mm Armor-Piercing High-Explosive shell link"
+	desc = "A link of penetrating light explosive shells for the RL-222 automatic recoilless rifle. Causes a light explosion over a small area after penetration. Requires specialized storage to carry."
+	icon_state = "aphe_autorocket"
+	default_ammo = /datum/ammo/bullet/autorocket/aphe
+
+
 //----------------------------------------------------------------//
 
 /*

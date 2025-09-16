@@ -687,3 +687,130 @@
 
 /datum/ammo/rocket/icc_lowvel_high_explosive/drop_nade(turf/T)
 	explosion(T, 0, 2, 3, 0, 2, explosion_cause=src)
+
+/datum/ammo/bullet/autorocket
+	name = "Armor-piercing shell"
+	icon_state = "missile"
+	hud_state = "shell_apcr"
+	hud_state_empty = "shell_empty"
+	handful_icon_state = "ap_autorocket"
+	ping = null //no bounce off.
+	sound_bounce = SFX_ROCKET_BOUNCE
+	ammo_behavior_flags = AMMO_BALLISTIC|AMMO_BETTER_COVER_RNG|AMMO_PASS_THROUGH_TURF|AMMO_PASS_THROUGH_MOVABLE
+	armor_type = BULLET
+	damage_falloff = 2
+	shell_speed = 2
+	accuracy = 20
+	accurate_range = 12
+	max_range = 20
+	damage = 100 * MARINE_DAMAGE_SCALING_HEAVY
+	penetration = 95 * MARINE_PENETRATION_SCALING_AP
+	sundering = 15
+	bullet_color = LIGHT_COLOR_TUNGSTEN
+	on_pierce_multiplier = 0.85
+
+/datum/ammo/bullet/autorocket/on_hit_turf(turf/target_turf, atom/movable/projectile/proj)
+	proj.proj_max_range -= 5
+
+/datum/ammo/bullet/autorocket/on_hit_obj(obj/target_obj, atom/movable/projectile/proj)
+	proj.proj_max_range -= 2
+
+/datum/ammo/bullet/autorocket/on_hit_mob(mob/target_mob, atom/movable/projectile/proj)
+	qdel(src)
+
+/datum/ammo/bullet/autorocket/le
+	name = "light explosive shell"
+	icon_state = "missile"
+	hud_state = "shell_he"
+	handful_icon_state = "le_autorocket"
+	ammo_behavior_flags = AMMO_TARGET_TURF|AMMO_BETTER_COVER_RNG
+	armor_type = BOMB
+	accurate_range = 10
+	max_range = 20
+	damage = 50 * MARINE_DAMAGE_SCALING_HEAVY
+	penetration = 20 * MARINE_PENETRATION_SCALING
+	sundering = 5
+
+/datum/ammo/bullet/autorocket/le/drop_nade(turf/T)
+	explosion(T, 0, 1, 2, 3, 2, explosion_cause=src)
+
+/datum/ammo/bullet/autorocket/le/on_hit_mob(mob/target_mob, atom/movable/projectile/proj)
+	var/target_turf = get_turf(target_mob)
+	staggerstun(target_mob, proj, max_range, knockback = 1, hard_size_threshold = 3)
+	drop_nade(target_turf)
+
+/datum/ammo/bullet/autorocket/le/on_hit_obj(obj/target_obj, atom/movable/projectile/proj)
+	drop_nade(target_obj.density ? get_step_towards(target_obj, proj) : target_obj.loc)
+
+/datum/ammo/bullet/autorocket/le/on_hit_turf(turf/target_turf, atom/movable/projectile/proj)
+	drop_nade(target_turf.density ? get_step_towards(target_turf, proj) : target_turf)
+
+/datum/ammo/bullet/autorocket/le/do_at_max_range(turf/target_turf, atom/movable/projectile/proj)
+	drop_nade(target_turf.density ? get_step_towards(target_turf, proj) : target_turf)
+
+/datum/ammo/bullet/autorocket/incendiary
+	name = "Incendiary shell"
+	icon_state = "missile"
+	hud_state = "shell_heat"
+	handful_icon_state = "inc_autorocket"
+	ammo_behavior_flags = AMMO_BALLISTIC|AMMO_BETTER_COVER_RNG|AMMO_PASS_THROUGH_TURF|AMMO_INCENDIARY|AMMO_PASS_THROUGH_MOVABLE
+	armor_type = FIRE
+	accurate_range = 10
+	max_range = 20
+	damage = 50 * MARINE_DAMAGE_SCALING_HEAVY
+	penetration = 20 * MARINE_PENETRATION_SCALING
+	sundering = 5
+
+/datum/ammo/bullet/autorocket/incendiary/on_hit_turf(turf/T, atom/movable/projectile/proj)
+	flame_radius(0.5, get_turf(T))
+	proj.proj_max_range -= 6
+	if(proj.proj_max_range <=0)
+		if(!T || !isturf(T))
+			return
+		playsound(T, 'sound/weapons/guns/fire/flamethrower2.ogg', 50, 1, 4)
+		flame_radius(2, T, 15, 15, 15, 17)
+
+/datum/ammo/bullet/autorocket/incendiary/on_hit_obj(obj/target_obj, atom/movable/projectile/proj)
+	proj.proj_max_range -= 2
+	if(proj.proj_max_range <=0)
+		var/turf/T = get_turf(target_obj)
+		playsound(T, 'sound/weapons/guns/fire/flamethrower2.ogg', 50, 1, 4)
+		flame_radius(2, T, 15, 15, 15, 17)
+
+/datum/ammo/bullet/autorocket/incendiary/on_hit_mob(mob/target_mob, atom/movable/projectile/proj)
+	var/turf/T = get_turf(target_mob)
+	playsound(T, 'sound/weapons/guns/fire/flamethrower2.ogg', 50, 1, 4)
+	flame_radius(2, T, 15, 15, 15, 17)
+	qdel(src)
+
+/datum/ammo/bullet/autorocket/aphe
+	name = "Armor-Piercing High-Explosive shell"
+	icon_state = "missile"
+	hud_state = "shell_le"
+	handful_icon_state = "aphe_autorocket"
+	ammo_behavior_flags = AMMO_BALLISTIC|AMMO_BETTER_COVER_RNG|AMMO_PASS_THROUGH_TURF|AMMO_PASS_THROUGH_MOVABLE
+	armor_type = BOMB
+	accurate_range = 10
+	max_range = 20
+	damage = 60 * MARINE_DAMAGE_SCALING_HEAVY
+	penetration = 70 * MARINE_PENETRATION_SCALING_AP
+	sundering = 15
+	on_pierce_multiplier = 0.85
+
+/datum/ammo/bullet/autorocket/aphe/drop_nade(turf/T)
+	explosion(T, 0, 1, 2, 3, 2, explosion_cause=src)
+
+/datum/ammo/bullet/autorocket/aphe/on_hit_mob(mob/target_mob, atom/movable/projectile/proj)
+	var/target_turf = get_turf(target_mob)
+	staggerstun(target_mob, proj, max_range, knockback = 1, hard_size_threshold = 3)
+	drop_nade(target_turf)
+	qdel(src)
+
+/datum/ammo/bullet/autorocket/aphe/on_hit_obj(obj/target_obj, atom/movable/projectile/proj)
+	proj.proj_max_range -= 2
+
+/datum/ammo/bullet/autorocket/aphe/on_hit_turf(turf/target_turf, atom/movable/projectile/proj)
+	proj.proj_max_range -= 6
+
+/datum/ammo/bullet/autorocket/aphe/do_at_max_range(turf/target_turf, atom/movable/projectile/proj)
+	drop_nade(target_turf.density ? get_step_towards(target_turf, proj) : target_turf)

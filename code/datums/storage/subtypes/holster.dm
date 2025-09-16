@@ -45,7 +45,7 @@
 	access_delay = 1.5 SECONDS ///0 out for satchel types
 
 /datum/storage/holster/backholster/rpg
-	storage_slots = 5
+	storage_slots = 9
 	max_w_class = WEIGHT_CLASS_BULKY
 	access_delay = 0.5 SECONDS
 
@@ -54,6 +54,13 @@
 	max_storage_space = 30
 	max_w_class = WEIGHT_CLASS_BULKY
 	access_delay = 0.5 SECONDS
+
+/datum/storage/holster/backholster/rpg/auto
+	storage_slots = 7
+	max_storage_space = 30
+	max_w_class = WEIGHT_CLASS_BULKY
+	access_delay = 0.5 SECONDS
+
 
 /datum/storage/holster/backholster/rpg/New(atom/parent)
 	. = ..()
@@ -83,6 +90,16 @@
 			/obj/item/weapon/gun/launcher/rocket/recoillessrifle,
 		),
 		storage_type_limits_list = list(/obj/item/weapon/gun/launcher/rocket/recoillessrifle)
+	)
+
+/datum/storage/holster/backholster/rpg/auto/New(atom/parent)
+	. = ..()
+	set_holdable(
+		can_hold_list = list(
+			/obj/item/ammo_magazine/handful,
+			/obj/item/weapon/gun/launcher/rocket/recoillessrifle/auto,
+		),
+		storage_type_limits_list = list(/obj/item/weapon/gun/launcher/rocket/recoillessrifle/auto)
 	)
 
 /datum/storage/holster/backholster/mortar

@@ -65,6 +65,7 @@
 #define CALIBER_40MM "40mm grenade"
 #define CALIBER_84MM "84mm rocket"
 #define CALIBER_67MM "67mm shell"
+#define CALIBER_45MM "45mm shell" //autocunt
 #define CALIBER_68MM "68mm rocket"
 #define CALIBER_32MM "32mm rocket"
 #define CALIBER_37MM "37mm"

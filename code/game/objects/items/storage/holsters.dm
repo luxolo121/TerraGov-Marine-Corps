@@ -121,7 +121,7 @@
 ///RR bag
 /obj/item/storage/holster/backholster/rpg
 	name = "\improper TGMC rocket bag"
-	desc = "This backpack can hold 4 67mm shells, in addition to a recoiless launcher."
+	desc = "This backpack can hold 8 67mm shells, in addition to a recoiless launcher."
 	icon_state = "marine_rocket"
 	w_class = WEIGHT_CLASS_HUGE
 	storage_type = /datum/storage/holster/backholster/rpg
@@ -137,12 +137,39 @@
 		"Ratcher Combat Robot" = 'icons/mob/species/robot/backpack.dmi',
 		)
 
+///ARR bag
+/obj/item/storage/holster/backholster/rpg/auto
+	name = "\improper TGMC shell link bag"
+	desc = "This backpack can hold 30 45mm shells, in addition to an automatic recoiless launcher."
+	icon_state = "marine_autorocket"
+	w_class = WEIGHT_CLASS_HUGE
+	storage_type = /datum/storage/holster/backholster/rpg/auto
+	holsterable_allowed = list(
+		/obj/item/weapon/gun/launcher/rocket/recoillessrifle/auto,
+	)
+	sprite_sheets = list(
+		"Combat Robot" = 'icons/mob/species/robot/backpack.dmi',
+		"Sterling Combat Robot" = 'icons/mob/species/robot/backpack.dmi',
+		"Chilvaris Combat Robot" = 'icons/mob/species/robot/backpack.dmi',
+		"Hammerhead Combat Robot" = 'icons/mob/species/robot/backpack.dmi',
+		"Ratcher Combat Robot" = 'icons/mob/species/robot/backpack.dmi',
+		)
+
 /obj/item/storage/holster/backholster/rpg/full/PopulateContents()
 	new /obj/item/ammo_magazine/rocket/recoilless/light(src)
 	new /obj/item/ammo_magazine/rocket/recoilless/light(src)
 	new /obj/item/ammo_magazine/rocket/recoilless(src)
 	new /obj/item/ammo_magazine/rocket/recoilless(src)
 	new /obj/item/weapon/gun/launcher/rocket/recoillessrifle(src)
+
+/obj/item/storage/holster/backholster/rpg/auto/full/PopulateContents()
+	new /obj/item/ammo_magazine/handful/autorocket(src)
+	new /obj/item/ammo_magazine/handful/autorocket(src)
+	new /obj/item/ammo_magazine/handful/autorocket(src)
+	new /obj/item/ammo_magazine/handful/autorocket/le(src)
+	new /obj/item/ammo_magazine/handful/autorocket/le(src)
+	new /obj/item/ammo_magazine/handful/autorocket/le(src)
+	new /obj/item/weapon/gun/launcher/rocket/recoillessrifle/auto(src)
 
 /obj/item/storage/holster/backholster/rpg/low_impact/PopulateContents()
 	new /obj/item/ammo_magazine/rocket/recoilless/low_impact(src)
