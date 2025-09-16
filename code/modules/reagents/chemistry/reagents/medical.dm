@@ -1383,16 +1383,16 @@
 
 /datum/reagent/medicalnanites/on_mob_life(mob/living/L, metabolism)
 	switch(current_cycle)
-		if(1 to 75)
+		if(1 to 40)
 			L.take_limb_damage(0.015 * current_cycle * effect_str, 0.015 * current_cycle * effect_str)
 			L.adjustToxLoss(1 * effect_str)
 			L.adjustStaminaLoss(1.5 * effect_str)
 			L.reagents.add_reagent(/datum/reagent/medicalnanites, 0.4)
 			if(prob(5))
 				to_chat(L, span_notice("You feel intense itching!"))
-		if(76)
+		if(41)
 			to_chat(L, span_warning("The pain rapidly subsides. Looks like they've adapted to you."))
-		if(77 to INFINITY)
+		if(42 to INFINITY)
 			if(volume < 30) //smol injection will self-replicate up to 30u using 240u of blood.
 				L.reagents.add_reagent(/datum/reagent/medicalnanites, 0.15)
 				L.adjust_blood_volume(-2)
@@ -1402,17 +1402,17 @@
 
 			if(volume > 5)
 				L.reagent_pain_modifier += PAIN_REDUCTION_VERY_HEAVY
-				L.adjustToxLoss(-0.15 * effect_str)
+				L.adjustToxLoss(-0.3 * effect_str)
 
 			if(volume > 5 && (L.getBruteLoss(organic_only = TRUE) >= 3)) // so we don't waste nanites healing miniscule damage
-				L.heal_overall_damage(3 * effect_str, 0)
-				holder.remove_reagent(/datum/reagent/medicalnanites, 0.5)
+				L.heal_overall_damage(5 * effect_str, 0)
+				holder.remove_reagent(/datum/reagent/medicalnanites, 0.25)
 				if(prob(10))
 					to_chat(L, span_notice("Your cuts and bruises begin to scab over rapidly!"))
 
 			if(volume > 5 && (L.getFireLoss(organic_only = TRUE) >= 3)) // same but for burn
-				L.heal_overall_damage(0, 3 * effect_str)
-				holder.remove_reagent(/datum/reagent/medicalnanites, 0.5)
+				L.heal_overall_damage(0, 5 * effect_str)
+				holder.remove_reagent(/datum/reagent/medicalnanites, 0.25)
 				if(prob(10))
 					to_chat(L, span_notice("Your burns begin to slough off, revealing healthy tissue!"))
 	return ..()
