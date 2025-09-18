@@ -19,7 +19,7 @@
 	var/stack_amount = 5
 	///to specify a non-zero amount of stack to drop when destroyed
 	var/destroyed_stack_amount = 0
-	var/base_acid_damage = 2
+	var/base_acid_damage = 8
 	var/barricade_type = "barricade" //"metal", "plasteel", etc.
 	///Whether this barricade has damaged states
 	var/can_change_dmg_state = TRUE

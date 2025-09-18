@@ -69,17 +69,17 @@
 /datum/ammo/bullet/smg/rad
 	name = "radioactive submachinegun bullet"
 	hud_state = "smg_rad"
-	damage = 12 * MARINE_DAMAGE_SCALING_LIGHT
-	penetration = 20 * MARINE_PENETRATION_SCALING
+	damage = 4 * MARINE_DAMAGE_SCALING_LIGHT
+	penetration = 10 * MARINE_PENETRATION_SCALING
 	sundering = 1
 
 /datum/ammo/bullet/smg/rad/on_hit_mob(mob/target_mob, atom/movable/projectile/proj)
 	if(!isliving(target_mob))
 		return
 	var/mob/living/living_victim = target_mob
-	if(!prob(living_victim.modify_by_armor(proj.damage, BIO, 30, proj.def_zone)))
+	if(prob(RADIATION_BASE_CHANCE + RADIATION_MAX_BONUS * (1.0 - (target_mob.modify_by_armor(proj.damage, BIO, 30, proj.def_zone) / max(1, proj.damage)))))
 		return
-	living_victim.apply_radiation(8, 2)
+	living_victim.apply_radiation(2, 2)
 
 /datum/ammo/bullet/smg/heavy
 	name = "heavy submachinegun bullet"

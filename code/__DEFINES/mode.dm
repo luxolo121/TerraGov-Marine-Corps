@@ -108,7 +108,7 @@
 #define MARINE_GEAR_SCALING 30
 
 // Flat multiplier applied to xenomorph move speed
-#define XENO_SPEED_MULTIPLIER 0.75
+#define XENO_SPEED_MULTIPLIER 0.70
 
 // Flat multiplier applied to the damage of heavy projectiles
 #define MARINE_DAMAGE_SCALING_HEAVY 1.05 // think before you fiddle, dr freeman
@@ -121,6 +121,12 @@
 
 // Flat multiplier applied to the penetration of AP projectiles
 #define MARINE_PENETRATION_SCALING_AP 1.1
+
+// Base percentage chance for DU ammo to apply radiation
+#define RADIATION_BASE_CHANCE 5
+
+// Bonus multiplier to chance to apply radiation
+#define RADIATION_MAX_BONUS 50
 
 // Flat multiplier applied to the damage of debuffs
 #define MARINE_DAMAGE_SCALING_DEBUFF 1.5 //fixed your shit, nerd <= learn to balance

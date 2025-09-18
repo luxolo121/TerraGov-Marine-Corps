@@ -173,6 +173,18 @@ GLOBAL_LIST_INIT(xeno_ai_spawnable, list(
 		amount -= brute_heal; \
 		xeno.adjustBruteLoss(-brute_heal, TRUE, passive); \
 	} \
+	var/tox_loss = xeno.getToxLoss(); \
+	if(tox_loss) { \
+		var/tox_heal = min(tox_loss, amount); \
+		amount -= tox_heal;\
+		xeno.adjustToxLoss(-tox_heal, TRUE, passive); \
+	} \
+	var/clone_loss = xeno.getCloneLoss(); \
+	if(clone_loss) { \
+		var/clone_heal = min(clone_loss, amount); \
+		amount -= clone_heal; \
+		xeno.adjustCloneLoss(-clone_heal, TRUE, passive); \
+	} \
 } while(FALSE)
 
 /// Used by the is_valid_for_resin_structure proc.
