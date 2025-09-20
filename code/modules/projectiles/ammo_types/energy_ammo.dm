@@ -68,8 +68,8 @@
 
 /datum/ammo/energy/tesla/beam
 	ammo_behavior_flags = AMMO_ENERGY|AMMO_HITSCAN
-	damage = 55 * MARINE_DAMAGE_SCALING_LIGHT
-	penetration = 25 * MARINE_PENETRATION_SCALING
+	damage = 30 * MARINE_DAMAGE_SCALING_LIGHT
+	penetration = 15 * MARINE_PENETRATION_SCALING
 	bullet_color = COLOR_TESLA_BLUE
 	hitscan_effect_icon = "lightning"
 
@@ -86,14 +86,15 @@
 		X.do_jitter_animation(1000)
 		if(X.xeno_caste.caste_flags & CASTE_PLASMADRAIN_IMMUNE)
 			do_plasma_drain = 0
-		X.use_plasma(do_plasma_drain * (0.5 * X.xeno_caste.plasma_max * X.xeno_caste.plasma_regen_limit)) //Drains 30% of max plasma on hit
+		if(do_plasma_drain)
+			X.apply_status_effect(/datum/status_effect/noplasmaregen, 3 SECONDS)
+			X.apply_status_effect(/datum/status_effect/plasmadrain, 3 SECONDS)
 
 	var/list/shocked_xenos = zap_beam(target_mob, 5, proj.damage)
 
 	for(var/mob/living/carbon/xenomorph/shocked in shocked_xenos)
-		shocked.apply_damage(rand(40,50), BURN, BODY_ZONE_CHEST) //manually just does damage when the bolt hits because i cant get zap_beam to actually hurt the cunt
+		shocked.apply_damage(rand(20,25), BURN, BODY_ZONE_CHEST) //manually just does damage when the bolt hits because i cant get zap_beam to actually hurt the cunt
 		shocked.do_jitter_animation(1000)
-		shocked.use_plasma(do_plasma_drain * (0.3 * shocked.xeno_caste.plasma_max * shocked.xeno_caste.plasma_regen_limit))
 		shocked.adjust_stagger(1 SECONDS)
 
 /datum/ammo/energy/tesla/on_hit_mob(mob/target_mob, atom/movable/projectile/proj)

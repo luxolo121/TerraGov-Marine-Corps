@@ -423,9 +423,9 @@
 	description = "Fires an sophisticated IFF tesla ball, but with reduces shock range."
 
 /datum/lasrifle/tesla_mode/overclock
-	rounds_per_shot = 150
+	rounds_per_shot = 50
 	ammo_datum_type = /datum/ammo/energy/tesla/beam
-	fire_delay = 3 SECONDS
+	fire_delay = 0.5 SECONDS
 	windup_delay = 0.5 SECONDS
 	fire_sound = 'sound/weapons/guns/fire/tesla.ogg'
 	message_to_user = "You set the tesla shock rifle's power mode mode to overclock."
