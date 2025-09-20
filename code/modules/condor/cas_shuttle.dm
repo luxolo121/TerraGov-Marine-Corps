@@ -187,11 +187,11 @@
 		return
 
 	SSmonitor.process_human_positions()
-	#ifndef TESTING
+/*	#ifndef TESTING
 	if(SSmonitor.human_on_ground <= 5)
 		to_chat(user, span_warning("The signal from the area of operations is too weak, you cannot route towards the battlefield."))
 		return
-	#endif
+	#endif */
 
 	to_chat(user, span_warning("Targets detected, routing to area of operations."))
 	user.playsound_local(chair, 'sound/voice/plane_vws/flightcomputer_hot.ogg', 70, FALSE)
