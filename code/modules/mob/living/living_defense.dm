@@ -310,7 +310,7 @@
 
 	adjustCloneLoss(rad_strength)
 	adjustStaminaLoss(rad_strength * 7)
-	adjust_stagger(rad_strength SECONDS * 0.5)
+	adjust_stagger(rad_strength SECONDS * 0.25)
 	add_slowdown(rad_strength * 0.5)
 	blur_eyes(rad_strength) //adds a visual indicator that you've just been irradiated
 	adjust_radiation(rad_strength * 20) //Radiation status effect, duration is in deciseconds
