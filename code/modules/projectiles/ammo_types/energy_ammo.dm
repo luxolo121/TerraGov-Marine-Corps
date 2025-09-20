@@ -66,6 +66,35 @@
 /datum/ammo/energy/tesla/focused/ammo_process(atom/movable/projectile/proj, damage)
 	zap_beam(proj, 3, damage)
 
+/datum/ammo/energy/tesla/beam
+	ammo_behavior_flags = AMMO_ENERGY|AMMO_HITSCAN
+	damage = 55 * MARINE_DAMAGE_SCALING_LIGHT
+	penetration = 25 * MARINE_PENETRATION_SCALING
+	bullet_color = COLOR_TESLA_BLUE
+	hitscan_effect_icon = "lightning"
+
+/datum/ammo/energy/tesla/beam/on_hit_mob(mob/target_mob, atom/movable/projectile/proj)
+	if(!isliving(target_mob))
+		return
+	var/mob/living/living_victim = target_mob
+
+	living_victim.adjust_stagger(1.5 SECONDS)
+
+	var/do_plasma_drain = 1
+	if(isxeno(target_mob)) //need 1 second more than the actual effect time
+		var/mob/living/carbon/xenomorph/X = target_mob
+		X.do_jitter_animation(1000)
+		if(X.xeno_caste.caste_flags & CASTE_PLASMADRAIN_IMMUNE)
+			do_plasma_drain = 0
+		X.use_plasma(do_plasma_drain * (0.5 * X.xeno_caste.plasma_max * X.xeno_caste.plasma_regen_limit)) //Drains 30% of max plasma on hit
+
+	var/list/shocked_xenos = zap_beam(target_mob, 5, proj.damage)
+
+	for(var/mob/living/carbon/xenomorph/shocked in shocked_xenos)
+		shocked.apply_damage(rand(40,50), BURN, BODY_ZONE_CHEST) //manually just does damage when the bolt hits because i cant get zap_beam to actually hurt the cunt
+		shocked.do_jitter_animation(1000)
+		shocked.use_plasma(do_plasma_drain * (0.3 * shocked.xeno_caste.plasma_max * shocked.xeno_caste.plasma_regen_limit))
+		shocked.adjust_stagger(1 SECONDS)
 
 /datum/ammo/energy/tesla/on_hit_mob(mob/target_mob, atom/movable/projectile/proj)
 	if(isxeno(target_mob)) //need 1 second more than the actual effect time
@@ -837,24 +866,21 @@
 	on_pierce_multiplier = 0.95
 	barricade_clear_distance = 4
 
-/datum/ammo/energy/particle_lance/on_hit_mob(mob/target_mob, atom/movable/projectile/proj)
-	if(!isliving(target_mob))
-		return
-	var/mob/living/living_victim = target_mob
-	living_victim.apply_radiation(living_victim.modify_by_armor(15, BIO, 25), 3)
-
-
-/datum/ammo/energy/particle_lance/on_hit_obj(obj/target_obj, atom/movable/projectile/proj)
-	if(ishitbox(target_obj)) //yes this is annoying.
-		var/obj/hitbox/hitbox = target_obj
-		target_obj = hitbox.root
-
-	if(isvehicle(target_obj))
-		var/obj/vehicle/vehicle_target = target_obj
-		for(var/mob/living/living_victim AS in vehicle_target.occupants)
-			living_victim.apply_radiation(living_victim.modify_by_armor(12, BIO, 25), 3)
-			living_victim.flash_pain()
-
-	if(target_obj.obj_integrity > target_obj.modify_by_armor(proj.damage, ENERGY, proj.penetration, attack_dir = get_dir(target_obj, proj)))
-		proj.proj_max_range = 0
+/datum/ammo/energy/railcannon
+	name = "particle beam"
+	hitscan_effect_icon = "orc"
+	hud_state = "plasma_blast"
+	hud_state_empty = "battery_empty_flash"
+	ammo_behavior_flags = AMMO_ENERGY|AMMO_HITSCAN|AMMO_BETTER_COVER_RNG
+	bullet_color = LIGHT_COLOR_RED
+	armor_type = ENERGY
+	max_range = 40
+	accurate_range = 10
+	accuracy = 25
+	damage = 160 * MARINE_DAMAGE_SCALING_HEAVY
+	penetration = 80 * MARINE_PENETRATION_SCALING_AP
+	sundering = 30
+	damage_falloff = 5
+	on_pierce_multiplier = 0.95
+	barricade_clear_distance = 4
 

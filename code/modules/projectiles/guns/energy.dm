@@ -386,6 +386,7 @@
 	max_shots = 6 //codex stuff
 	rounds_per_shot = 100
 	fire_delay = 4 SECONDS
+	scatter = 0
 	turret_flags = TURRET_INACCURATE
 	attachable_allowed = list(
 		/obj/item/attachable/flashlight,
@@ -397,6 +398,7 @@
 	mode_list = list(
 		"Standard" = /datum/lasrifle/tesla_mode/standard,
 		"Focused" = /datum/lasrifle/tesla_mode/focused,
+		"Overclocked" = /datum/lasrifle/tesla_mode/overclock,
 	)
 
 /datum/lasrifle/tesla_mode/standard
@@ -419,6 +421,18 @@
 	icon_state = "tesla"
 	radial_icon_state = "laser_overcharge"
 	description = "Fires an sophisticated IFF tesla ball, but with reduces shock range."
+
+/datum/lasrifle/tesla_mode/overclock
+	rounds_per_shot = 150
+	ammo_datum_type = /datum/ammo/energy/tesla/beam
+	fire_delay = 3 SECONDS
+	windup_delay = 0.5 SECONDS
+	fire_sound = 'sound/weapons/guns/fire/tesla.ogg'
+	message_to_user = "You set the tesla shock rifle's power mode mode to overclock."
+	fire_mode = GUN_FIREMODE_SEMIAUTO
+	icon_state = "tesla"
+	radial_icon_state = "laser_disabler"
+	description = "Fires a singular high power bolt of lightning."
 
 //TE Tier 1 Series//
 
