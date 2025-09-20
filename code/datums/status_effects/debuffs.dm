@@ -758,7 +758,7 @@
 // *********** Melting
 // ***************************************
 ///amount of damage done per tick by the melting status effect
-#define STATUS_EFFECT_MELTING_DAMAGE 5
+#define STATUS_EFFECT_MELTING_DAMAGE 5 * MARINE_DAMAGE_SCALING_DEBUFF
 ///Sunder inflicted per tick by the melting status effect
 #define STATUS_EFFECT_MELTING_SUNDER_DAMAGE 3
 
