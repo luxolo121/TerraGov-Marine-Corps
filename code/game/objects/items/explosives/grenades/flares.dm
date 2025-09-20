@@ -136,8 +136,8 @@
 	icon_state = "cas_flare_grenade"
 	worn_icon_state = "cas_flare_grenade"
 	hud_state = "grenade_frag"
-	lower_fuel_limit = 25
-	upper_fuel_limit = 30
+	lower_fuel_limit = 100
+	upper_fuel_limit = 160
 	light_power = 3
 	light_color = LIGHT_COLOR_GREEN
 	var/datum/squad/user_squad

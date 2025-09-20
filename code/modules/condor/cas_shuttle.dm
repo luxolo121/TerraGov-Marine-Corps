@@ -58,7 +58,7 @@
 
 /obj/docking_port/mobile/marine_dropship/casplane/process()
 	#ifndef TESTING
-	fuel_left--
+	fuel_left = fuel_left - 0.25
 	if((fuel_max*LOW_FUEL_WARNING_THRESHOLD) == fuel_left)
 		chair.occupant?.playsound_local(loc, 'sound/voice/plane_vws/low_fuel.ogg', 70, FALSE)
 	if((fuel_left <= LOW_FUEL_LANDING_THRESHOLD) && (state == PLANE_STATE_FLYING))
@@ -149,11 +149,11 @@
 
 	SSmonitor.process_human_positions()
 
-	#ifndef TESTING
-	if(SSmonitor.human_on_ground <= 5)
-		to_chat(user, span_warning("The signal from the area of operations is too weak, you cannot route towards the battlefield."))
-		return
-	#endif
+//	#ifndef TESTING
+//	if(SSmonitor.human_on_ground <= 5)
+//		to_chat(user, span_warning("The signal from the area of operations is too weak, you cannot route towards the battlefield."))
+//		return
+//	#endif
 
 	// AT THIS POINT, A FIREMISSION IS READY TO START!
 
