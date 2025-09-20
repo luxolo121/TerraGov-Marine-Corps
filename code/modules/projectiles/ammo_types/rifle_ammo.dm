@@ -193,3 +193,19 @@
 	damage = 50 * MARINE_DAMAGE_SCALING_LIGHT
 	penetration = 40 * MARINE_PENETRATION_SCALING
 	sundering = 3.5
+
+/datum/ammo/bullet/rifle/statikk
+	name = "Electrified rifle bullet"
+	hud_state = "taser"
+	ammo_behavior_flags = AMMO_BALLISTIC
+	penetration = 12 * MARINE_PENETRATION_SCALING
+	damage = 15 * MARINE_DAMAGE_SCALING_LIGHT
+	sundering = 1.25
+
+/datum/ammo/bullet/rifle/statikk/on_hit_mob(mob/target_mob, atom/movable/projectile/proj)
+	if(prob(75))
+		var/list/shocked_xenos = zap_beam(target_mob, 5, proj.damage)
+
+		for(var/mob/living/carbon/xenomorph/shocked in shocked_xenos)
+			shocked.apply_damage(rand(10,20), BURN, BODY_ZONE_CHEST)
+			shocked.do_jitter_animation(1000)

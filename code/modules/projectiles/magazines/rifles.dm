@@ -442,6 +442,15 @@
 	default_ammo = /datum/ammo/bullet/rifle/hv
 	max_rounds = 70
 
+/obj/item/ammo_magazine/rifle/tx11/statikk
+	name = "\improper AR-11 combat rifle experimental magazine"
+	desc = "A magazine filled with experimental 4.92×34mm rifle rounds for the AR-11. These rounds have been engineered to penetrate a xenomorphs tough exoskeleton and release a powerful electric discharge."
+	caliber = CALIBER_492X34_CASELESS
+	icon_state = "exp_tx11"
+	icon_state_mini = "mag_tx11"
+	default_ammo = /datum/ammo/bullet/rifle/statikk
+	max_rounds = 70
+
 //-------------------------------------------------------
 //AR-21
 /obj/item/ammo_magazine/rifle/standard_skirmishrifle

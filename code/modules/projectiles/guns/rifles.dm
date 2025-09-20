@@ -1636,7 +1636,10 @@
 	unload_sound = 'sound/weapons/guns/interact/T42_unload.ogg'
 	reload_sound = 'sound/weapons/guns/interact/T42_reload.ogg'
 	default_ammo_type = /obj/item/ammo_magazine/rifle/tx11
-	allowed_ammo_types = list(/obj/item/ammo_magazine/rifle/tx11)
+	allowed_ammo_types = list(
+		/obj/item/ammo_magazine/rifle/tx11,
+		/obj/item/ammo_magazine/rifle/tx11/statikk,
+		)
 	attachable_allowed = list(
 		/obj/item/attachable/reddot,
 		/obj/item/attachable/flashlight,
