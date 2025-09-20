@@ -397,7 +397,7 @@
 	icon = 'icons/obj/structures/barricades/metal.dmi'
 	icon_state = "metal_0"
 	max_integrity = 250
-	soft_armor = list(MELEE = 0, BULLET = 30, LASER = 30, ENERGY = 30, BOMB = 0, BIO = 100, FIRE = 80, ACID = 40)
+	soft_armor = list(MELEE = 0, BULLET = 30, LASER = 30, ENERGY = 30, BOMB = 0, BIO = 100, FIRE = 80, ACID = 20)
 	coverage = 128
 	stack_type = /obj/item/stack/sheet/metal
 	stack_amount = BUILD_COST_METAL_CADE
@@ -722,7 +722,7 @@
 	stack_amount = BUILD_COST_PLASTEEL_CADE
 	destroyed_stack_amount = 1
 	barricade_type = "plasteel"
-	soft_armor = list(MELEE = 0, BULLET = 30, LASER = 30, ENERGY = 30, BOMB = 0, BIO = 100, FIRE = 80, ACID = 50)
+	soft_armor = list(MELEE = 0, BULLET = 30, LASER = 30, ENERGY = 30, BOMB = 0, BIO = 100, FIRE = 80, ACID = 30)
 
 /*----------------------*/
 // Folding
@@ -739,7 +739,7 @@
 	icon_state = "folding_plasteel_0"
 	max_integrity = 550
 	//barrier_flags = parent_type::barrier_flags|BARRIER_OPENS
-	soft_armor = list(MELEE = 0, BULLET = 30, LASER = 30, ENERGY = 30, BOMB = 0, BIO = 100, FIRE = 80, ACID = 50)
+	soft_armor = list(MELEE = 0, BULLET = 30, LASER = 30, ENERGY = 30, BOMB = 0, BIO = 100, FIRE = 80, ACID = 30)
 	coverage = 128
 	stack_type = /obj/item/stack/sheet/plasteel
 	stack_amount = BUILD_COST_PLASTEEL_CADE_FOLDABLE
