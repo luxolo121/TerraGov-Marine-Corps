@@ -432,6 +432,8 @@
 #define COMSIG_TURF_MULTIZ_NEW "turf_multiz_new"
 ///called when an elevator enters this turf
 #define COMSIG_TURF_INDUSTRIAL_LIFT_ENTER "turf_industrial_life_enter"
+/// Sent by the turf before its contents, if any, are crushed by a shuttle. [/turf/proc/toShuttleMove]: ()
+#define COMSIG_TURF_PRE_SHUTTLE_CRUSH "turf_pre_shuttle_crush"
 
 // /obj signals
 #define COMSIG_OBJ_SETANCHORED "obj_setanchored"				//called in /obj/structure/setAnchored(): (value)
@@ -853,6 +855,8 @@
 
 #define COMSIG_XENO_DRAIN_HIT "xeno_drain_hit"
 #define COMSIG_XENO_CARNAGE_HIT "xeno_carnage_hit"
+
+#define COMSIG_FACE_HUGGER_DEATH "face_hugger_death"
 
 // Mutations:
 #define COMSIG_GLOB_MUTATION_CHAMBER_SHELL "!mutation_chamber_shell" // From: [/obj/structure/xeno/mutation_chamber/shell] (previous_amount, new_amount)
