@@ -69,7 +69,7 @@
 
 /datum/action/ability/activable/item_toggle/odm_gear/proc/odm_grapple(atom/A, mob/living/carbon/human/human_user)
 	var/atom/movable/odm_hook/web_hook = new (get_turf(owner))
-	odm_beam = owner.beam(web_hook,"1-full",'icons/effects/beam.dmi')
+	odm_beam = owner.beam(web_hook, icon = 'icons/effects/beam.dmi', icon_state = "1-full")
 	RegisterSignals(web_hook, list(COMSIG_MOVABLE_POST_THROW, COMSIG_MOVABLE_IMPACT), PROC_REF(drag_user), TRUE)
 	web_hook.throw_at(A, WIDOW_WEB_HOOK_RANGE, 3, owner, FALSE)
 

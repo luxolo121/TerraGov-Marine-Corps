@@ -878,6 +878,10 @@
 "aXS" = (
 /turf/closed/wall/r_wall,
 /area/bluemoon/caves/s/shallow)
+"aXV" = (
+/obj/effect/landmark/patrol_point/xeno/xeno_21,
+/turf/open/floor/plating/ground/ice,
+/area/bluemoon/caves/s)
 "aZi" = (
 /turf/open/floor/plating/warning{
 	dir = 1
@@ -9003,6 +9007,7 @@
 /area/bluemoon/caves/facility/lambda/n)
 "kgk" = (
 /obj/structure/bed/chair/comfy/black,
+/obj/effect/ai_node,
 /turf/open/floor/carpet,
 /area/bluemoon/outside/building/admin)
 "kgv" = (
@@ -9055,6 +9060,7 @@
 /obj/machinery/atmospherics/pipe/manifold/green/hidden{
 	dir = 8
 	},
+/obj/effect/ai_node,
 /turf/open/floor/tile/dark/blue2{
 	dir = 8
 	},
@@ -10101,6 +10107,13 @@
 	dir = 8
 	},
 /area/bluemoon/outside/building/cargo/shop)
+"lrT" = (
+/obj/machinery/atmospherics/pipe/simple/green/hidden,
+/obj/effect/ai_node,
+/turf/open/floor/tile/dark/blue2{
+	dir = 8
+	},
+/area/bluemoon/outside/building/admin)
 "lsD" = (
 /obj/machinery/atmospherics/pipe/simple/green/hidden,
 /turf/open/floor/prison/blue{
@@ -11583,6 +11596,14 @@
 	dir = 4
 	},
 /area/bluemoon/caves/facility/lambda/n)
+"nat" = (
+/obj/structure/cable,
+/obj/machinery/atmospherics/pipe/simple/green/hidden{
+	dir = 4
+	},
+/obj/effect/ai_node,
+/turf/open/floor/tile/dark,
+/area/bluemoon/outside/building/admin)
 "naI" = (
 /obj/structure/reagent_dispensers/watertank,
 /obj/machinery/light,
@@ -12483,6 +12504,10 @@
 	},
 /turf/open/floor/tile/dark,
 /area/bluemoon/caves/facility/eta)
+"oie" = (
+/obj/effect/landmark/patrol_point/xeno/xeno_11,
+/turf/open/floor/plating/ground/ice,
+/area/bluemoon/caves/n)
 "oiP" = (
 /obj/structure/table/wood,
 /obj/item/tool/pen/blue{
@@ -12858,6 +12883,7 @@
 	dir = 4
 	},
 /obj/structure/cable,
+/obj/effect/ai_node,
 /turf/open/floor/tile/dark/green2{
 	dir = 8
 	},
@@ -13641,11 +13667,6 @@
 /obj/structure/rock/dark/small/two,
 /turf/open/urbanshale/layer1,
 /area/bluemoon/caves/ne)
-"pJV" = (
-/obj/structure/cable,
-/obj/effect/ai_node,
-/turf/open/floor/tile/white,
-/area/bluemoon/outside/building/med/icu)
 "pKg" = (
 /obj/machinery/atmospherics/pipe/simple/green/hidden{
 	dir = 4
@@ -14428,10 +14449,6 @@
 	dir = 1
 	},
 /area/bluemoon/outside/building/cargo/shop)
-"qPS" = (
-/obj/docking_port/stationary/crashmode,
-/turf/open/floor/plating,
-/area/shuttle/drop1/lz1)
 "qQc" = (
 /obj/machinery/door/airlock/mainship/generic{
 	dir = 1;
@@ -14791,6 +14808,10 @@
 /obj/structure/flora/tree/pine,
 /turf/open/floor/plating/ground/snow/layer1,
 /area/bluemoon/outside/c)
+"rea" = (
+/obj/effect/landmark/patrol_point/tgmc_11,
+/turf/open/floor/plating/ground/ice,
+/area/bluemoon/caves/se)
 "res" = (
 /obj/machinery/door/airlock/mainship/research/glass/free_access{
 	dir = 1;
@@ -14820,6 +14841,7 @@
 "rgv" = (
 /obj/item/alien_embryo,
 /obj/structure/cable,
+/obj/effect/ai_node,
 /turf/open/floor/tile/white,
 /area/bluemoon/outside/building/med/icu)
 "rgz" = (
@@ -15334,6 +15356,7 @@
 /obj/machinery/atmospherics/pipe/manifold/green/hidden{
 	dir = 8
 	},
+/obj/effect/ai_node,
 /turf/open/floor/tile/dark,
 /area/bluemoon/outside/building/admin)
 "rMc" = (
@@ -16085,7 +16108,6 @@
 "sHm" = (
 /obj/structure/table,
 /obj/machinery/computer3/laptop/secure_data,
-/obj/effect/ai_node,
 /turf/open/floor/carpet,
 /area/bluemoon/outside/building/admin)
 "sHP" = (
@@ -16737,6 +16759,7 @@
 /obj/machinery/light{
 	dir = 1
 	},
+/obj/effect/ai_node,
 /turf/open/floor/tile/green/whitegreen{
 	dir = 1
 	},
@@ -23354,7 +23377,7 @@ sGJ
 sGJ
 sGJ
 sGJ
-qPS
+sGJ
 sGJ
 sGJ
 sGJ
@@ -28660,7 +28683,7 @@ ayD
 tbx
 htr
 tvf
-pJV
+gQg
 gQg
 cpS
 rgv
@@ -29930,7 +29953,7 @@ hbV
 arH
 rmn
 grS
-owX
+exb
 owX
 uJX
 uJX
@@ -30019,7 +30042,7 @@ vwv
 dTN
 vwv
 laf
-cNK
+nat
 cUe
 sCS
 iCb
@@ -30894,7 +30917,7 @@ laf
 fXX
 mog
 qWT
-qWT
+lrT
 taU
 khO
 qWT
@@ -31719,7 +31742,7 @@ uJX
 uJX
 iKK
 iKK
-iKK
+oie
 iKK
 iPA
 iKK
@@ -33745,7 +33768,7 @@ owX
 owX
 exb
 owX
-owX
+aXV
 owX
 owX
 xzH
@@ -37631,7 +37654,7 @@ eya
 qft
 xyx
 gbZ
-gbZ
+xMQ
 uzA
 qft
 dMF
@@ -37778,7 +37801,7 @@ vVJ
 qft
 jlK
 gbZ
-xMQ
+gbZ
 lID
 asA
 aKG
@@ -37925,7 +37948,7 @@ rjG
 qft
 kdU
 gbZ
-gbZ
+xMQ
 iwU
 asA
 qZY
@@ -39597,7 +39620,7 @@ gjJ
 gjJ
 eyt
 gjJ
-gjJ
+rea
 gjJ
 gjJ
 gjJ

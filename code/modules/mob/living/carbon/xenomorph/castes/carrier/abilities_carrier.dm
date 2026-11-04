@@ -42,8 +42,10 @@ GLOBAL_LIST_INIT(hugger_images_list,  list(
 	action_icon_state = "throw_hugger"
 	action_icon = 'icons/Xeno/actions/carrier.dmi'
 	desc = "Throw a facehugger at something. Using this ability on a facehugger already on the ground will recycle it to your storage."
+	keybind_flags = ABILITY_KEYBIND_USE_ABILITY
 	keybinding_signals = list(
 		KEYBINDING_NORMAL = COMSIG_XENOABILITY_THROW_HUGGER,
+		KEYBINDING_ALTERNATE = COMSIG_XENOABILITY_THROW_HUGGER_SELECT,
 	)
 	cooldown_duration = 3 SECONDS
 	/// If the owner has the Resin Jelly Coating status effect, how much deciseconds should its duration be decreased by to grant thrown huggers fire immunity?
@@ -173,7 +175,7 @@ GLOBAL_LIST_INIT(hugger_images_list,  list(
 
 	succeed_activate()
 
-	playsound(T, SFX_ALIEN_RESIN_BUILD, 25)
+	playsound(T, SFX_ALIEN_RESIN_BUILD, 25, FALSE, MEDIUM_SOUND_RANGE)
 	GLOB.round_statistics.trap_holes++
 	SSblackbox.record_feedback("tally", "round_statistics", 1, "carrier_traps")
 	owner.record_traps_created()
@@ -370,7 +372,7 @@ GLOBAL_LIST_INIT(hugger_images_list,  list(
 		return FALSE
 
 	for(var/obj/structure/xeno/xeno_turret/turret AS in GLOB.xeno_resin_turrets_by_hive[blocker.hivenumber])
-		if(get_dist(turret, owner) < 6)
+		if(get_dist(turret, owner) < XENO_TURRET_EXCLUSION_RANGE)
 			if(!silent)
 				to_chat(owner, span_xenowarning("Another turret is too close!"))
 			return FALSE
@@ -395,13 +397,15 @@ GLOBAL_LIST_INIT(hugger_images_list,  list(
 	name = "Call of Younger"
 	action_icon_state = "call_younger"
 	action_icon = 'icons/Xeno/actions/carrier.dmi'
-	desc = "Appeals to the larva inside the Marine. The Marine loses their balance, and the larva's growth progress accelerates."
+	desc = "Appeals to the larva inside a hugged target. The target loses their balance, gets pulled towards you, and their larva's growth progress accelerates."
 	ability_cost = 150
 	cooldown_duration = 20 SECONDS
+	keybind_flags = ABILITY_KEYBIND_USE_ABILITY
 	keybinding_signals = list(
 		KEYBINDING_NORMAL = COMSIG_XENOABILITY_CALL_YOUNGER,
+		KEYBINDING_ALTERNATE = COMSIG_XENOABILITY_CALL_YOUNGER_SELECT,
 	)
-
+	target_flags = ABILITY_HUMAN_TARGET
 
 /datum/action/ability/activable/xeno/call_younger/can_use_ability(atom/A, silent, override_flags)
 	. = ..()
@@ -410,24 +414,24 @@ GLOBAL_LIST_INIT(hugger_images_list,  list(
 
 	if(!ishuman(A))
 		if(!silent)
-			A.balloon_alert(owner, "Not human")
+			A.balloon_alert(owner, "not human!")
 		return FALSE
 
 	var/mob/living/carbon/human/target = A
 
 	if(!(locate(/obj/item/alien_embryo) in target))
 		if(!silent)
-			target.balloon_alert(owner, "Not infected")
+			target.balloon_alert(owner, "not infected!")
 		return FALSE
 
 	if(target.stat == DEAD)
 		if(!silent)
-			target.balloon_alert(owner, "Dead")
+			target.balloon_alert(owner, "you're dead!")
 		return FALSE
 
 	if(!line_of_sight(owner, target, 9))
 		if(!silent)
-			target.balloon_alert(owner, "Need line of sight")
+			target.balloon_alert(owner, "need line of sight!")
 		return FALSE
 	return TRUE
 
@@ -455,7 +459,7 @@ GLOBAL_LIST_INIT(hugger_images_list,  list(
 	victim.apply_effects(2 SECONDS, 1 SECONDS)
 	victim.adjust_stagger(debuff SECONDS)
 	victim.adjust_slowdown(debuff)
-	victim.apply_damage(stamina_dmg, STAMINA)
+	victim.apply_damage(stamina_dmg, STAMINA, attacker = owner)
 
 	var/datum/internal_organ/O
 	for(var/i in list(ORGAN_SLOT_HEART, ORGAN_SLOT_LUNGS, ORGAN_SLOT_LIVER))

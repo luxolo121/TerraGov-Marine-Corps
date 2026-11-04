@@ -39,9 +39,9 @@
 	icon_state = "t19"
 	worn_icon_state = "t19"
 	fire_sound = 'sound/weapons/guns/fire/tgmc/kinetic/gun_mp19.ogg'
-	caliber = CALIBER_10X20_CASELESS //codex
+	caliber = CALIBER_10X20_CASELESS
 	gun_firemode_list = list(GUN_FIREMODE_AUTOMATIC, GUN_FIREMODE_AUTOBURST)
-	max_shells = 45 //codex
+	max_shells = 30
 	equip_slot_flags = ITEM_SLOT_BACK|ITEM_SLOT_BELT
 	type_of_casings = null
 	default_ammo_type = /obj/item/ammo_magazine/smg/standard_machinepistol
@@ -71,7 +71,7 @@
 	accuracy_mult = 1.1
 	accuracy_mult_unwielded = 0.9
 	recoil_unwielded = 0
-	fire_delay = 0.12 SECONDS
+	fire_delay = 0.15 SECONDS // The 20 FPS autofire scheduler already rounds the old 0.12s up to this tick.
 
 	scatter = 0
 	scatter_unwielded = 4
@@ -81,7 +81,7 @@
 
 	akimbo_scatter_mod = 24
 	burst_amount = 5
-	burst_delay = 0.07 SECONDS
+	burst_delay = 0.1 SECONDS // Likewise, the old 0.07s burst interval schedules at 0.1s.
 	akimbo_additional_delay = 20 // Literally do not even bother to try
 
 /obj/item/weapon/gun/smg/standard_machinepistol/compact
@@ -767,3 +767,53 @@
 
 /obj/item/weapon/gun/smg/vsd_pdw/medic
 	starting_attachment_types = list(/obj/item/attachable/motiondetector, /obj/item/attachable/lasersight, /obj/item/attachable/extended_barrel)
+
+//-------------------------------------------------------
+// RA-VAL, PMC smg
+
+/obj/item/weapon/gun/smg/val
+	name = "\improper RA-VAL submachine gun"
+	desc = "The RA-VAL is a heavier than usual subgun used by the Nanotrasen Contractors. Best known for carrying a punch within a small package. It's usually carried by troops who want a lightweight firearm to rush with while beating a mean punch. However, it suffers at long range due to heavy bullet of 9x39mm caliber."
+	icon = 'icons/obj/items/guns/submachineguns64.dmi'
+	icon_state = "val"
+	worn_icon_state = "val"
+	caliber = CALIBER_9X39 //codex
+	max_shells = 50 //codex
+	aim_slowdown = 0.25
+	fire_sound = 'sound/weapons/guns/fire/skorpevo.ogg'
+	unload_sound = 'sound/weapons/guns/interact/mp5_unload.ogg'
+	reload_sound = 'sound/weapons/guns/interact/mp5_reload.ogg'
+	equip_slot_flags = ITEM_SLOT_BACK
+	type_of_casings = null
+	default_ammo_type = /obj/item/ammo_magazine/smg/val
+	allowed_ammo_types = list(
+		/obj/item/ammo_magazine/smg/val,
+	)
+	attachable_allowed = list(
+		/obj/item/attachable/reddot,
+		/obj/item/attachable/verticalgrip,
+		/obj/item/attachable/lasersight,
+		/obj/item/attachable/flashlight,
+		/obj/item/attachable/motiondetector,
+		/obj/item/attachable/flashlight/under,
+		/obj/item/attachable/scope/mini,
+		/obj/item/attachable/magnetic_harness,
+		/obj/item/attachable/burstfire_assembly,
+		/obj/item/weapon/gun/shotgun/combat/masterkey,
+		/obj/item/weapon/gun/flamer/mini_flamer,
+		/obj/item/weapon/gun/grenade_launcher/underslung,
+		/obj/item/attachable/gyro,
+	)
+
+	attachable_offset = list("muzzle_x" = 43, "muzzle_y" = 19,"rail_x" = 11, "rail_y" = 23, "under_x" = 22, "under_y" = 16, "stock_x" = 24, "stock_y" = 16)
+
+	accuracy_mult = 1.15
+	accuracy_mult_unwielded = 0.85
+	fire_delay = 0.2 SECONDS
+	burst_delay =  0.15 SECONDS
+	burst_amount = 4
+	scatter = 2
+	scatter_unwielded = 11
+
+/obj/item/weapon/gun/smg/val/pmc_standard
+	starting_attachment_types = list(/obj/item/attachable/magnetic_harness, /obj/item/attachable/flashlight/under,)

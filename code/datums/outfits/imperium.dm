@@ -86,5 +86,3 @@
 		/obj/item/explosive/grenade = 1,
 		/obj/item/explosive/grenade/incendiary = 1,
 	)
-
-

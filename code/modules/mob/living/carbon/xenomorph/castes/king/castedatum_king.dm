@@ -30,7 +30,7 @@
 	upgrade_threshold = TIER_THREE_THRESHOLD
 	maximum_active_caste = 1
 	evolve_min_xenos = 1
-	death_evolution_delay = 7 MINUTES
+	death_evolution_delay = 15 MINUTES
 	evolve_population_lock = 4 // Mech
 
 	// *** Flags *** //
@@ -43,9 +43,6 @@
 
 	// *** Pheromones *** //
 	aura_strength = 4.5
-
-	// *** Queen Abilities *** //
-	queen_leader_limit = 4
 
 	minimap_icon = "xenoking"
 
@@ -61,7 +58,6 @@
 		/datum/action/ability/xeno_action/petrify,
 		/datum/action/ability/activable/xeno/off_guard,
 		/datum/action/ability/activable/xeno/shattering_roar,
-		/datum/action/ability/xeno_action/psychic_summon,
 		/datum/action/ability/xeno_action/pheromones,
 		/datum/action/ability/xeno_action/pheromones/emit_recovery,
 		/datum/action/ability/xeno_action/pheromones/emit_warding,

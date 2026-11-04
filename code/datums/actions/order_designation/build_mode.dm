@@ -29,7 +29,7 @@ GLOBAL_LIST_INIT(designator_types, list (
 ///build designation side of use_ability
 /datum/action/ability/activable/build_designator/proc/use_build_ability(atom/target)
 	if(!isturf(target) || !update_hologram(target))
-		owner.balloon_alert(owner, "Invalid spot")
+		owner.balloon_alert(owner, "invalid spot!")
 		return FALSE
 	new /obj/effect/build_designator(target, construct_type, owner)
 	return TRUE
@@ -84,7 +84,7 @@ GLOBAL_LIST_INIT(designator_types, list (
 	animate(new_hologram, 1 SECONDS, alpha = initial(new_hologram.alpha))
 	new_hologram.setDir(owner.dir)
 
-	RegisterSignal(hologram, COMSIG_QDELETING, PROC_REF(cleanup_hologram))
+	RegisterSignal(new_hologram, COMSIG_QDELETING, PROC_REF(cleanup_hologram))
 	hologram = new_hologram
 
 ///Updates the hologram position and validity

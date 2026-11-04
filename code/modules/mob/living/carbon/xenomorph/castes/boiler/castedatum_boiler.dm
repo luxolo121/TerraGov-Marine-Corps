@@ -23,7 +23,7 @@
 	plasma_gain = 50
 
 	// *** Health *** //
-	max_health = 380
+	max_health = 350
 
 	// *** Evolution *** //
 	upgrade_threshold = TIER_THREE_THRESHOLD
@@ -33,9 +33,10 @@
 	// *** Flags *** //
 	caste_flags = CASTE_ACID_BLOOD|CASTE_EVOLUTION_ALLOWED|CASTE_MUTATIONS_ALLOWED
 	can_flags = parent_type::can_flags|CASTE_CAN_BE_GIVEN_PLASMA
+	caste_traits = list(TRAIT_CAN_DISABLE_MINER, TRAIT_CAN_TEAR_HOLE)
 
 	// *** Defense *** //
-	soft_armor = list(MELEE = 45, BULLET = 45, LASER = 45, ENERGY = 45, BOMB = 0, BIO = 35, FIRE = 45, ACID = 35)
+	soft_armor = list(MELEE = 40, BULLET = 40, LASER = 40, ENERGY = 40, BOMB = 0, BIO = 35, FIRE = 40, ACID = 35)
 
 	// *** Ranged Attack *** //
 	spit_delay = 1 SECONDS
@@ -100,9 +101,16 @@
 	upgrade = XENO_UPGRADE_BASETYPE
 	caste_desc = "Gross! The large creature is venting a hot steam."
 
-		// *** Ranged Attack *** //
-	spit_delay = 0.75 SECONDS
-	spit_types = list(/datum/ammo/xeno/acid/airburst)
+	// *** Melee Attacks *** //
+	attack_delay = 7
+
+	// *** Speed *** //
+	speed = -0.7
+
+	max_health = 450
+
+	// *** Defense *** //
+	soft_armor = list(MELEE = 50, BULLET = 50, LASER = 50, ENERGY = 50, BOMB = 10, BIO = 40, FIRE = 40, ACID = 40)
 
 	actions = list(
 		/datum/action/ability/xeno_action/xeno_resting,
@@ -110,9 +118,8 @@
 		/datum/action/ability/activable/xeno/psydrain,
 		/datum/action/ability/xeno_action/place_acidwell,
 		/datum/action/ability/activable/xeno/corrosive_acid/strong,
-		/datum/action/ability/activable/xeno/xeno_spit,
-		/datum/action/ability/xeno_action/smokescreen_spit,
-		/datum/action/ability/activable/xeno/spray_acid/line/boiler,
+		/datum/action/ability/activable/xeno/smokescreen_spit,
+		/datum/action/ability/activable/xeno/charge/acid_dash,
 		/datum/action/ability/xeno_action/steam_rush,
 	)
 
@@ -134,9 +141,8 @@
 		/datum/action/ability/activable/xeno/psydrain,
 		/datum/action/ability/xeno_action/place_acidwell,
 		/datum/action/ability/activable/xeno/corrosive_acid/strong,
-		/datum/action/ability/activable/xeno/xeno_spit,
-		/datum/action/ability/xeno_action/smokescreen_spit,
-		/datum/action/ability/activable/xeno/spray_acid/line/boiler,
+		/datum/action/ability/activable/xeno/smokescreen_spit,
+		/datum/action/ability/activable/xeno/charge/acid_dash,
 		/datum/action/ability/xeno_action/steam_rush,
 		/datum/action/ability/activable/xeno/high_pressure_spit,
 	)

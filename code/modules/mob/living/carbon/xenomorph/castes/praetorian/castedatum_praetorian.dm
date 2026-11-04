@@ -50,9 +50,6 @@
 	// *** Minimap Icon *** //
 	minimap_icon = "praetorian"
 
-	// *** Ruler Abilities *** ///
-	queen_leader_limit = 4
-
 	// *** Abilities *** //
 	actions = list(
 		/datum/action/ability/xeno_action/xeno_resting,
@@ -91,7 +88,7 @@
 		/datum/action/ability/activable/xeno/corrosive_acid,
 		/datum/action/ability/activable/xeno/xeno_spit,
 		/datum/action/ability/activable/xeno/spray_acid/cone,
-		/datum/action/ability/xeno_action/sticky_grenade,
+		/datum/action/ability/activable/xeno/toxic_grenade/sticky,
 		/datum/action/ability/xeno_action/pheromones,
 		/datum/action/ability/xeno_action/pheromones/emit_recovery,
 		/datum/action/ability/xeno_action/pheromones/emit_warding,

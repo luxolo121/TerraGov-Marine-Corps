@@ -36,5 +36,3 @@
 	skills_type = /datum/skills/imperial/sl
 	paygrade = "Commissar"
 	outfit = /datum/outfit/job/imperial/commissar
-
-

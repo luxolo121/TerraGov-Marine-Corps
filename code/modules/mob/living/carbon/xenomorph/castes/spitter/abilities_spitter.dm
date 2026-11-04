@@ -3,11 +3,15 @@
 // ***************************************
 /datum/action/ability/activable/xeno/spray_acid/line
 	name = "Spray Acid"
-	desc = "Spray a line of dangerous acid at your target."
 	ability_cost = 250
 	cooldown_duration = 30 SECONDS
 	/// If the owner makes use of and has this much stored globs, non-opaque gas is created along with the acid. Must be non-zero.
 	var/gaseous_spray_threshold = 0
+	var/acid_spray_distance = 7
+
+/datum/action/ability/activable/xeno/spray_acid/line/New(Target)
+	. = ..()
+	desc = "Spray a line of dangerous acid at your target up to [acid_spray_distance + 1] tiles away." // Check uses > therefore the actual distance is + 1
 
 /datum/action/ability/activable/xeno/spray_acid/line/use_ability(atom/A)
 	var/turf/target = get_turf(A)
@@ -20,7 +24,7 @@
 	if(xeno_owner.do_actions || !do_after(xeno_owner, 5, NONE, target, BUSY_ICON_DANGER))
 		return
 
-	if(!can_use_ability(A, TRUE, override_flags = ABILITY_IGNORE_SELECTED_ABILITY))
+	if(!can_use_ability(A, TRUE))
 		return fail_activate()
 
 	succeed_activate()
@@ -97,7 +101,7 @@
 				smoke.start()
 
 		distance++
-		if(distance > 7 || blocked)
+		if(distance > acid_spray_distance || blocked)
 			break
 
 		prev_turf = T
@@ -118,9 +122,12 @@
 	desc = "Spits a spread of acid projectiles that splatter on the ground."
 	ability_cost = 280
 	cooldown_duration = 5 SECONDS
+	keybind_flags = ABILITY_KEYBIND_USE_ABILITY
 	keybinding_signals = list(
 		KEYBINDING_NORMAL = COMSIG_XENOABILITY_SCATTER_SPIT,
+		KEYBINDING_ALTERNATE = COMSIG_XENOABILITY_SCATTER_SPIT_SELECT,
 	)
+	target_flags = ABILITY_HUMAN_TARGET
 	/// The amount of deciseconds for the do_after.
 	var/cast_time = 0.5 SECONDS
 	/// Should the projectile get bonus damage from SPIT_UPGRADE_BONUS?
@@ -548,7 +555,7 @@ GLOBAL_LIST_INIT(globadier_images_list, list(
 	var/turf/T = get_turf(owner)
 	new xeno_owner.selected_grenade.minetype(T)
 	current_charges--
-	playsound(T, SFX_ALIEN_RESIN_BUILD, 25)
+	playsound(T, SFX_ALIEN_RESIN_BUILD, 25, FALSE, MEDIUM_SOUND_RANGE)
 	timer = addtimer(CALLBACK(src, PROC_REF(regen_mine)), regen_time, TIMER_UNIQUE|TIMER_STOPPABLE)
 	START_PROCESSING(SSprocessing, src)
 	update_button_icon()
@@ -589,9 +596,9 @@ GLOBAL_LIST_INIT(globadier_images_list, list(
 		owner.balloon_alert(owner, "No Mines!")
 		return fail_activate()
 	var/turf/T = get_turf(owner)
-	new /obj/structure/xeno/acid_mine/gas_mine(T)
+	new /obj/structure/xeno/acid_mine/gas_mine(T, xeno_owner.hivenumber)
 	current_charges--
-	playsound(T, SFX_ALIEN_RESIN_BUILD, 25)
+	playsound(T, SFX_ALIEN_RESIN_BUILD, 25, FALSE, MEDIUM_SOUND_RANGE)
 	timer = addtimer(CALLBACK(src, PROC_REF(regen_mine)), regen_time, TIMER_UNIQUE|TIMER_STOPPABLE)
 	START_PROCESSING(SSprocessing, src)
 	update_button_icon()
@@ -611,8 +618,10 @@ GLOBAL_LIST_INIT(globadier_images_list, list(
 	desc = "Fire an acid rocket, costing 30% of your current health and plasma, and dealing heavy damage where you aim it."
 	cooldown_duration = 2 MINUTES
 	ability_cost = 200
+	keybind_flags = ABILITY_KEYBIND_USE_ABILITY
 	keybinding_signals = list(
 		KEYBINDING_NORMAL = COMSIG_XENOABILITY_ACID_ROCKET,
+		KEYBINDING_ALTERNATE = COMSIG_XENOABILITY_ACID_ROCKET_SELECT,
 	)
 
 /datum/action/ability/activable/xeno/acid_rocket/use_ability(atom/target)

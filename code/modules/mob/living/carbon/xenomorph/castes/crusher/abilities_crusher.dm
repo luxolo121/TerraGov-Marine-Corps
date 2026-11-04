@@ -12,7 +12,6 @@
 	name = "Stomp"
 	action_icon_state = "stomp"
 	action_icon = 'icons/Xeno/actions/crusher.dmi'
-	desc = "Knocks all adjacent targets away and down."
 	ability_cost = 100
 	cooldown_duration = 20 SECONDS
 	keybind_flags = ABILITY_KEYBIND_USE_ABILITY
@@ -28,6 +27,10 @@
 	/// Should this ability deal additional effects / have more potent effects for victims that the owner is standing ontop of?
 	var/distance_bonus_allowed = TRUE
 
+/datum/action/ability/activable/xeno/stomp/New(Target)
+	. = ..()
+	desc = "Knocks adjacent targets away and down, targets take increased damage and stun when stomped on. Stuns for [CRUSHER_STOMP_PARALYZE / (1 SECONDS)] seconds, [CRUSHER_STOMP_PARALYZE_LONG / (1 SECONDS)] when stomped on."
+
 /datum/action/ability/activable/xeno/stomp/use_ability(atom/A)
 	succeed_activate()
 	add_cooldown()
@@ -35,7 +38,7 @@
 	GLOB.round_statistics.crusher_stomps++
 	SSblackbox.record_feedback("tally", "round_statistics", 1, "crusher_stomps")
 
-	playsound(get_turf(xeno_owner), 'sound/effects/bang.ogg', 25, 0)
+	playsound(get_turf(xeno_owner), 'sound/effects/bang.ogg', 25, 0, MEDIUM_SOUND_RANGE)
 	xeno_owner.visible_message(span_xenodanger("[xeno_owner] smashes into the ground!"), \
 		span_xenodanger("We smash into the ground!"))
 	xeno_owner.create_stomp() // Adds the visual effect. Wom wom wom.
@@ -67,7 +70,7 @@
 		return FALSE
 	if(get_dist(target, owner) > 1)
 		return FALSE
-	if(!can_use_ability(target, override_flags = ABILITY_IGNORE_SELECTED_ABILITY))
+	if(!can_use_ability(target))
 		return FALSE
 	if(target.get_xeno_hivenumber() == owner.get_xeno_hivenumber())
 		return FALSE
@@ -83,8 +86,10 @@
 	desc = "Fling an adjacent target over and behind you, or away from you while on harm intent. Also works over barricades."
 	ability_cost = 75
 	cooldown_duration = 12 SECONDS
+	keybind_flags = ABILITY_KEYBIND_USE_ABILITY
 	keybinding_signals = list(
 		KEYBINDING_NORMAL = COMSIG_XENOABILITY_CRESTTOSS,
+		KEYBINDING_ALTERNATE = COMSIG_XENOABILITY_CRESTTOSS_SELECT,
 	)
 	target_flags = ABILITY_MOB_TARGET
 	/// The amount to multiply the cooldown duration by if the ability was used on an allied xenomorph.
@@ -119,10 +124,10 @@
 
 	if(!xeno_owner.issamexenohive(A)) //xenos should be able to fling xenos into xeno passable areas!
 		for(var/obj/effect/forcefield/fog/fog in throw_origin)
-			A.balloon_alert(xeno_owner, "Cannot, fog")
+			A.balloon_alert(xeno_owner, "there's fog there!")
 			return fail_activate()
 	if(A.move_resist >= MOVE_FORCE_OVERPOWERING)
-		A.balloon_alert(xeno_owner, "Too heavy!")
+		A.balloon_alert(xeno_owner, "too heavy!")
 		return fail_activate()
 	if(isliving(A))
 		var/mob/living/L = A
@@ -174,7 +179,7 @@
 		return FALSE
 	if(get_dist(target, owner) > 1)
 		return FALSE
-	if(!can_use_ability(target, override_flags = ABILITY_IGNORE_SELECTED_ABILITY))
+	if(!can_use_ability(target))
 		return FALSE
 	if(target.get_xeno_hivenumber() == owner.get_xeno_hivenumber())
 		return FALSE
@@ -190,8 +195,10 @@
 	desc = "Charges up the crushers charge in place, then unleashes the full bulk of the crusher at the target location. Does not crush in diagonal directions."
 	ability_cost = 175
 	cooldown_duration = 30 SECONDS
+	keybind_flags = ABILITY_KEYBIND_USE_ABILITY
 	keybinding_signals = list(
 		KEYBINDING_NORMAL = COMSIG_XENOABILITY_ADVANCE,
+		KEYBINDING_ALTERNATE = COMSIG_XENOABILITY_ADVANCE_SELECT,
 	)
 	///Max charge range
 	var/advance_range = 7
@@ -242,7 +249,7 @@
 /datum/action/ability/activable/xeno/advance/ai_should_use(atom/target)
 	if(!iscarbon(target))
 		return FALSE
-	if(!can_use_ability(target, override_flags = ABILITY_IGNORE_SELECTED_ABILITY))
+	if(!can_use_ability(target))
 		return FALSE
 	if(target.get_xeno_hivenumber() == owner.get_xeno_hivenumber())
 		return FALSE
