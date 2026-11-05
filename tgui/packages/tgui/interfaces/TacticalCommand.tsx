@@ -196,7 +196,7 @@ export const TacticalCommand = () => {
           <NoticeBox info>{data.notice}</NoticeBox>
         )}
         <Stack align="stretch">
-          <Stack.Item grow basis="65%">
+          <Stack.Item grow basis="65%" minWidth={0}>
             <Section
               title="Operations map"
               buttons={
@@ -795,6 +795,10 @@ const TacticalMap = (props: {
     <div
       style={{
         height: '490px',
+        width: '100%',
+        maxWidth: '100%',
+        minWidth: 0,
+        boxSizing: 'border-box',
         overflow: 'auto',
         background: '#071019',
         border: '1px solid #385766',
