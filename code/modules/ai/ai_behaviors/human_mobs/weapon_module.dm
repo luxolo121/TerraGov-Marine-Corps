@@ -18,8 +18,12 @@
 	var/list/dead_target_chat = list("Target down.", "Hostile down.", "Scratch one.", "I got one!", "Down for the count.", "Kill confirmed.")
 
 /datum/ai_behavior/human/melee_interact(datum/source, atom/interactee, melee_tool = melee_weapon) //specifies the arg value
+	if(QDELETED(mob_parent) || mob_parent.client || mob_parent.stat == DEAD)
+		return FALSE
 	var/toggle_intent = FALSE
-	if(!melee_tool && current_action == MOVING_TO_SAFETY) //this exists so npcs will melee on retreat, even if unarmed
+	if(tactical_squad && (mob_parent.client || !tactical_target_allowed(interactee)))
+		return FALSE
+	if(tactical_squad || (!melee_tool && current_action == MOVING_TO_SAFETY)) //this exists so npcs will melee on retreat, even if unarmed
 		toggle_intent = TRUE
 		mob_parent.a_intent = INTENT_HARM
 	. = ..()
@@ -28,6 +32,9 @@
 
 ///Weapon stuff that happens during process
 /datum/ai_behavior/human/proc/weapon_process()
+	if(QDELETED(mob_parent) || mob_parent.client || mob_parent.stat == DEAD)
+		stop_fire()
+		return
 	if((human_ai_state_flags & HUMAN_AI_NEED_WEAPONS) && !(human_ai_state_flags & HUMAN_AI_BUSY_ACTION))
 		equip_weaponry()
 	if(!gun)
@@ -78,6 +85,8 @@
 
 ///Tries to equip weaponry, and updates behavior appropriately
 /datum/ai_behavior/human/proc/do_equip_weaponry()
+	if(QDELETED(mob_parent) || mob_parent.client || mob_parent.stat == DEAD)
+		return
 	store_hands()
 
 	var/obj/item/weapon/primary
@@ -276,6 +285,8 @@
 
 ///Tries to reload our gun
 /datum/ai_behavior/human/proc/reload_gun()
+	if(QDELETED(mob_parent) || mob_parent.client || mob_parent.stat == DEAD)
+		return
 	var/obj/item/new_ammo
 	if(gun.reciever_flags & AMMO_RECIEVER_HANDFULS)
 		handful_loop:

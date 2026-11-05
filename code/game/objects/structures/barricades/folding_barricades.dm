@@ -88,6 +88,11 @@
 
 ///Toggle open or closed
 /obj/structure/barricade/folding/proc/toggle_open(state, atom/user)
+	// A player explicitly operating any part of this linked group owns its state now.
+	if(tactical_passage && ismob(user))
+		var/mob/operator = user
+		if(operator.client)
+			QDEL_NULL(tactical_passage)
 	if(state == (barricade_flags & BARRICADE_OPEN))
 		return
 	playsound(loc, 'sound/items/ratchet.ogg', 25, 1, MEDIUM_SOUND_RANGE)

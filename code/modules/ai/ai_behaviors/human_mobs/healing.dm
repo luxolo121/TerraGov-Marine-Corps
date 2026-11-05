@@ -11,6 +11,12 @@
 	var/list/move_to_heal_chat = list("Hold on, I'm coming!", "Cover me, I'm moving!", "Moving to assist!", "I'm gonna fix you up.", "They need help!", "Cover me!", "Getting them up.", "Quit your complaining, it's just a fleshwound.", "On the move!", "Helping out here.")
 
 /datum/ai_behavior/human/late_initialize()
+	if(QDELETED(mob_parent) || mob_parent.client || mob_parent.stat == DEAD)
+		return
+	if(tactical_squad)
+		if(!QDELETED(mob_parent) && !mob_parent.client && mob_parent.stat != DEAD)
+			prepare_move()
+		return
 	if(should_hold())
 		return
 	return ..()
@@ -129,6 +135,10 @@
 
 ///Tries healing themselves
 /datum/ai_behavior/human/proc/try_heal()
+	if(QDELETED(mob_parent) || mob_parent.client || mob_parent.stat == DEAD)
+		return
+	if(tactical_squad && !tactical_support_allowed(mob_parent))
+		return
 	SEND_GLOBAL_SIGNAL(COMSIG_GLOB_AI_NEED_HEAL, mob_parent)
 
 	var/turf/owner_turf = get_turf(mob_parent)
@@ -151,6 +161,10 @@
 
 ///Tries to heal another mob
 /datum/ai_behavior/human/proc/try_heal_other(mob/living/carbon/human/patient)
+	if(QDELETED(mob_parent) || mob_parent.client || mob_parent.stat == DEAD)
+		return
+	if(tactical_squad && !tactical_support_allowed(patient))
+		return
 	if(human_ai_state_flags & HUMAN_AI_BUSY_ACTION)
 		return
 	if(patient.InCritical()) //crit heal is always priority

@@ -10,7 +10,7 @@ GLOBAL_LIST_INIT(designator_mode_image_list, list(
 
 /datum/action/ability/activable/build_designator
 	name = "Interact Designator"
-	desc = "Order your underlings around."
+	desc = "Click a friendly to select; click again to deselect without cancelling orders. Selecting a recruited AI commands its whole tactical squad: click a tile to hold or a living ally to follow. Use Tactical Command for zones and patrols."
 	action_icon_state = "interact_designator"
 	action_icon = 'icons/mob/actions.dmi'
 	use_state_flags = ABILITY_TARGET_SELF
@@ -23,6 +23,8 @@ GLOBAL_LIST_INIT(designator_mode_image_list, list(
 
 /datum/action/ability/activable/build_designator/Destroy()
 	cleanup_hologram()
+	if(selected_mob)
+		unindicate_target(selected_mob)
 	selected_mob = null
 	return ..()
 
@@ -121,5 +123,5 @@ GLOBAL_LIST_INIT(designator_mode_image_list, list(
 			use_state_flags = ABILITY_TARGET_SELF
 			action_icon_state = "interact_designator"
 			name = "Interact Designator"
-			desc = "Order your underlings around."
+			desc = "Click a friendly to select; click again to deselect without cancelling orders. Selecting a recruited AI commands its whole tactical squad: click a tile to hold or a living ally to follow. Use Tactical Command for zones and patrols."
 	update_button_icon()

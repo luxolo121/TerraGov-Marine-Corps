@@ -37,7 +37,7 @@
 /datum/action/ability/activable/build_designator/proc/use_interact_ability(atom/target)
 	if(selected_mob)
 		if(selected_mob == target || !check_valid_friendly(selected_mob)) //deselect a mob if clicking again, or they are crit etc
-			unindicate_target(target)
+			unindicate_target(selected_mob)
 			selected_mob = null
 			return FALSE
 	else if(check_valid_friendly(target))
@@ -72,6 +72,13 @@
 		return
 	COOLDOWN_START(src, order_cooldown, ORDER_DESIGNATION_CD)
 
+	// A recruited marine represents its squad. Do not announce a legacy order its brain ignores.
+	if(selected_mob)
+		var/datum/component/ai_controller/controller = selected_mob.GetComponent(/datum/component/ai_controller)
+		var/datum/ai_behavior/human/brain = controller?.ai_behavior
+		if(istype(brain) && brain.tactical_squad)
+			return designate_tactical_squad(target, brain.tactical_squad)
+
 	var/order_action = target.get_order_designation_type(selected_mob ? selected_mob : owner)
 	var/image/target_highlight = get_alt_image(target, TRUE, order_action)
 
@@ -85,8 +92,42 @@
 	audible_command(target, order_action, selected_mob)
 	addtimer(CALLBACK(src, PROC_REF(unindicate_target), target), 1 SECONDS)
 
+/// Quick world-space orders use the same persistent squad API as the command map.
+/datum/action/ability/activable/build_designator/proc/designate_tactical_squad(atom/target, datum/tactical_squad/squad)
+	if(!can_use_tactical_command(owner) || squad.faction != owner.faction)
+		to_chat(owner, span_warning("You do not have tactical command access."))
+		return FALSE
+	var/turf/position = get_turf(target)
+	if(!position || position.z != owner.z)
+		to_chat(owner, span_warning("Choose a target on your current level."))
+		return FALSE
+	for(var/mob/living/carbon/human/member AS in squad.members)
+		if(member.z != owner.z)
+			to_chat(owner, span_warning("[squad.name] has members on another level. Join them before issuing a new order."))
+			return FALSE
+	var/order_action
+	var/success = FALSE
+	if(isturf(target))
+		success = squad.issue_order("hold", position = position)
+		order_action = ORDER_DESIGNATION_TYPE_MOVE
+	else if(isliving(target))
+		var/mob/living/leader = target
+		if(leader.faction == owner.faction && leader.stat == CONSCIOUS)
+			success = squad.issue_order("follow", follow_target = leader)
+			order_action = ORDER_DESIGNATION_TYPE_FOLLOW
+	if(!success)
+		to_chat(owner, span_warning("[squad.name] keeps its current order. Click a walkable tile to hold, or a living ally outside the squad to follow. Use Tactical Command for zones and patrols; release a marine for individual interactions."))
+		return FALSE
+	var/image/highlight = get_alt_image(target, TRUE, order_action)
+	target.add_alt_appearance(/datum/atom_hud/alternate_appearance/basic/group, ORDER_DESIGNATION_TARGET_ALT_APPEARANCE, highlight, squad.members + owner)
+	addtimer(CALLBACK(src, PROC_REF(unindicate_target), target), 1 SECONDS)
+	to_chat(owner, span_notice("[squad.name]: [squad.order] [squad.order == "hold" ? "at [position.x], [position.y]" : "[target]"]. This replaces the squad's previous order; deselecting will not cancel it."))
+	return TRUE
+
 ///Removes any visual indicators on this atom
 /datum/action/ability/activable/build_designator/proc/unindicate_target(atom/old_target)
+	if(QDELETED(old_target))
+		return
 	old_target.remove_alt_appearance(ORDER_DESIGNATION_ALT_APPEARANCE)
 	old_target.remove_alt_appearance(ORDER_DESIGNATION_INDICATE_ALT_APPEARANCE)
 	old_target.remove_alt_appearance(ORDER_DESIGNATION_TARGET_ALT_APPEARANCE)

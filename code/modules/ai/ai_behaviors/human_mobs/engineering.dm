@@ -73,6 +73,10 @@
 
 ///Tries to build a holo designation
 /datum/ai_behavior/human/proc/try_build_holo(obj/effect/build_designator/hologram)
+	if(QDELETED(mob_parent) || mob_parent.client || mob_parent.stat == DEAD)
+		return
+	if(tactical_squad && !tactical_support_allowed(hologram))
+		return
 	if(hologram.builder)
 		//Someone else is building it, but we put it at the end of the queue in case its not completed
 		remove_from_engineering_list(hologram)
@@ -92,6 +96,7 @@
 		break
 
 	if(!building_stack)
+		human_ai_state_flags &= ~HUMAN_AI_BUILDING
 		remove_from_engineering_list(hologram)
 		try_speak(pick(unable_to_build_chat))
 		return
@@ -102,6 +107,10 @@
 
 ///Repairs an object if possible
 /datum/ai_behavior/human/proc/repair_obj(obj/repair_target)
+	if(QDELETED(mob_parent) || mob_parent.client || mob_parent.stat == DEAD)
+		return
+	if(tactical_squad && !tactical_support_allowed(repair_target))
+		return
 	if(repair_target.obj_integrity >= repair_target.max_integrity)
 		remove_from_engineering_list(repair_target)
 		on_engineering_end(repair_target)

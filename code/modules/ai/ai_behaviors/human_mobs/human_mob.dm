@@ -45,6 +45,8 @@
 	RegisterSignal(mob_parent, COMSIG_MOB_DROPPING_ITEM, PROC_REF(on_item_unequip)) //we do this on New because we want to know about items lost when dead
 
 /datum/ai_behavior/human/Destroy(force, ...)
+	if(tactical_squad)
+		tactical_squad.remove_member(mob_parent, FALSE)
 	gun = null
 	melee_weapon = null
 	hazard_list = null
@@ -85,6 +87,11 @@
 		RegisterSignal(mob_parent, COMSIG_MOVABLE_HEAR, PROC_REF(recieve_message))
 
 /datum/ai_behavior/human/cleanup_signals()
+	if(tactical_squad)
+		stop_fire()
+		reset_tactical_path()
+		deltimer(next_move_timer)
+		next_move_timer = null
 	UnregisterSignal(mob_parent, list(
 		COMSIG_HUMAN_DAMAGE_TAKEN,
 		COMSIG_LIVING_SET_LYING_ANGLE,
@@ -99,6 +106,8 @@
 	return ..()
 
 /datum/ai_behavior/human/process()
+	if(tactical_squad)
+		return tactical_process()
 	if(should_hold())
 		return
 	if(mob_parent.notransform)
@@ -168,6 +177,18 @@
 	return FALSE
 
 /datum/ai_behavior/human/scheduled_move()
+	if(QDELETED(mob_parent) || mob_parent.client || mob_parent.stat == DEAD)
+		next_move_timer = null
+		return
+	if(tactical_squad)
+		next_move_timer = null
+		if(QDELETED(mob_parent) || mob_parent.client || mob_parent.stat == DEAD)
+			return
+		tactical_move()
+		if(!tactical_destination || get_turf(mob_parent) == tactical_destination || should_hold())
+			return // The perception tick wakes stationary members; do not spin a 10 Hz idle timer.
+		prepare_move()
+		return
 	if(human_ai_state_flags & HUMAN_AI_BUSY_ACTION)
 		deltimer(next_move_timer)
 		next_move_timer = null
@@ -175,6 +196,8 @@
 	return ..()
 
 /datum/ai_behavior/human/change_action(next_action, atom/next_target, list/special_distance_to_maintain)
+	if(tactical_squad)
+		return FALSE // Explicit assignments own movement; inherited tasks must not replace them.
 	. = ..()
 	if(!.)
 		return
@@ -182,6 +205,8 @@
 		mob_parent.a_intent = INTENT_HELP
 
 /datum/ai_behavior/human/look_for_new_state(atom/next_target)
+	if(tactical_squad)
+		return
 	if(human_ai_state_flags & HUMAN_AI_BUSY_ACTION)
 		return
 	. = ..()
@@ -210,6 +235,8 @@
 		INVOKE_ASYNC(src, PROC_REF(try_heal))
 
 /datum/ai_behavior/human/set_goal_node(datum/source, obj/effect/ai_node/new_goal_node)
+	if(tactical_squad)
+		return FALSE
 	. = ..()
 	if(!.)
 		return
@@ -218,6 +245,8 @@
 	set_run()
 
 /datum/ai_behavior/human/set_escorted_atom(datum/source, atom/atom_to_escort, new_escort_is_weak)
+	if(tactical_squad)
+		return FALSE
 	. = ..()
 	if(!.)
 		return
@@ -226,6 +255,8 @@
 	set_run()
 
 /datum/ai_behavior/human/set_combat_target(atom/new_target)
+	if(tactical_squad && !tactical_target_allowed(new_target))
+		return FALSE
 	. = ..()
 	if(!.)
 		return
@@ -235,6 +266,9 @@
 	INVOKE_ASYNC(src, PROC_REF(weapon_process))
 
 /datum/ai_behavior/human/do_unset_target(atom/old_target, need_new_state = TRUE, need_new_escort = TRUE)
+	if(tactical_squad)
+		need_new_state = FALSE
+		need_new_escort = FALSE
 	if(combat_target == old_target && (human_ai_state_flags & HUMAN_AI_FIRING))
 		stop_fire()
 	remove_atom_of_interest(old_target)
@@ -288,6 +322,11 @@
 ///Reacts if the mob is below the min health threshold
 /datum/ai_behavior/human/proc/on_take_damage(datum/source, damage, mob/attacker)
 	SIGNAL_HANDLER
+	if(tactical_squad)
+		COOLDOWN_START(src, ai_heal_after_dam_cooldown, 4 SECONDS)
+		if(tactical_target_allowed(attacker))
+			set_combat_target(attacker)
+		return
 	if(damage < 5) //Don't want chip damage causing a retreat
 		return
 	if(!COOLDOWN_FINISHED(src, ai_damage_cooldown)) //sanity check since damage can occur very frequently, and makes the NPC less likely to instantly run when they get low

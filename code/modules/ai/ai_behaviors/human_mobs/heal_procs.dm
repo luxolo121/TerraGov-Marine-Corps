@@ -1,5 +1,7 @@
 ///Loops through healing someone
 /datum/ai_behavior/human/proc/heal_loop(mob/living/carbon/human/patient)
+	if(QDELETED(mob_parent) || mob_parent.client || mob_parent.stat == DEAD)
+		return
 	if(heal_damage(patient))
 		. = TRUE
 	if(heal_secondaries(patient))
@@ -109,6 +111,10 @@
 
 ///Tries to heal damage of a given type
 /datum/ai_behavior/human/proc/heal_by_type(mob/living/carbon/human/patient, dam_type)
+	if(QDELETED(mob_parent) || mob_parent.client || mob_parent.stat == DEAD)
+		return
+	if(tactical_squad && !tactical_support_allowed(patient))
+		return FALSE
 	if(!mob_parent.CanReach(patient))
 		return
 	var/obj/item/heal_item
@@ -151,6 +157,10 @@
 
 ///Tries to splint a limb
 /datum/ai_behavior/human/proc/do_splint(datum/limb/broken_limb, target = mob_parent)
+	if(QDELETED(mob_parent) || mob_parent.client || mob_parent.stat == DEAD)
+		return
+	if(tactical_squad && !tactical_support_allowed(target))
+		return FALSE
 	var/obj/item/stack/medical/splint/splint = locate(/obj/item/stack/medical/splint) in mob_inventory.medical_list
 	if(!splint)
 		return FALSE
@@ -183,6 +193,10 @@
 
 ///Tries to revive a dead dude
 /datum/ai_behavior/human/proc/do_defib(mob/living/carbon/human/patient, obj/item/defibrillator/defib)
+	if(QDELETED(mob_parent) || mob_parent.client || mob_parent.stat == DEAD)
+		return
+	if(tactical_squad && !tactical_support_allowed(patient))
+		return FALSE
 	if(!defib_check(patient))
 		return FALSE
 

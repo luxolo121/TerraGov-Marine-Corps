@@ -409,6 +409,10 @@
 /obj/structure/barricade/folding/ai_handle_obstacle(mob/living/user, move_dir)
 	if(!can_interact(user) || !user.dextrous)
 		return ..()
+	var/datum/component/ai_controller/controller = user.GetComponent(/datum/component/ai_controller)
+	var/datum/ai_behavior/human/brain = controller?.ai_behavior
+	if(istype(brain) && brain.tactical_squad && !(barricade_flags & BARRICADE_OPEN) && !tactical_passage)
+		new /datum/tactical_barricade_passage(src)
 	toggle_open(null, user)
 	return AI_OBSTACLE_RESOLVED
 

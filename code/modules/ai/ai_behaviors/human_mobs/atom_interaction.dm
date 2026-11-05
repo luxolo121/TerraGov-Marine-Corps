@@ -11,6 +11,8 @@
 ///Makes the mob attempt to interact with a specified atom
 /datum/ai_behavior/human/proc/interaction_designated(datum/source, atom/target)
 	SIGNAL_HANDLER
+	if(tactical_squad)
+		return // Tactical command applies squad orders explicitly, not global legacy broadcasts.
 	if(target?.z != mob_parent.z)
 		return
 	if(get_dist(target, mob_parent) > AI_ESCORTING_MAX_DISTANCE)
