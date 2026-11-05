@@ -1461,7 +1461,9 @@ GLOBAL_LIST_INIT(xeno_resin_costs, list(
 		KEYBINDING_NORMAL = COMSIG_XENOABILITY_BLESSINGSMENU,
 	)
 	use_state_flags = ABILITY_USE_LYING|ABILITY_USE_CRESTED
-	hidden = TRUE
+	// This is also an innate ability for the low-pop hive's builders and larva.
+	// Keep its direct action button visible instead of requiring the Hive Status menu.
+	hidden = FALSE
 
 /datum/action/ability/xeno_action/blessing_menu/action_activate()
 	xeno_owner.hive.purchases.interact(xeno_owner)

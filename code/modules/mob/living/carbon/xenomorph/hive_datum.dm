@@ -4,6 +4,8 @@
 	var/hivenumber = XENO_HIVE_NORMAL
 	///The current ruler of the xeno hive
 	var/mob/living/carbon/xenomorph/living_xeno_ruler
+	/// Whether losing the ruler disables hive functions. Normal SGS hives support solo play.
+	var/requires_living_ruler = TRUE
 	///Timer for caste evolution after the last one died, CASTE = TIMER
 	var/list/caste_death_timers = list()
 	var/color = null
@@ -847,7 +849,7 @@
 
 
 /datum/hive_status/normal/check_ruler()
-	if(!(SSticker.mode?.round_type_flags & MODE_XENO_RULER))
+	if(!requires_living_ruler || !(SSticker.mode?.round_type_flags & MODE_XENO_RULER))
 		return TRUE
 	return living_xeno_ruler
 
@@ -869,7 +871,14 @@
 // *********** Xeno messaging
 // ***************************************
 /datum/hive_status/proc/can_xeno_message() // This is defined for per-hive overrides
-	return living_xeno_ruler
+	return !requires_living_ruler || living_xeno_ruler
+
+/// Queenless play also keeps speech available after an actual queen dies.
+/datum/hive_status/proc/can_use_hivemind()
+	if(!requires_living_ruler || hivenumber != XENO_HIVE_NORMAL || living_xeno_ruler)
+		return TRUE
+	var/death_timer = get_hivemind_conduit_death_timer()
+	return !death_timer || timeleft(death_timer) <= get_total_hivemind_conduit_time() * 0.5
 
 /*
 
@@ -924,6 +933,8 @@ to_chat will check for valid clients itself already so no need to double check f
 // ***************************************
 /datum/hive_status/normal // subtype for easier typechecking and overrides
 	hive_flags = HIVE_CAN_HIJACK|HIVE_CAN_COLLAPSE_FROM_SILO
+	// This fork must work on any map without a sacrificial, unoccupied queen.
+	requires_living_ruler = FALSE
 	/// Timer ID for the orphan hive timer
 	var/atom/movable/screen/text/screen_timer/orphan_hud_timer
 	/// Timer ID for the siloless collapse hud timer
@@ -946,12 +957,17 @@ to_chat will check for valid clients itself already so no need to double check f
 /datum/hive_status/normal/handle_ruler_timer()
 	if(!isinfestationgamemode(SSticker.mode)) //Check just need for unit test
 		return
+	var/datum/game_mode/infestation/D = SSticker.mode
+	if(!requires_living_ruler)
+		if(D.orphan_hive_timer)
+			deltimer(D.orphan_hive_timer)
+			D.orphan_hive_timer = null
+		QDEL_NULL(orphan_hud_timer)
+		return
 	if(!(SSticker.mode?.round_type_flags & MODE_XENO_RULER))
 		return
 	if(SSmonitor.gamestate != SHIPSIDE) //orphan hivemind will only happen during shipside.
 		return
-	var/datum/game_mode/infestation/D = SSticker.mode
-
 	if(living_xeno_ruler)
 		if(D.orphan_hive_timer)
 			deltimer(D.orphan_hive_timer)

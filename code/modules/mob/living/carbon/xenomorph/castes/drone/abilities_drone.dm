@@ -209,6 +209,9 @@
 
 ///Links this action to
 /datum/action/ability/xeno_action/enhancement/proc/link_essence_action()
+	// Maturation/evolution or deletion can remove the action before its deferred link runs.
+	if(QDELETED(src) || QDELETED(xeno_owner))
+		return
 	if(essence_link_action)
 		return
 	essence_link_action = xeno_owner.actions_by_path[/datum/action/ability/activable/xeno/essence_link]

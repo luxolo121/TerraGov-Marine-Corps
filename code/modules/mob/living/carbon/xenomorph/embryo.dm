@@ -222,7 +222,7 @@
 	log_combat(src, null, "chestbursted as a larva.")
 	log_game("[key_name(src)] chestbursted as a larva at [AREACOORD(src)].")
 
-	if(((locate(/obj/structure/bed/nest) in loc) && hive.living_xeno_ruler?.z == loc.z) || (!mind))
+	if(((locate(/obj/structure/bed/nest) in loc) && (!hive.requires_living_ruler || hive.living_xeno_ruler?.z == loc.z)) || (!mind))
 		burrow()
 
 	victim.death()

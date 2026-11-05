@@ -70,6 +70,9 @@
 
 ///Called by [/datum/hive_status/normal/handle_ruler_timer()] after [NUCLEAR_WAR_HIVEMIND_COLLAPSE] elapses to end the round
 /datum/game_mode/infestation/nuclear_war/orphan_hivemind_collapse()
+	var/datum/hive_status/hive = GLOB.hive_datums[XENO_HIVE_NORMAL]
+	if(!hive?.requires_living_ruler)
+		return
 	if(round_finished)
 		return
 	if(round_stage == INFESTATION_MARINE_CRASHING)

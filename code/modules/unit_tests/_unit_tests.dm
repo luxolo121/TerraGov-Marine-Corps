@@ -77,6 +77,7 @@
 #include "mapping.dm"
 #include "movement_order_sanity.dm"
 #include "plane_double_transform.dm"
+#include "queenless_hive.dm"
 #include "security_levels.dm"
 #include "spawn_guns.dm"
 #include "spawn_humans.dm"
@@ -91,6 +92,7 @@
 #include "verify_emoji_names.dm"
 #include "weed_ability.dm"
 #include "weed_spread.dm"
+#include "xeno_blessings.dm"
 #include "xeno_logical_scaling.dm"
 #include "xenoaccuracy.dm"
 // END_INCLUDE
