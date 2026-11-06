@@ -13,7 +13,14 @@
 			TEST_ASSERT_EQUAL(jointext(pixels, ","), jointext(reversed, ","), "Reversing a segment must produce identical pixels at every tile seam")
 			if(!length(pixels))
 				continue
-			var/icon/raster = icon(command.world_route_icon(pixels), "route")
+			// BYOND reports the newly Insert-built icon as 0x0 until the image
+			// appearance materializes its resource (even with explicit SOUTH).
+			// Inspect the actual production image contract, not that intermediate.
+			command.clear_world_images()
+			command.add_world_image(tile, "route", "#62e8ff", raster = command.world_route_icon(pixels))
+			TEST_ASSERT_EQUAL(length(command.world_images), 1, "Inspect exactly this tile's production route appearance")
+			var/image/appearance = command.world_images[1]
+			var/icon/raster = icon(appearance.icon, appearance.icon_state, appearance.dir)
 			TEST_ASSERT_EQUAL(raster.Width(), 32, "A route must never extend into a hidden neighboring turf")
 			TEST_ASSERT_EQUAL(raster.Height(), 32, "A route raster must be clipped vertically too")
 			for(var/pixel in pixels)
