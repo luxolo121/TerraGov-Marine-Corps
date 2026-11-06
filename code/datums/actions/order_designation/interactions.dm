@@ -74,7 +74,6 @@
 		var/datum/tactical_command/command = get_tactical_command(owner)
 		if(command?.plan == brain.tactical_squad.plan)
 			command.world_execute("squad_select", list("id" = brain.tactical_squad.id))
-			command.set_world_overlay(TRUE)
 	else
 		// Explicit unmanaged selection opts back into the legacy per-marine interaction path.
 		var/datum/action/tactical_command/action = owner.actions_by_path[/datum/action/tactical_command]

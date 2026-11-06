@@ -20,6 +20,11 @@
 	var/world_overlay_enabled = FALSE
 	var/client/world_client
 	var/list/world_images = list()
+	/// Only images in the previous visible frame; stable identities prevent movement flicker.
+	var/list/world_image_cache = list()
+	var/list/world_next_image_cache = list()
+	/// FIFO-bounded tile raster patterns, independent of route color and location.
+	var/list/world_route_icon_cache = list()
 	var/world_target_order
 	var/world_refresh_timer
 	var/world_menu_open = FALSE
@@ -27,7 +32,7 @@
 	var/world_menu_serial = 0
 
 /// Never render remote cameras, blindness, another level, or outside the local viewport.
-/datum/tactical_command/proc/world_visible_tiles()
+/datum/tactical_command/proc/world_visible_tiles(facing)
 	var/list/result = list()
 	if(!commander?.client || commander.client.eye != commander || !isturf(commander.loc) || commander.eye_blind)
 		return result
@@ -35,7 +40,7 @@
 	var/half_width = min(9, round((dimensions[1] - 1) / 2))
 	var/half_height = min(9, round((dimensions[2] - 1) / 2))
 	for(var/turf/tile in view(9, commander))
-		if(abs(tile.x - commander.x) <= half_width && abs(tile.y - commander.y) <= half_height && commander.in_fov(tile))
+		if(abs(tile.x - commander.x) <= half_width && abs(tile.y - commander.y) <= half_height && commander.in_fov(tile) && (isnull(facing) || tactical_in_facing_fov(commander, tile, facing)))
 			result[tile] = TRUE
 	return result
 
@@ -50,6 +55,8 @@
 	if(world_client)
 		world_client.images -= world_images
 	world_images.Cut()
+	world_image_cache.Cut()
+	world_next_image_cache.Cut()
 	world_client = null
 
 /datum/tactical_command/proc/set_world_overlay(enabled)
@@ -89,49 +96,156 @@
 	if(designator && commander.selected_ability == designator)
 		designator.deselect()
 
-/// Clear stale sight immediately; coalesce movement/turn bursts into one bounded local redraw.
+/// A dir-change signal fires before atom.dir is assigned. Intersect both views until
+/// the zero-delay refresh observes the new direction; never expose the old rear arc.
+/proc/tactical_in_facing_fov(mob/living/user, turf/tile, facing)
+	if(!user.fov_view || (abs(tile.x - user.x) <= 1 && abs(tile.y - user.y) <= 1))
+		return TRUE
+	var/dx = tile.x - user.x
+	var/dy = tile.y - user.y
+	var/facing_x = (facing & EAST ? 1 : 0) - (facing & WEST ? 1 : 0)
+	var/facing_y = (facing & NORTH ? 1 : 0) - (facing & SOUTH ? 1 : 0)
+	var/facing_length = sqrt(facing_x * facing_x + facing_y * facing_y)
+	if(!facing_length)
+		return FALSE
+	var/dot = facing_x * dx + facing_y * dy
+	return arccos(clamp(dot / (sqrt(dx * dx + dy * dy) * facing_length), -1, 1)) < (360 - user.fov_view) / 2
+
+/// No SQL-backed authorization in movement signals. Full authority is checked on
+/// enable, every command and the periodic refresh; this only redraws an existing grant.
+/datum/tactical_command/proc/world_movement_allowed()
+	return tactical_command_available(commander) && commander.client == world_client && commander.faction == plan?.faction && commander.z == editor_z
+
 /datum/tactical_command/proc/world_moved()
 	SIGNAL_HANDLER
 	if(!world_overlay_enabled)
 		return
-	clear_world_images()
+	if(!world_movement_allowed())
+		world_invalidated()
+		return
+	// Synchronous local redraw retains unchanged image identities. No empty 0.2s frame.
+	replace_world_images(world_visible_tiles())
+
+/datum/tactical_command/proc/world_turned(datum/source, old_direction, new_direction)
+	SIGNAL_HANDLER
+	if(!world_overlay_enabled)
+		return
+	if(!world_movement_allowed())
+		world_invalidated()
+		return
+	replace_world_images(world_visible_tiles(new_direction))
 	if(!world_refresh_timer)
-		world_refresh_timer = addtimer(CALLBACK(src, PROC_REF(world_deferred_refresh)), 0.2 SECONDS, TIMER_STOPPABLE)
+		world_refresh_timer = addtimer(CALLBACK(src, PROC_REF(world_deferred_refresh)), 0, TIMER_STOPPABLE)
 
 /datum/tactical_command/proc/world_deferred_refresh()
 	world_refresh_timer = null
-	refresh_world_overlay()
+	if(world_overlay_enabled && world_movement_allowed())
+		replace_world_images(world_visible_tiles())
 
 /datum/tactical_command/process()
 	refresh_world_overlay()
 
-/// A line test against LOCAL tiles: never walk a map-wide route to draw a local segment.
-/proc/tactical_tile_on_segment(turf/tile, turf/start, turf/end)
-	if(!tile || !start || !end || tile.z != start.z || start.z != end.z)
-		return FALSE
+/// Rasterize the mathematical center-to-center line in LOCAL pixel coordinates.
+/// The dominant-axis samples are global-line aligned, so adjacent tile clips meet
+/// exactly, including arbitrary diagonals, reversed segments and endpoint tiles.
+/// Never walk a remote route: at most 32 samples for a candidate local tile.
+/proc/tactical_route_pixels(turf/tile, turf/start, turf/end)
+	var/list/pixels = list()
+	if(!tile || !start || !end || tile.z != start.z || start.z != end.z || start == end)
+		return pixels
 	if(tile.x < min(start.x, end.x) || tile.x > max(start.x, end.x) || tile.y < min(start.y, end.y) || tile.y > max(start.y, end.y))
-		return FALSE
-	var/dx = end.x - start.x
-	var/dy = end.y - start.y
-	return abs((tile.x - start.x) * dy - (tile.y - start.y) * dx) <= max(abs(dx), abs(dy)) / 2
+		return pixels
+	var/x0 = (start.x - tile.x) * 32 + 16
+	var/y0 = (start.y - tile.y) * 32 + 16
+	var/x1 = (end.x - tile.x) * 32 + 16
+	var/y1 = (end.y - tile.y) * 32 + 16
+	var/horizontal = abs(x1 - x0) >= abs(y1 - y0)
+	var/major_start = horizontal ? x0 : y0
+	var/minor_start = horizontal ? y0 : x0
+	var/major_end = horizontal ? x1 : y1
+	var/minor_end = horizontal ? y1 : x1
+	// Canonical direction makes the exact pixel pattern invariant under reversal.
+	if(major_start > major_end)
+		var/swap = major_start
+		major_start = major_end
+		major_end = swap
+		swap = minor_start
+		minor_start = minor_end
+		minor_end = swap
+	var/first = max(1, major_start)
+	var/last = min(32, major_end)
+	if(first > last)
+		return pixels
+	var/slope = (minor_end - minor_start) / (major_end - major_start)
+	var/first_minor = minor_start + (first - major_start) * slope
+	var/last_minor = minor_start + (last - major_start) * slope
+	if(max(first_minor, last_minor) < -0.5 || min(first_minor, last_minor) >= 32.5)
+		return pixels
+	for(var/major in first to last)
+		var/minor = round(minor_start + (major - major_start) * slope + 0.5)
+		for(var/width_offset in 0 to 1)
+			var/cross = minor + width_offset
+			if(cross < 1 || cross > 32)
+				continue
+			var/px = horizontal ? major : cross
+			var/py = horizontal ? cross : major
+			pixels += (py - 1) * 32 + px
+	return pixels
 
-/datum/tactical_command/proc/add_world_image(turf/tile, state, tint, direction = SOUTH, label)
+/// Shared hit test uses the same clipped line as the visible connector.
+/proc/tactical_tile_on_segment(turf/tile, turf/start, turf/end)
+	return length(tactical_route_pixels(tile, start, end)) > 0
+
+/// Coordinate membership, not viewport membership: a clipped/hidden neighbor is
+/// still part of the room, so camera movement never draws false internal borders.
+/proc/tactical_zone_edge_mask(turf/tile, list/coordinates)
+	var/mask = 0
+	if(!coordinates["[tile.x],[tile.y + 1]"])
+		mask |= NORTH
+	if(!coordinates["[tile.x],[tile.y - 1]"])
+		mask |= SOUTH
+	if(!coordinates["[tile.x + 1],[tile.y]"])
+		mask |= EAST
+	if(!coordinates["[tile.x - 1],[tile.y]"])
+		mask |= WEST
+	return mask
+
+/datum/tactical_command/proc/world_route_icon(list/pixels)
+	var/key = jointext(pixels, ",")
+	var/icon/result = world_route_icon_cache[key]
+	if(result)
+		return result
+	var/icon/raster = icon('icons/mob/tactical_command.dmi', "route")
+	for(var/pixel in pixels)
+		raster.DrawBox("#ffffff", ((pixel - 1) % 32) + 1, round((pixel - 1) / 32) + 1)
+	result = new /icon()
+	result.Insert(raster, "route", SOUTH, 1)
+	if(length(world_route_icon_cache) >= 512)
+		world_route_icon_cache.Cut(1, 2)
+	world_route_icon_cache[key] = result
+	return result
+
+/datum/tactical_command/proc/add_world_image(turf/tile, state, tint, direction = SOUTH, label, opacity = 210, image_layer = ABOVE_MOB_LAYER, icon/raster)
 	// A pathological pile of overlapping plans cannot allocate unbounded client images.
 	if(length(world_images) >= 900)
 		return
-	var/image/marker = image('icons/mob/tactical_command.dmi', tile, state, ABOVE_MOB_LAYER, direction)
-	marker.plane = GAME_PLANE
-	marker.mouse_opacity = MOUSE_OPACITY_TRANSPARENT
-	marker.color = tint
-	marker.alpha = 210
-	if(label)
-		marker.maptext = "<span style='font-size:7px;color:white;text-shadow:1px 1px black'>[label]</span>"
-		marker.maptext_x = 11
-		marker.maptext_y = 17
-	world_images += marker
+	var/key = "[REF(tile)]|[state]|[tint]|[direction]|[label]|[opacity]|[image_layer]|[raster ? REF(raster) : ""]"
+	var/image/marker = world_image_cache[key]
+	if(!marker)
+		marker = image(raster || 'icons/mob/tactical_command.dmi', tile, state, image_layer, direction)
+		marker.plane = GAME_PLANE
+		marker.mouse_opacity = MOUSE_OPACITY_TRANSPARENT
+		marker.color = tint
+		marker.alpha = opacity
+		if(label)
+			marker.maptext = "<span style='font-size:7px;color:white;text-shadow:1px 1px black'>[label]</span>"
+			marker.maptext_x = 11
+			marker.maptext_y = 17
+	world_next_image_cache[key] = marker
+	world_images |= marker
 
 /datum/tactical_command/proc/draw_world_route(list/points, list/visible, tint, loop = FALSE, connectors = TRUE)
-	var/list/drawn_strokes = list()
+	var/list/tile_pixels = list()
 	for(var/index in 1 to length(points))
 		if(length(world_images) >= 900)
 			return
@@ -143,16 +257,21 @@
 		var/turf/next = points[index == length(points) ? 1 : index + 1]
 		if(point == next)
 			continue
-		var/line_direction = abs(next.x - point.x) > abs(next.y - point.y) ? EAST : NORTH
 		for(var/turf/tile AS in visible)
-			if(length(world_images) >= 900)
-				return
-			if(!drawn_strokes[tile] && tile != point && tile != next && tactical_tile_on_segment(tile, point, next))
-				add_world_image(tile, "route", tint, line_direction)
-				drawn_strokes[tile] = TRUE
+			var/list/pixels = tactical_route_pixels(tile, point, next)
+			if(!length(pixels))
+				continue
+			if(!tile_pixels[tile])
+				tile_pixels[tile] = pixels
+			else
+				var/list/combined = tile_pixels[tile]
+				combined |= pixels
+	// One raster per tile, including bends/crossings; overlapping segments never
+	// erase each other and do not multiply the opacity or image budget.
+	for(var/turf/tile AS in tile_pixels)
+		add_world_image(tile, "route", tint, raster = world_route_icon(tile_pixels[tile]))
 
 /datum/tactical_command/proc/refresh_world_overlay()
-	clear_world_images()
 	if(!world_overlay_enabled)
 		return
 	if(ui_status(commander) != UI_INTERACTIVE || (editor_z && editor_z != commander.z))
@@ -160,12 +279,22 @@
 		return
 	check_level()
 	update_world_controls()
-	var/list/visible = world_visible_tiles()
-	if(!length(visible))
-		return
+	if(world_client != commander.client)
+		clear_world_images()
 	world_client = commander.client
+	replace_world_images(world_visible_tiles())
+
+/// Reconcile one complete visible frame atomically; unchanged images remain in
+/// client.images. Removed/FOV-hidden tiles disappear in this same non-sleeping call.
+/datum/tactical_command/proc/replace_world_images(list/visible)
+	var/list/previous = world_images
+	world_images = list()
+	world_next_image_cache = list()
 	build_world_images(visible)
-	world_client.images += world_images
+	if(world_client)
+		world_client.images -= previous - world_images
+		world_client.images += world_images - previous
+	world_image_cache = world_next_image_cache
 
 /// Pure rendering step: all inputs have already been restricted to authorized local visibility.
 /datum/tactical_command/proc/build_world_images(list/visible)
@@ -190,12 +319,12 @@
 			add_world_image(order_target, "orders", "#ffffff")
 	if(anchor && visible[anchor])
 		add_world_image(anchor, "selected", "#ffdf68", label = "A")
-	var/list/preview_lookup = list()
+	var/list/preview_coordinates = list()
 	for(var/turf/tile AS in preview)
-		preview_lookup[tile] = TRUE
+		preview_coordinates["[tile.x],[tile.y]"] = TRUE
 	for(var/turf/tile AS in visible)
-		if(preview_lookup[tile])
-			add_world_image(tile, "zone", "#ffdf68")
+		if(preview_coordinates["[tile.x],[tile.y]"])
+			add_world_image(tile, "zone_[tactical_zone_edge_mask(tile, preview_coordinates)]", "#ffdf68", opacity = 220, image_layer = WALL_OBJ_LAYER)
 	draw_world_route(draft_route, visible, "#ffdf68")
 	// Only the selected/assigned route draws connecting strokes; all saved local waypoints remain visible.
 	var/datum/tactical_route/connected_route = selected_patrol || squad?.route
@@ -225,14 +354,15 @@
 	for(var/turf/tile AS in visible)
 		if(length(world_images) >= 900)
 			return
+		// Draft priority: do not stack saved haze/edges under a draft on the same tile.
+		if(preview_coordinates["[tile.x],[tile.y]"])
+			continue
 		for(var/datum/tactical_zone/zone AS in ordered_zones)
 			if(!zone.contains(tile))
 				continue
 			var/tint = zone == selected ? "#62e8ff" : (zone.purpose == "fallback" ? "#ca95ff" : (zone.purpose == "staging" ? "#ffcf76" : "#83b99b"))
-			for(var/direction in GLOB.cardinals)
-				if(!zone.contains(get_step(tile, direction)))
-					add_world_image(tile, "boundary", tint, direction)
-			// Overlapping interiors need not stack unreadable outlines. Selected zone has priority.
+			add_world_image(tile, "zone_[tactical_zone_edge_mask(tile, zone.coordinates)]", tint, opacity = zone == selected ? 200 : 160, image_layer = WALL_OBJ_LAYER)
+			// One interior per tile. Selected zone wins overlaps without darker patches.
 			break
 
 /datum/tactical_command/proc/update_world_controls()
@@ -244,17 +374,19 @@
 	if(designator && designator.designator_mode != BUILD_DESIGNATOR_MODE)
 		var/mode = world_target_order || tool
 		designator.button.name = "[designator.name] — [context]"
-		designator.button.desc = "Right-click (Select Buildtype key, default I) for tactical orders/tools, save, undo, cancel and overlays. Use [world_click_gesture()] on visible terrain or marines. Mode: [mode]. [context]. Zone: [zone?.name || "none"]. Route: [route?.name || "none"]."
-		if(designator.designator_mode == TACTICAL_DESIGNATOR_MODE)
-			designator.button.maptext = "<span style='font-size:6px;color:white;text-shadow:1px 1px black'>[uppertext(mode)]</span>"
-		else
-			designator.button.maptext = null
+		designator.button.desc = "Right-click (Select Buildtype binding) reopens [designator.tactical_menu == "main" ? "the mode menu" : designator.tactical_menu]. Use [world_click_gesture()] on visible terrain. Mode: [mode]. [context]. Zone: [zone?.name || "none"]. Route: [route?.name || "none"]. Back changes menus; Interact handles ordinary move/follow."
+		// Keybinding overlays already occupy the upper part of this button. Do not add tool text.
+		designator.button.maptext = null
+	var/datum/action/tactical_overlay/overlay_action = commander?.actions_by_path[/datum/action/tactical_overlay]
+	if(overlay_action)
+		overlay_action.set_toggle(world_overlay_enabled)
+		overlay_action.button.name = "Tactical Overlay — [world_overlay_enabled ? "shown" : "hidden"]"
 
 /datum/tactical_command/proc/world_click_gesture()
 	return (commander?.client?.prefs?.toggles_gameplay & MIDDLESHIFTCLICKING) ? "middle-click" : "shift-click"
 
-/// HUD callers capture z before any sleeping prompt; dispatch rejects stale answers.
-/datum/tactical_command/proc/world_execute(action, list/params)
+/// All quick controls use the same authorization and current-z validation as the full planner.
+/datum/tactical_command/proc/world_execute(action, list/params, quiet = FALSE)
 	if(!islist(params))
 		params = list()
 	if(isnull(params["z"]))
@@ -264,7 +396,8 @@
 	if(ui_status(commander) != UI_INTERACTIVE)
 		world_invalidated()
 		return FALSE
-	to_chat(commander, notice_error ? span_warning(notice) : span_notice(notice))
+	if(!quiet || notice_error)
+		to_chat(commander, notice_error ? span_warning(notice) : span_notice(notice))
 	update_world_controls()
 	refresh_world_overlay()
 	SStgui.update_uis(src)
@@ -285,6 +418,52 @@
 	update_world_controls()
 	return TRUE
 
+/// Prefer the selected zone only when the click actually hits it. Otherwise use stable plan order.
+/datum/tactical_command/proc/world_zone_at(turf/position, adjacent = FALSE)
+	var/datum/tactical_zone/selected = plan.find_zone(selected_zone)
+	if(selected && world_zone_hit(selected, position, adjacent))
+		return selected
+	for(var/datum/tactical_zone/zone AS in plan.zones)
+		if(world_zone_hit(zone, position, FALSE))
+			return zone
+	if(adjacent)
+		for(var/datum/tactical_zone/zone AS in plan.zones)
+			if(world_zone_hit(zone, position, TRUE))
+				return zone
+	return null
+
+/datum/tactical_command/proc/world_zone_hit(datum/tactical_zone/zone, turf/position, adjacent = FALSE)
+	if(!position || zone.z != position.z)
+		return FALSE
+	if(zone.contains(position))
+		return TRUE
+	if(adjacent)
+		for(var/turf/neighbor AS in RANGE_TURFS(1, position))
+			if(zone.contains(neighbor))
+				return TRUE
+	return FALSE
+
+/datum/tactical_command/proc/world_route_hit(datum/tactical_route/route, turf/position)
+	if(!position || route.z != position.z)
+		return FALSE
+	if(position in route.waypoints)
+		return TRUE
+	for(var/index in 1 to length(route.waypoints))
+		if(index == length(route.waypoints) && !route.loop)
+			break
+		if(tactical_tile_on_segment(position, route.waypoints[index], route.waypoints[index == length(route.waypoints) ? 1 : index + 1]))
+			return TRUE
+	return FALSE
+
+/datum/tactical_command/proc/world_route_at(turf/position)
+	var/datum/tactical_route/selected = plan.find_route(selected_route)
+	if(selected && world_route_hit(selected, position))
+		return selected
+	for(var/datum/tactical_route/route AS in plan.routes)
+		if(world_route_hit(route, position))
+			return route
+	return null
+
 /datum/tactical_command/proc/world_click(atom/target)
 	if(ui_status(commander) != UI_INTERACTIVE || !world_target_visible(target))
 		return FALSE
@@ -292,91 +471,88 @@
 	var/turf/position = get_turf(target)
 	if(world_target_order)
 		var/order = world_target_order
-		cursor = position
-		var/list/params = list("order" = order, "at_cursor" = order == "hold")
-		if(order == "follow")
-			if(!isliving(target))
-				to_chat(commander, span_warning("Choose a conscious living ally to follow."))
+		if(order == "guard" || order == "fallback")
+			var/datum/tactical_zone/zone = world_zone_at(position)
+			if(!zone)
+				to_chat(commander, span_warning("Target a saved zone. An unrelated selected zone is not used."))
 				return FALSE
-			params["follow_ref"] = REF(target)
-		if(!world_execute("order", params))
+			if(!world_execute("zone_select", list("id" = zone.id), TRUE))
+				return FALSE
+			if(!world_execute(order == "fallback" ? "fallback" : "order", list("id" = zone.id, "order" = "guard")))
+				return FALSE
+		else if(order == "patrol")
+			var/datum/tactical_route/route = world_route_at(position)
+			if(!route)
+				to_chat(commander, span_warning("Target a saved patrol waypoint or route line."))
+				return FALSE
+			if(!world_execute("route_select", list("id" = route.id), TRUE) || !world_execute("order", list("order" = "patrol")))
+				return FALSE
+		else
 			return FALSE
 		world_target_order = null
-		update_world_controls()
+		return_to_interact()
 		return TRUE
 	if(tool != "inspect")
-		return world_execute("map_click", list("x" = position.x, "y" = position.y))
+		var/current_tool = tool
+		if(tool == "entrance" || tool == "choke")
+			var/datum/tactical_zone/zone = world_zone_at(position, TRUE)
+			if(!zone)
+				to_chat(commander, span_warning("Place this approach inside or immediately beside a saved zone."))
+				return FALSE
+			if(!world_execute("zone_select", list("id" = zone.id), TRUE))
+				return FALSE
+			// Read facing at EACH placement. The full planner keeps its independent facing selector.
+			if(!world_execute("marker_facing", list("direction" = commander.dir), TRUE))
+				return FALSE
+		var/auto_saving = current_tool == "room" || (current_tool == "rectangle" && anchor && !length(preview))
+		if(!world_execute("map_click", list("x" = position.x, "y" = position.y), auto_saving))
+			return FALSE
+		if((current_tool == "room" || current_tool == "rectangle") && length(preview))
+			return world_save()
+		return TRUE
 	if(ishuman(target))
 		var/mob/living/carbon/human/human = target
 		var/datum/component/ai_controller/controller = human.GetComponent(/datum/component/ai_controller)
 		var/datum/ai_behavior/human/brain = controller?.ai_behavior
 		if(istype(brain) && brain.tactical_squad?.plan == plan)
-			world_execute("squad_select", list("id" = brain.tactical_squad.id))
-			to_chat(commander, span_notice("Selected [brain.tactical_squad.name] ([brain.tactical_squad.order]). Right-click the designator for tactical orders or Deselect — keep orders."))
-			return TRUE
-	var/list/choices = list()
-	for(var/datum/tactical_zone/zone AS in plan.zones)
-		if(zone.contains(position))
-			choices["Zone: [zone.name] ([zone.id])"] = list("zone_select", zone.id)
-	for(var/datum/tactical_route/route AS in plan.routes)
-		if(position in route.waypoints)
-			choices["Route: [route.name] ([route.id])"] = list("route_select", route.id)
-	if(length(choices))
-		var/choice = choices[1]
-		var/click_z = commander.z
-		if(length(choices) > 1)
-			choice = input(commander, "Choose the plan at this tile", "Tactical selection") as null|anything in choices
-		if(choice)
-			var/list/selection = choices[choice]
-			return world_execute(selection[1], list("id" = selection[2], "z" = click_z))
+			return world_execute("squad_select", list("id" = brain.tactical_squad.id))
+	// No overlapping-geometry popup: each kind resolves with selected-hit priority.
+	var/datum/tactical_zone/zone = world_zone_at(position)
+	var/datum/tactical_route/route = world_route_at(position)
+	if(zone)
+		world_execute("zone_select", list("id" = zone.id))
+	if(route)
+		world_execute("route_select", list("id" = route.id))
 	cursor = position
-	to_chat(commander, span_notice("Target [position.x], [position.y]. Select a marine or saved zone/waypoint; use the designator radial for tactical orders."))
+	return !!(zone || route)
+
+/// Native quick saves never solicit names, classifications or route modes. Tacview edits those.
+/datum/tactical_command/proc/world_save()
+	if(ui_status(commander) != UI_INTERACTIVE)
+		return FALSE
+	var/current_tool = tool
+	if(current_tool == "route")
+		if(!world_execute("route_save", list("name" = "Patrol [plan.id_counter + 1]", "loop" = TRUE)))
+			return FALSE
+	else if((current_tool == "room" || current_tool == "rectangle") && length(preview))
+		var/label = "Zone [plan.id_counter + 1]"
+		if(current_tool == "room")
+			var/area/room = get_area(cursor)
+			label = "[room.name] [plan.id_counter + 1]"
+		if(!world_execute("zone_save", list("name" = label, "purpose" = "guard")))
+			return FALSE
+	else
+		return FALSE
+	return_to_interact()
 	return TRUE
 
-/// Native list prompts retain access to squads and plans after their last member leaves sight.
-/datum/tactical_command/proc/world_choose(kind)
-	var/list/choices = list()
-	var/prompt_z = commander.z
-	switch(kind)
-		if("squad")
-			for(var/datum/tactical_squad/squad AS in plan.squads)
-				choices["[squad.name] — [squad.order], [length(squad.members)] marines ([squad.id])"] = squad.id
-		if("zone")
-			for(var/datum/tactical_zone/zone AS in plan.zones)
-				if(zone.z == prompt_z)
-					choices["[zone.name] — [zone.purpose] ([zone.id])"] = zone.id
-		if("route")
-			for(var/datum/tactical_route/route AS in plan.routes)
-				if(route.z == prompt_z)
-					choices["[route.name] — [length(route.waypoints)] points ([route.id])"] = route.id
-	if(!length(choices))
-		to_chat(commander, span_warning("No saved [kind] is available here. Use Tactical tools in the designator radial for geometry; create/recruit squads in Tacview."))
-		return FALSE
-	var/choice = input(commander, "Select [kind] (selection alone never gives orders)", "Tactical Command") as null|anything in choices
-	if(!choice)
-		return FALSE
-	return world_execute("[kind]_select", list("id" = choices[choice], "z" = prompt_z))
-
-/datum/tactical_command/proc/world_save()
-	if(tool == "entrance" || tool == "choke")
-		to_chat(commander, span_notice("Approach markers save when placed. Undo reverses the last placement; Cancel leaves saved markers intact."))
-		return
-	var/prompt_z = commander.z
-	var/saving_route = tool == "route"
-	if(!(saving_route ? length(draft_route) >= 2 : length(preview)))
-		to_chat(commander, span_warning("Preview a room/rectangle or place at least two route points first."))
-		return
-	var/label = input(commander, "Name this [saving_route ? "route" : "zone"]", "Save tactical draft") as null|text
-	if(isnull(label))
-		return
-	if(saving_route)
-		var/mode = input(commander, "Patrol traversal", "Save route") as null|anything in list("Loop", "Back and forth")
-		if(mode)
-			world_execute("route_save", list("name" = label, "loop" = mode == "Loop", "z" = prompt_z))
-	else
-		var/purpose = input(commander, "Zone purpose (classification, not an order)", "Save zone") as null|anything in list("guard", "fallback", "staging")
-		if(purpose)
-			world_execute("zone_save", list("name" = label, "purpose" = purpose, "z" = prompt_z))
+/// Completing a quick command returns ordinary move/follow to the existing Interact gesture.
+/datum/tactical_command/proc/return_to_interact()
+	world_target_order = null
+	var/datum/action/ability/activable/build_designator/designator = commander?.actions_by_path[/datum/action/ability/activable/build_designator]
+	if(designator && designator.designator_mode != INTERACT_DESIGNATOR_MODE)
+		designator.swap_mode(INTERACT_DESIGNATOR_MODE)
+	update_world_controls()
 
 /// Menus belong to one mob/client/level and one invocation, not merely a surviving client.
 /datum/tactical_command/proc/world_menu_valid(mob/expected_owner, client/expected_client, expected_z, expected_id)
@@ -404,6 +580,13 @@
 	var/expected_id = "tactical_[REF(src)]_[++world_menu_serial]"
 	world_menu_id = expected_id
 	world_menu_open = TRUE
+	for(var/label in choices)
+		var/image/choice_image = choices[label]
+		choice_image.maptext = "<div style='font-size:7px;text-align:center;color:white;text-shadow:1px 1px black'>[label]</div>"
+		choice_image.maptext_width = 64
+		choice_image.maptext_height = 12
+		choice_image.maptext_x = -16
+		choice_image.maptext_y = -10
 	var/choice = show_radial_menu(commander, commander, choices, uniqueid = expected_id, radius = radius, custom_check = CALLBACK(src, PROC_REF(world_menu_valid), expected_owner, expected_client, expected_z, expected_id), tooltips = TRUE, angle_override = angle)
 	var/still_valid = world_menu_valid(expected_owner, expected_client, expected_z, expected_id)
 	// An invalidated older menu must never clear the guard for a subsequently opened one.
@@ -412,82 +595,119 @@
 		world_menu_open = FALSE
 	return still_valid ? choice : null
 
+/// Keep the alternate button in the last tactical submenu, just as Construction remembers its picker.
+/datum/tactical_command/proc/remember_world_menu(menu)
+	var/datum/action/ability/activable/build_designator/designator = commander?.actions_by_path[/datum/action/ability/activable/build_designator]
+	if(designator)
+		designator.tactical_menu = menu
+	update_world_controls()
+
+/datum/tactical_command/proc/world_back()
+	remember_world_menu("main")
+	var/datum/action/ability/activable/build_designator/designator = commander?.actions_by_path[/datum/action/ability/activable/build_designator]
+	designator?.select_mode()
+
 /datum/tactical_command/proc/world_tool_menu()
 	if(world_menu_open || ui_status(commander) != UI_INTERACTIVE)
 		return
+	remember_world_menu("designate")
 	var/prompt_z = commander.z
+	var/list/states
+	if(tool == "route")
+		states = list("Finish" = "save", "Undo" = "undo", "Cancel" = "cancel", "Back" = "back")
+	else if(tool != "inspect")
+		states = list("Undo" = "undo", "Cancel" = "cancel", "Back" = "back")
+	else
+		states = list("Room" = "room", "Rectangle" = "rectangle", "Route" = "patrol", "Entrance" = "entrance_tool", "Choke" = "choke_tool", "Back" = "back")
 	var/list/choices = list()
-	var/list/states = list("Select" = "selected", "Room" = "zone", "Rectangle" = "zone", "Route" = "waypoint", "Entrance" = "entrance", "Choke" = "choke", "Save draft" = "command", "Undo" = "orders", "Cancel draft" = "designate", "Toggle overlays" = "overlay")
 	for(var/label in states)
 		choices[label] = image('icons/mob/tactical_command.dmi', icon_state = states[label])
-	var/choice = show_world_radial(choices, 64, 36)
+	var/choice = show_world_radial(choices, 56)
 	if(!choice || ui_status(commander) != UI_INTERACTIVE || commander.z != prompt_z)
 		return
 	switch(choice)
-		if("Save draft")
+		if("Back")
+			world_back()
+			return
+		if("Finish")
 			world_save()
 			return
 		if("Undo")
 			world_execute("draft_undo")
 			return
-		if("Cancel draft")
+		if("Cancel")
 			world_execute("clear_draft")
+			return_to_interact()
 			return
-		if("Toggle overlays")
-			set_world_overlay(!world_overlay_enabled)
-			to_chat(commander, span_notice("Local tactical overlays [world_overlay_enabled ? "shown" : "hidden"]. Orders are unchanged."))
-			return
-	var/new_tool = choice == "Select" ? "inspect" : lowertext(choice)
-	if(new_tool == "entrance" || new_tool == "choke")
-		if(!plan.find_zone(selected_zone) && !world_choose("zone"))
-			return
-		var/list/directions = list("North" = NORTH, "East" = EAST, "South" = SOUTH, "West" = WEST)
-		var/facing = input(commander, "Marker faces toward this approach", "Approach facing") as null|anything in directions
-		if(!facing || !world_execute("marker_facing", list("direction" = directions[facing], "z" = prompt_z)))
-			return
+	var/new_tool = lowertext(choice)
 	if(world_execute("tool", list("tool" = new_tool, "z" = prompt_z)))
 		activate_world_targeting()
-		to_chat(commander, span_notice("[capitalize(new_tool)]: [world_click_gesture()] visible tiles. Right-click the designator → Tactical tools for Save / Undo / Cancel."))
+		var/instructions = "Target visible tiles with [world_click_gesture()]."
+		switch(new_tool)
+			if("room")
+				instructions += " One click saves the room as a guard zone."
+			if("rectangle")
+				instructions += " Two opposite corners save a guard zone."
+			if("route")
+				instructions += " Add points, then reopen this menu and Finish to save a loop."
+			if("entrance", "choke")
+				instructions += " Place in/beside a saved zone; each marker faces the way you are facing."
+		to_chat(commander, span_notice(instructions))
 
 /datum/tactical_command/proc/world_orders_menu()
 	if(world_menu_open || ui_status(commander) != UI_INTERACTIVE)
 		return
+	remember_world_menu("orders")
 	var/prompt_z = commander.z
 	var/prompt_squad = selected_squad
-	var/list/states = list("Select squad" = "selected", "Follow me" = "orders", "Follow ally" = "selected", "Hold here" = "orders", "Hold target" = "designate", "Guard zone" = "zone", "Patrol route" = "waypoint", "Set fallback" = "zone", "Retreat" = "orders", "Deselect" = "selected")
+	var/list/states = list("Guard" = "guard", "Patrol" = "patrol", "Fallback" = "fallback", "Retreat" = "retreat", "Deselect" = "deselect", "Back" = "back")
 	var/list/choices = list()
 	for(var/label in states)
 		choices[label] = image('icons/mob/tactical_command.dmi', icon_state = states[label])
-	var/choice = show_world_radial(choices, 64, 36)
+	var/choice = show_world_radial(choices, 56)
 	if(!choice || ui_status(commander) != UI_INTERACTIVE || commander.z != prompt_z || selected_squad != prompt_squad)
+		return
+	if(choice == "Back")
+		world_back()
 		return
 	if(choice == "Deselect")
 		world_execute("deselect")
-		return
-	if(choice == "Select squad")
-		world_choose("squad")
-		set_world_overlay(TRUE)
+		return_to_interact()
 		return
 	if(!plan.find_squad(selected_squad))
-		to_chat(commander, span_warning("Select a squad first, either here or by targeting a recruited marine with the designator."))
+		to_chat(commander, span_warning("Select a recruited marine with ordinary Interact first. Tacview can select an offscreen squad."))
 		return
-	switch(choice)
-		if("Follow me")
-			world_execute("order", list("order" = "follow", "z" = prompt_z))
-		if("Hold here")
-			world_execute("order", list("order" = "hold", "z" = prompt_z))
-		if("Hold target", "Follow ally")
-			activate_world_targeting(choice == "Hold target" ? "hold" : "follow")
-			to_chat(commander, span_notice("[choice]: [world_click_gesture()] the visible target. Right-click the designator → Deselect — keep orders to cancel selection."))
-		if("Guard zone", "Set fallback")
-			if(world_choose("zone") && selected_squad == prompt_squad)
-				world_execute(choice == "Set fallback" ? "fallback" : "order", list("id" = selected_zone, "order" = "guard", "z" = prompt_z))
-		if("Patrol route")
-			if(world_choose("route") && selected_squad == prompt_squad)
-				world_execute("order", list("order" = "patrol", "z" = prompt_z))
-		if("Retreat")
-			world_execute("order", list("order" = "retreat", "z" = prompt_z))
-	set_world_overlay(TRUE)
+	if(choice == "Retreat")
+		if(world_execute("order", list("order" = "retreat", "z" = prompt_z)))
+			return_to_interact()
+		return
+	if(choice in list("Guard", "Patrol", "Fallback"))
+		if(!world_execute("clear_draft", quiet = TRUE))
+			return
+		if(activate_world_targeting(lowertext(choice)))
+			to_chat(commander, span_notice("[choice]: [world_click_gesture()] [choice == "Patrol" ? "a saved waypoint or route line" : "the saved zone"]. [choice == "Fallback" ? "This sets the destination without ordering retreat." : "The order applies to the clicked geometry."]"))
+
+/// Visibility is independent of the selected designator tool. Actual activation remains ban-aware.
+/datum/action/tactical_overlay
+	name = "Tactical Overlay"
+	desc = "Show or hide local tactical zones, approaches and routes. This does not change any squad orders or selected tool."
+	action_icon = 'icons/mob/tactical_command.dmi'
+	action_icon_state = "overlay"
+	action_type = ACTION_TOGGLE
+
+/datum/action/tactical_overlay/should_show()
+	return ..() && (owner?.client?.holder || owner?.skills?.getRating(SKILL_LEADERSHIP) >= SKILL_LEAD_TRAINED)
+
+/datum/action/tactical_overlay/can_use_action(silent, override_flags, selecting)
+	return tactical_command_available(owner)
+
+/datum/action/tactical_overlay/action_activate()
+	var/datum/tactical_command/command = get_tactical_command(owner)
+	if(!command)
+		return
+	command.set_world_overlay(!command.world_overlay_enabled)
+	command.update_world_controls()
+	to_chat(owner, span_notice("Tactical overlay [command.world_overlay_enabled ? "shown" : "hidden"]. Squad orders are unchanged."))
 
 
 /// Planner/native changes cannot leave the legacy designator pointing at a DIFFERENT squad.

@@ -216,4 +216,5 @@ GLOBAL_LIST_INIT(human_init_actions, list(
 	/datum/action/innate/message_squad,
 	/datum/action/ability/activable/build_designator,
 	/datum/action/tactical_command,
+	/datum/action/tactical_overlay,
 ))

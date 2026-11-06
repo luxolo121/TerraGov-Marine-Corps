@@ -13,18 +13,19 @@ Feature branch: `feature/advanced-ai-command`. This is the marine command founda
 
 ### Command and designate directly in the game
 
-The existing **Interact Designator** is the entry point; this revision does not add a second set of competing HUD actions. **Right-click its HUD button** to open the mode radial. The stock keybindings in this fork are **U** (Place Hologram / toggle designator) and **I** (Select Buildtype / alternate radial); existing personal bindings are unchanged. In Construction mode, the alternate action retains the existing construction picker.
+The existing **Interact Designator** remains the entry point. **Right-click its HUD button** to open the radial. It remembers the Orders or Designate submenu; use **Back** to return to the main choices. The stock source bindings are **U** (toggle designator) and **I** (alternate radial); personal bindings are unchanged. Construction retains its existing remembered construction picker.
 
-- **Tactical orders** opens squad selection, Follow me/ally, Hold here/target, Guard zone, Patrol route, Set fallback and Retreat. Offscreen squads can still be selected by name. Select a recruited marine through ordinary Interact mode to select its whole squad.
-- **Tactical tools** offers Select, Room, Rectangle, Route, Entrance and Choke, plus Save draft, Undo, Cancel draft and Toggle overlays. Choosing a drawing tool activates tactical targeting on the same designator.
-- Target visible tiles using the normal selected-ability gesture: **middle-click**, or **shift-click** when the alternate targeting preference is enabled. Left-click weapon interactions are not repurposed. The button tooltip and chat confirmation identify the active tool and selected squad.
-- Room selects the authored area's footprint; Rectangle uses two corners; Route adds ordered waypoints. Use **Save draft** for the name/classification or patrol-loop choice. Drawing and selecting do not silently issue orders.
-- Entrance/Choke markings use the selected zone and a chosen facing. Place them on visible terrain, inside or directly beside that zone. Manual markers remain position/facing preferences, not a new AI defence policy.
-- **Deselect — keep orders** is always available in the designator radial, even if the selected unit has left view. It clears your targeting/selection without cancelling the squad's assignment.
+- Use ordinary **Interact** targeting to select a recruited marine's squad and give basic tile→Hold or ally→Follow commands. The radial does not duplicate those controls. Offscreen roster management remains in Tacview.
+- **Orders** contains the special assignments: Guard, Patrol, Set fallback and Retreat, plus Deselect and Back. Guard/fallback target a visible saved zone; Patrol targets a visible saved route. No list picker or typing dialog interrupts a quick order.
+- **Designate** offers Room, Rectangle, Route, Entrance and Choke. Quick Room placement saves the authored footprint on the first click; Rectangle saves after its second corner. Both use automatic names and the default Guard classification. They create geometry, not a squad order. Rename/reclassify in Tacview when needed.
+- Route adds ordered waypoints; reopen the remembered submenu for **Finish**, Undo or Cancel. Finish saves an automatically named loop with no prompt. Tacview retains detailed naming and traversal options.
+- Entrance/Choke placement finds the clicked local zone (or the selected adjacent zone) and uses **the commander's facing at the moment of placement**. No direction chooser. Markers remain position/facing preferences, not a new AI defence policy.
+- Target visible tiles using the normal selected-ability gesture: **middle-click**, or **shift-click** with the alternate preference. Left-click weapon interactions are unchanged. Tool/squad context is in tooltips and chat, without covering the HUD hotkey text.
+- **Deselect — keep orders** clears targeting/selection without cancelling the squad's assignment; it remains accessible even when members have left view.
 
-Private local overlays show zone edges, entrance/choke directions, numbered waypoints, selected-route connectors, drafts and selected squad members. The selected plan is emphasized. Overlays are click-through and limited to the commander's visible local game view; they do not reveal enemies or remote rooms. The overlay toggle hides them without changing orders. Permissions, level changes, logout and death clear stale rendering.
+The separate **Tactical Overlay** HUD button toggles private local world visuals without changing orders. Connected room outlines and a faint interior holographic fill show the zone even when its perimeter is offscreen; route segments follow their actual angle between numbered waypoints. Visible overlays stay present during movement, while newly hidden tiles are removed. Overlays are click-through, limited to the commander's visible local view, and do not reveal enemies or remote rooms. Permissions, level changes, logout and death clear stale rendering.
 
-Tacview remains the full planner and roster editor for creating/recruiting/transferring squads and managing saved plans. It shares selections and geometry with the designator, rather than maintaining a second plan. Its new command-board icon is distinct from the minimap.
+Tacview remains the full planner and roster editor for creating/recruiting/transferring squads, naming/classifying geometry, choosing route traversal and managing saved plans. It shares selections and geometry with the designator. Its command-board icon is distinct from the minimap.
 
 ### Navigate the Tacview map
 

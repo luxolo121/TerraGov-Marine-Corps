@@ -12,7 +12,7 @@ GLOBAL_LIST_INIT(designator_mode_image_list, list(
 
 /datum/action/ability/activable/build_designator
 	name = "Interact Designator"
-	desc = "Click a friendly to select; click again to deselect without cancelling orders. Selecting a recruited AI commands its whole tactical squad: click a tile to hold or a living ally to follow. Right-click this button (Select Buildtype key, default I) for tactical orders, drawing tools, overlays and deselect."
+	desc = "Click a friendly to select; click again to deselect without cancelling orders. Selecting a recruited AI commands its whole tactical squad: click a tile to hold or a living ally to follow. Right-click this button (Select Buildtype binding) for Orders / Designate; Back changes menus. The separate Tactical Overlay button controls visibility."
 	action_icon_state = "interact_designator"
 	action_icon = 'icons/mob/actions.dmi'
 	use_state_flags = ABILITY_TARGET_SELF
@@ -22,6 +22,8 @@ GLOBAL_LIST_INIT(designator_mode_image_list, list(
 	)
 	///What function this action is currently on
 	var/designator_mode = INTERACT_DESIGNATOR_MODE
+	///Last tactical submenu; Construction continues to use its established structure picker.
+	var/tactical_menu = "main"
 
 /datum/action/ability/activable/build_designator/Destroy()
 	cleanup_hologram()
@@ -43,16 +45,13 @@ GLOBAL_LIST_INIT(designator_mode_image_list, list(
 
 /datum/action/ability/activable/build_designator/on_selection()
 	activate_mode(designator_mode)
-	if(designator_mode == TACTICAL_DESIGNATOR_MODE)
-		var/datum/tactical_command/command = get_tactical_command(owner)
-		command?.set_world_overlay(TRUE)
 
 /datum/action/ability/activable/build_designator/on_deselection()
 	deactivate_mode(designator_mode)
 	var/datum/action/tactical_command/action = owner?.actions_by_path[/datum/action/tactical_command]
 	if(action?.command_ui)
 		action.command_ui.world_target_order = null
-		action.command_ui.disable_world_overlay()
+		// Overlay visibility belongs to its own HUD toggle, not to this selected ability.
 
 /datum/action/ability/activable/build_designator/action_activate()
 	var/mob/living/carbon/carbon_owner = owner
@@ -92,36 +91,41 @@ GLOBAL_LIST_INIT(designator_mode_image_list, list(
 
 ///Selects a mode
 /datum/action/ability/activable/build_designator/proc/select_mode()
+	var/datum/tactical_command/command = get_tactical_command(owner)
+	if(command && tactical_menu == "orders")
+		command.world_orders_menu()
+		return
+	if(command && tactical_menu == "designate")
+		command.world_tool_menu()
+		return
 	var/list/options = list(
 		"Interact" = image('icons/mob/actions.dmi', icon_state = "interact_designator"),
-		"Construction" = image('icons/mob/actions.dmi', icon_state = "build_designator"),
+		"Build" = image('icons/mob/actions.dmi', icon_state = "build_designator"),
 	)
-	var/datum/tactical_command/command = get_tactical_command(owner)
 	if(command)
-		options["Tactical orders"] = image('icons/mob/tactical_command.dmi', icon_state = "orders")
-		options["Tactical tools"] = image('icons/mob/tactical_command.dmi', icon_state = "designate")
-		options["Deselect — keep orders"] = image('icons/mob/tactical_command.dmi', icon_state = "selected")
-		options["Toggle tactical overlays"] = image('icons/mob/tactical_command.dmi', icon_state = "overlay")
-	var/mode_choice = command ? command.show_world_radial(options) : show_radial_menu(owner, owner?.client?.eye, options, tooltips = TRUE)
+		options["Orders"] = image('icons/mob/tactical_command.dmi', icon_state = "orders")
+		options["Designate"] = image('icons/mob/tactical_command.dmi', icon_state = "tools")
+		options["Deselect"] = image('icons/mob/tactical_command.dmi', icon_state = "deselect")
+	var/mode_choice = command ? command.show_world_radial(options, 56) : show_radial_menu(owner, owner?.client?.eye, options, tooltips = TRUE)
 	if(!mode_choice)
 		return
-	if(mode_choice == "Interact" || mode_choice == "Construction")
+	if(mode_choice == "Interact" || mode_choice == "Build")
 		var/new_mode = mode_choice == "Interact" ? INTERACT_DESIGNATOR_MODE : BUILD_DESIGNATOR_MODE
+		if(command)
+			command.world_execute("clear_draft")
 		if(new_mode != designator_mode)
 			swap_mode(new_mode)
 		return
 	if(!command || command.ui_status(owner) != UI_INTERACTIVE)
 		return
 	switch(mode_choice)
-		if("Tactical orders")
+		if("Orders")
 			command.world_orders_menu()
-		if("Tactical tools")
+		if("Designate")
 			command.world_tool_menu()
-		if("Deselect — keep orders")
+		if("Deselect")
 			command.world_execute("deselect")
-		if("Toggle tactical overlays")
-			command.set_world_overlay(!command.world_overlay_enabled)
-			to_chat(owner, span_notice("Local tactical overlays [command.world_overlay_enabled ? "shown" : "hidden"]. Orders are unchanged."))
+			command.return_to_interact()
 
 ///Swaps our mode to a new one
 /datum/action/ability/activable/build_designator/proc/swap_mode(new_mode)
@@ -163,14 +167,14 @@ GLOBAL_LIST_INIT(designator_mode_image_list, list(
 			action_icon = 'icons/mob/actions.dmi'
 			action_icon_state = "interact_designator"
 			name = "Interact Designator"
-			desc = "Click a friendly to select; click again to deselect without cancelling orders. Selecting a recruited AI commands its whole tactical squad: click a tile to hold or a living ally to follow. Right-click this button (Select Buildtype key, default I) for tactical orders, drawing tools, overlays and deselect."
+			desc = "Click a friendly to select; click again to deselect without cancelling orders. Selecting a recruited AI commands its whole tactical squad: click a tile to hold or a living ally to follow. Right-click this button (Select Buildtype binding) for Orders / Designate; Back changes menus. The separate Tactical Overlay button controls visibility."
 		if(TACTICAL_DESIGNATOR_MODE)
 			target_flags = NONE
 			use_state_flags = ABILITY_TARGET_SELF
 			action_icon = 'icons/mob/tactical_command.dmi'
 			action_icon_state = "designate"
 			name = "Tactical Designator"
-			desc = "Middle/shift-click to use the selected tool on visible terrain. Right-click (Select Buildtype key, default I): tactical orders and tools, Save / Undo / Cancel, overlays and deselect."
+			desc = "Middle/shift-click to use the selected tool on visible terrain. Right-click (Select Buildtype binding) reopens the current Orders or Designate menu. Room/rectangle save on placement; routes use Finish. Back changes menus."
 	update_button_icon()
 	var/datum/action/tactical_command/action = owner?.actions_by_path[/datum/action/tactical_command]
 	action?.command_ui?.update_world_controls()

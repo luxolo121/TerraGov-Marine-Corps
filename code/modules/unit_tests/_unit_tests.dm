@@ -86,6 +86,7 @@
 #include "tactical_plan.dm"
 #include "tactical_squad_tests.dm"
 #include "tactical_world.dm"
+#include "tactical_world_rendering.dm"
 #include "tgui_create_message.dm"
 #include "timer_sanity.dm"
 #include "tutorial_sanity.dm"

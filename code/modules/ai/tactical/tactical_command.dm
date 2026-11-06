@@ -25,7 +25,8 @@
 	plan = get_tactical_plan(user.faction)
 	RegisterSignal(user, COMSIG_QDELETING, PROC_REF(owner_deleted))
 	RegisterSignals(user, list(COMSIG_MOB_LOGOUT, COMSIG_MOVABLE_Z_CHANGED, COMSIG_MOB_DEATH), PROC_REF(world_invalidated))
-	RegisterSignals(user, list(COMSIG_MOVABLE_MOVED, COMSIG_ATOM_DIR_CHANGE), PROC_REF(world_moved))
+	RegisterSignal(user, COMSIG_MOVABLE_MOVED, PROC_REF(world_moved))
+	RegisterSignal(user, COMSIG_ATOM_DIR_CHANGE, PROC_REF(world_turned))
 
 /datum/tactical_command/proc/owner_deleted()
 	SIGNAL_HANDLER

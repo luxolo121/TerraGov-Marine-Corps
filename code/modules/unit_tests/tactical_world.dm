@@ -9,7 +9,7 @@
 	test_access_checks++
 	return test_authorized
 
-/datum/tactical_command/test_world/world_visible_tiles()
+/datum/tactical_command/test_world/world_visible_tiles(facing)
 	return test_visible.Copy()
 
 /// Every entry point must reject unauthorized ownership, a faction change and stale level prompts.
@@ -55,16 +55,21 @@
 	command.dispatch("draft_undo", list("z" = start.z), user)
 	TEST_ASSERT_EQUAL(command.anchor, start, "Undo of second rectangle corner should retain the first")
 	TEST_ASSERT_EQUAL(length(command.preview), 0, "Undo must remove only the preview")
-	command.world_click(end)
-	command.dispatch("zone_save", list("name" = "Combined drawing", "purpose" = "guard", "z" = start.z), user)
+	TEST_ASSERT(command.world_click(end), "Native second corner should auto-save without a naming dialog")
 	var/datum/tactical_zone/zone = plan.find_zone(command.selected_zone)
 	TEST_ASSERT(zone && zone.contains(start) && zone.contains(end), "The shared save must preserve the world-authored footprint")
 	command.dispatch("tool", list("tool" = "entrance", "z" = start.z), user)
-	command.dispatch("marker_facing", list("direction" = EAST, "z" = start.z), user)
+	command.dispatch("marker_facing", list("direction" = SOUTH, "z" = start.z), user)
+	user.setDir(EAST)
 	command.world_click(start)
 	TEST_ASSERT_EQUAL(length(zone.markers), 1, "World entrance placement must edit the same selected zone")
 	var/datum/tactical_marker/marker = zone.markers[1]
-	TEST_ASSERT_EQUAL(marker.direction, EAST, "Native facing choice must survive shared dispatch")
+	TEST_ASSERT_EQUAL(marker.direction, EAST, "World placement must use current facing, not the planner-facing selector")
+	user.setDir(WEST)
+	command.world_click(start)
+	TEST_ASSERT_EQUAL(marker.direction, WEST, "Turning between placements must update the next marker facing")
+	command.dispatch("draft_undo", list("z" = start.z), user)
+	TEST_ASSERT_EQUAL(marker.direction, EAST, "Undo must restore facing before the last placement")
 	command.dispatch("draft_undo", list("z" = start.z), user)
 	TEST_ASSERT_EQUAL(length(zone.markers), 0, "Undo must remove the last native marker without deleting the zone")
 	command.dispatch("tool", list("tool" = "route", "z" = start.z), user)
@@ -73,7 +78,7 @@
 	command.dispatch("route_save", list("name" = "Route", "loop" = FALSE, "z" = start.z), user)
 	var/datum/tactical_route/route = plan.find_route(command.selected_route)
 	TEST_ASSERT(route && route.waypoints[1] == start && route.waypoints[2] == end, "World route must save in clicked order")
-	TEST_ASSERT(!route.loop, "Native back-and-forth route must not silently become a loop")
+	TEST_ASSERT(!route.loop, "Explicit planner back-and-forth choice must remain supported")
 	command.dispatch("tool", list("tool" = "route", "z" = start.z), user)
 	var/turf/hidden = get_step(start, NORTH)
 	TEST_ASSERT(!command.world_click(hidden), "Invisible world coordinates must be refused before any drafting mutation")
@@ -137,7 +142,7 @@
 		TEST_ASSERT(visible[decoration.loc], "Renderer must never create a world image on a tile outside authorized visibility")
 		TEST_ASSERT_EQUAL(decoration.mouse_opacity, MOUSE_OPACITY_TRANSPARENT, "World overlays must never intercept gameplay clicks")
 		saw_entrance = saw_entrance || decoration.icon_state == "entrance"
-		saw_boundary = saw_boundary || decoration.icon_state == "boundary"
+		saw_boundary = saw_boundary || (findtext(decoration.icon_state, "zone_") == 1 && decoration.icon_state != "zone_0")
 		saw_route = saw_route || decoration.icon_state == "route"
 	TEST_ASSERT(saw_entrance && saw_boundary && saw_route, "Real entrance, boundary and selected patrol stroke must all be drawn")
 	command.world_overlay_enabled = TRUE
@@ -236,3 +241,144 @@
 	TEST_ASSERT(!command.world_menu_valid(user, null, user.z, menu_id), "A detached old menu may not regain validity while its wait unwinds")
 	// Normally show_radial_menu removes this key after its wait; this fixture has no wait thread.
 	GLOB.radial_menus -= menu_id
+
+/// Quick controls save concrete geometry immediately; detailed planner saves remain independent.
+/datum/unit_test/tactical_world_quick_creation/Run()
+	var/datum/tactical_plan/plan = allocate(/datum/tactical_plan, FACTION_TERRAGOV)
+	var/turf/start = run_loc_floor_bottom_left
+	var/turf/end = locate(start.x + 2, start.y + 2, start.z)
+	var/mob/living/carbon/human/user = allocate(/mob/living/carbon/human, start)
+	user.faction = FACTION_TERRAGOV
+	var/datum/tactical_command/test_world/command = allocate(/datum/tactical_command/test_world, user)
+	command.plan = plan
+	command.test_visible[start] = TRUE
+	command.test_visible[end] = TRUE
+	command.dispatch("tool", list("tool" = "room", "z" = start.z), user)
+	TEST_ASSERT(command.world_click(start), "One native room click must complete without input dialogs")
+	var/datum/tactical_zone/room = plan.find_zone(command.selected_zone)
+	var/area/mapped_room = get_area(start)
+	TEST_ASSERT(room && length(room.turfs) == length(mapped_room.get_turfs_by_zlevel(start.z)), "Quick room creation must retain the exact mapped footprint")
+	TEST_ASSERT_EQUAL(room.purpose, "guard", "Quick rooms must use the documented guard default")
+	TEST_ASSERT(length(room.name), "Quick room creation must provide an automatic name")
+	command.dispatch("tool", list("tool" = "rectangle", "z" = start.z), user)
+	command.world_click(start)
+	TEST_ASSERT_EQUAL(length(plan.zones), 1, "A first rectangle corner must not create incomplete geometry")
+	TEST_ASSERT(command.world_click(end), "Second corner must save a rectangle without any confirmation or naming dialog")
+	var/datum/tactical_zone/rectangle = plan.find_zone(command.selected_zone)
+	TEST_ASSERT(rectangle != room && length(rectangle.turfs) == 9, "Quick rectangle save must create the requested inclusive footprint")
+	TEST_ASSERT_EQUAL(rectangle.purpose, "guard", "Quick rectangle default must match quick rooms")
+	command.dispatch("tool", list("tool" = "route", "z" = start.z), user)
+	command.world_click(start)
+	command.world_click(end)
+	TEST_ASSERT_EQUAL(length(plan.routes), 0, "Route points must remain a draft until explicit Finish")
+	TEST_ASSERT(command.world_save(), "Finish must save without a name or traversal popup")
+	var/datum/tactical_route/route = plan.find_route(command.selected_route)
+	TEST_ASSERT(route && route.loop && route.waypoints[1] == start && route.waypoints[2] == end, "Quick Finish must preserve point order and default to a loop")
+	TEST_ASSERT_EQUAL(length(command.draft_route), 0, "Finish must clear the completed draft")
+
+/// Targeted orders must use clicked geometry, never an unrelated stale selection.
+/datum/unit_test/tactical_world_targeted_geometry_orders/Run()
+	var/datum/tactical_plan/plan = allocate(/datum/tactical_plan, FACTION_TERRAGOV)
+	var/turf/start = run_loc_floor_bottom_left
+	var/turf/overlap = get_step(start, EAST)
+	var/turf/far_edge = locate(start.x + 3, start.y, start.z)
+	var/turf/miss = get_step(start, NORTH)
+	var/mob/living/carbon/human/user = allocate(/mob/living/carbon/human, start)
+	user.faction = FACTION_TERRAGOV
+	var/mob/living/carbon/human/member = allocate(/mob/living/carbon/human, start)
+	member.faction = FACTION_TERRAGOV
+	member.AddComponent(/datum/component/ai_controller, /datum/ai_behavior/human)
+	var/datum/tactical_squad/squad = new(plan, "Actual squad")
+	TEST_ASSERT(squad.add_member(member), "Fixture requires a real recruited marine")
+	var/datum/tactical_zone/first = plan.create_rectangle("First", start, overlap)
+	var/datum/tactical_zone/second = plan.create_rectangle("Second", overlap, far_edge)
+	var/datum/tactical_command/test_world/command = allocate(/datum/tactical_command/test_world, user)
+	command.plan = plan
+	command.check_level()
+	command.selected_squad = squad.id
+	command.selected_zone = first.id
+	for(var/turf/tile AS in list(start, overlap, far_edge, miss))
+		command.test_visible[tile] = TRUE
+	command.world_target_order = "guard"
+	TEST_ASSERT(command.world_click(far_edge), "Guard targeting must accept a visible different zone")
+	TEST_ASSERT_EQUAL(squad.zone, second, "Guard must use the clicked zone, not the unrelated selected first zone")
+	command.selected_zone = second.id
+	command.world_target_order = "guard"
+	TEST_ASSERT(command.world_click(overlap), "An overlapping hit must resolve without a chooser dialog")
+	TEST_ASSERT_EQUAL(squad.zone, second, "A selected zone actually under the click must win the overlap deterministically")
+	command.world_target_order = "guard"
+	TEST_ASSERT(!command.world_click(miss), "An empty click must not apply the previously selected zone")
+	TEST_ASSERT_EQUAL(squad.zone, second, "Rejected geometry must leave the current order intact")
+	command.world_target_order = "fallback"
+	TEST_ASSERT(command.world_click(start), "Fallback targeting must choose the clicked zone")
+	TEST_ASSERT_EQUAL(squad.fallback_zone, first, "Fallback must follow the clicked footprint")
+	TEST_ASSERT_EQUAL(squad.order, "guard", "Setting a fallback must not itself order retreat")
+	var/datum/tactical_route/old_route = plan.create_route("Other route", list(start, miss))
+	var/datum/tactical_route/clicked_route = plan.create_route("Clicked route", list(overlap, far_edge))
+	command.selected_route = old_route.id
+	command.world_target_order = "patrol"
+	TEST_ASSERT(command.world_click(far_edge), "Patrol targeting must select the visible clicked route without a list popup")
+	TEST_ASSERT_EQUAL(squad.route, clicked_route, "Patrol must ignore an unrelated selected route")
+
+/// Remembering a submenu must survive normal tool completion, while visibility remains independent.
+/datum/unit_test/tactical_world_menu_and_overlay_independence/Run()
+	var/mob/living/carbon/human/user = allocate(/mob/living/carbon/human)
+	user.faction = FACTION_TERRAGOV
+	var/datum/tactical_command/test_world/command = allocate(/datum/tactical_command/test_world, user)
+	var/datum/action/tactical_command/access = allocate(/datum/action/tactical_command, user)
+	access.give_action(user)
+	access.command_ui = command
+	var/datum/action/ability/activable/build_designator/designator = allocate(/datum/action/ability/activable/build_designator, user)
+	designator.give_action(user)
+	command.check_level()
+	command.remember_world_menu("orders")
+	designator.swap_mode(TACTICAL_DESIGNATOR_MODE)
+	command.return_to_interact()
+	TEST_ASSERT_EQUAL(designator.tactical_menu, "orders", "Completing a world command must preserve the Orders submenu for the next alternate activation")
+	TEST_ASSERT_EQUAL(designator.designator_mode, INTERACT_DESIGNATOR_MODE, "Ordinary move/follow must return to the existing Interact gesture")
+	command.remember_world_menu("designate")
+	command.world_overlay_enabled = TRUE
+	designator.on_deselection()
+	TEST_ASSERT(command.world_overlay_enabled, "Deselecting the designator must not switch off the independent overlay")
+	TEST_ASSERT_EQUAL(designator.tactical_menu, "designate", "Deselecting must preserve the drawing submenu preference")
+	TEST_ASSERT_NULL(designator.button.maptext, "Tool text must not collide with the existing keybinding overlay")
+	command.remember_world_menu("main")
+	TEST_ASSERT_EQUAL(designator.tactical_menu, "main", "Back-to-main state must leave the remembered submenu explicitly")
+	command.disable_world_overlay()
+	command.return_to_interact()
+	TEST_ASSERT(!command.world_overlay_enabled, "Returning to Interact must respect explicitly hidden overlays")
+
+/// Choose the real Retreat menu branch without manufacturing a connected radial-menu client.
+/datum/tactical_command/test_world/retreat_menu/show_world_radial(list/choices, radius = 32, angle = 45)
+	return "Retreat"
+
+/datum/unit_test/tactical_world_retreat_clears_targeting/Run()
+	var/datum/tactical_plan/plan = allocate(/datum/tactical_plan, FACTION_TERRAGOV)
+	var/turf/start = run_loc_floor_bottom_left
+	var/mob/living/carbon/human/user = allocate(/mob/living/carbon/human, start)
+	user.faction = FACTION_TERRAGOV
+	var/mob/living/carbon/human/member = allocate(/mob/living/carbon/human, start)
+	member.faction = FACTION_TERRAGOV
+	member.AddComponent(/datum/component/ai_controller, /datum/ai_behavior/human)
+	var/datum/tactical_squad/squad = new(plan, "Retreat team")
+	TEST_ASSERT(squad.add_member(member), "Retreat regression requires an actual recruited AI")
+	var/datum/tactical_zone/fallback = plan.create_zone("Fallback", list(start), "fallback")
+	TEST_ASSERT(squad.set_fallback(fallback), "Retreat regression requires a valid fallback")
+	var/datum/tactical_command/test_world/retreat_menu/command = allocate(/datum/tactical_command/test_world/retreat_menu, user)
+	command.plan = plan
+	command.check_level()
+	command.selected_squad = squad.id
+	var/datum/action/tactical_command/access = allocate(/datum/action/tactical_command, user)
+	access.give_action(user)
+	access.command_ui = command
+	var/datum/action/ability/activable/build_designator/designator = allocate(/datum/action/ability/activable/build_designator, user)
+	designator.give_action(user)
+	for(var/old_target in list("guard", "patrol", "fallback"))
+		designator.swap_mode(TACTICAL_DESIGNATOR_MODE)
+		command.world_target_order = old_target
+		command.world_orders_menu()
+		TEST_ASSERT_EQUAL(squad.order, "retreat", "The actual quick-menu branch must issue Retreat")
+		TEST_ASSERT_NULL(command.world_target_order, "Retreat must disarm every earlier geometry-targeting mode")
+		TEST_ASSERT_EQUAL(designator.designator_mode, INTERACT_DESIGNATOR_MODE, "Successful Retreat must return to ordinary Interact")
+		TEST_ASSERT_EQUAL(command.selected_squad, squad.id, "Disarming an old tool must not clear the shared squad selection")
+		TEST_ASSERT_EQUAL(designator.tactical_menu, "orders", "Retreat must retain the remembered Orders submenu")
