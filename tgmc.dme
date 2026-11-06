@@ -1568,6 +1568,7 @@
 #include "code\modules\ai\tactical\tactical_human.dm"
 #include "code\modules\ai\tactical\tactical_plan.dm"
 #include "code\modules\ai\tactical\tactical_squad.dm"
+#include "code\modules\ai\tactical\tactical_world.dm"
 #include "code\modules\animations\animation_library.dm"
 #include "code\modules\antagonists\_common\antag_datum.dm"
 #include "code\modules\assembly\assembly.dm"

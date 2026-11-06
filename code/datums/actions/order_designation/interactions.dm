@@ -39,8 +39,11 @@
 		if(selected_mob == target || !check_valid_friendly(selected_mob)) //deselect a mob if clicking again, or they are crit etc
 			unindicate_target(selected_mob)
 			selected_mob = null
+			var/datum/tactical_command/command = get_tactical_command(owner)
+			if(command?.selected_squad)
+				command.world_execute("deselect")
 			return FALSE
-	else if(check_valid_friendly(target))
+	else if(check_valid_friendly(target) && !selected_tactical_squad())
 		select_mob_to_interact(target)
 		return TRUE
 
@@ -65,6 +68,21 @@
 
 	var/image/highlight = get_alt_image(new_target)
 	new_target.add_alt_appearance(/datum/atom_hud/alternate_appearance/basic/one_person, ORDER_DESIGNATION_ALT_APPEARANCE, highlight, owner)
+	var/datum/component/ai_controller/controller = new_target.GetComponent(/datum/component/ai_controller)
+	var/datum/ai_behavior/human/brain = controller?.ai_behavior
+	if(istype(brain) && brain.tactical_squad)
+		var/datum/tactical_command/command = get_tactical_command(owner)
+		if(command?.plan == brain.tactical_squad.plan)
+			command.world_execute("squad_select", list("id" = brain.tactical_squad.id))
+			command.set_world_overlay(TRUE)
+	else
+		// Explicit unmanaged selection opts back into the legacy per-marine interaction path.
+		var/datum/action/tactical_command/action = owner.actions_by_path[/datum/action/tactical_command]
+		if(action?.command_ui)
+			action.command_ui.selected_squad = null
+			action.command_ui.world_target_order = null
+			action.command_ui.update_world_controls()
+			action.command_ui.refresh_world_overlay()
 
 ///Designates an atom for interaction
 /datum/action/ability/activable/build_designator/proc/designate_target(atom/target)
@@ -72,6 +90,11 @@
 		return
 	COOLDOWN_START(src, order_cooldown, ORDER_DESIGNATION_CD)
 
+	// Planner/native squad selection remains authoritative even when no individual is highlighted.
+	if(!selected_mob)
+		var/datum/tactical_squad/shared_squad = selected_tactical_squad()
+		if(shared_squad)
+			return designate_tactical_squad(target, shared_squad)
 	// A recruited marine represents its squad. Do not announce a legacy order its brain ignores.
 	if(selected_mob)
 		var/datum/component/ai_controller/controller = selected_mob.GetComponent(/datum/component/ai_controller)
@@ -92,36 +115,37 @@
 	audible_command(target, order_action, selected_mob)
 	addtimer(CALLBACK(src, PROC_REF(unindicate_target), target), 1 SECONDS)
 
+/// Resolves personal selection without visibility requirements; actual dispatch still checks access.
+/datum/action/ability/activable/build_designator/proc/selected_tactical_squad()
+	var/datum/action/tactical_command/action = owner?.actions_by_path[/datum/action/tactical_command]
+	var/datum/tactical_command/command = action?.command_ui
+	return command?.plan?.find_squad(command.selected_squad)
+
 /// Quick world-space orders use the same persistent squad API as the command map.
 /datum/action/ability/activable/build_designator/proc/designate_tactical_squad(atom/target, datum/tactical_squad/squad)
-	if(!can_use_tactical_command(owner) || squad.faction != owner.faction)
+	var/datum/tactical_command/command = get_tactical_command(owner)
+	if(!command || squad.plan != command.plan)
 		to_chat(owner, span_warning("You do not have tactical command access."))
 		return FALSE
-	var/turf/position = get_turf(target)
-	if(!position || position.z != owner.z)
-		to_chat(owner, span_warning("Choose a target on your current level."))
+	if(!command.world_target_visible(target))
+		to_chat(owner, span_warning("Choose a visible target on your current level."))
 		return FALSE
-	for(var/mob/living/carbon/human/member AS in squad.members)
-		if(member.z != owner.z)
-			to_chat(owner, span_warning("[squad.name] has members on another level. Join them before issuing a new order."))
-			return FALSE
+	command.selected_squad = squad.id
 	var/order_action
-	var/success = FALSE
+	var/list/params
 	if(isturf(target))
-		success = squad.issue_order("hold", position = position)
+		command.cursor = target
+		params = list("order" = "hold", "at_cursor" = TRUE)
 		order_action = ORDER_DESIGNATION_TYPE_MOVE
 	else if(isliving(target))
-		var/mob/living/leader = target
-		if(leader.faction == owner.faction && leader.stat == CONSCIOUS)
-			success = squad.issue_order("follow", follow_target = leader)
-			order_action = ORDER_DESIGNATION_TYPE_FOLLOW
-	if(!success)
-		to_chat(owner, span_warning("[squad.name] keeps its current order. Click a walkable tile to hold, or a living ally outside the squad to follow. Use Tactical Command for zones and patrols; release a marine for individual interactions."))
+		params = list("order" = "follow", "follow_ref" = REF(target))
+		order_action = ORDER_DESIGNATION_TYPE_FOLLOW
+	if(!params || !command.world_execute("order", params))
+		to_chat(owner, span_warning("[squad.name] keeps its current order. Target a walkable tile to hold or a living ally to follow. Use this designator's radial for zones and patrols; release a marine for individual interactions."))
 		return FALSE
 	var/image/highlight = get_alt_image(target, TRUE, order_action)
 	target.add_alt_appearance(/datum/atom_hud/alternate_appearance/basic/group, ORDER_DESIGNATION_TARGET_ALT_APPEARANCE, highlight, squad.members + owner)
 	addtimer(CALLBACK(src, PROC_REF(unindicate_target), target), 1 SECONDS)
-	to_chat(owner, span_notice("[squad.name]: [squad.order] [squad.order == "hold" ? "at [position.x], [position.y]" : "[target]"]. This replaces the squad's previous order; deselecting will not cancel it."))
 	return TRUE
 
 ///Removes any visual indicators on this atom

@@ -1,4 +1,10 @@
-import { useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 import {
   Box,
   Button,
@@ -159,7 +165,8 @@ export const TacticalCommand = () => {
   const [name, setName] = useState('');
   const [purpose, setPurpose] = useState('guard');
   const [loop, setLoop] = useState(true);
-  const [zoom, setZoom] = useState(1);
+  const navigation = useTacticalMapNavigation();
+  const { zoom } = navigation;
   const send = (action: string, params: Record<string, unknown> = {}) =>
     act(action, { ...params, z: data.z });
   const squad = data.squads.find((item) => item.id === data.selected_squad);
@@ -204,13 +211,20 @@ export const TacticalCommand = () => {
                   <Button
                     icon="search-minus"
                     disabled={zoom <= 1}
-                    onClick={() => setZoom(Math.max(1, zoom - 0.5))}
+                    tooltip="Zoom out around the centre of the map view"
+                    onClick={() => navigation.zoomTo(zoom - 0.5)}
                   />
-                  <Button onClick={() => setZoom(1)}>{zoom}×</Button>
+                  <Button
+                    tooltip="Reset zoom and pan"
+                    onClick={() => navigation.reset()}
+                  >
+                    {Number(zoom.toFixed(2))}×
+                  </Button>
                   <Button
                     icon="search-plus"
                     disabled={zoom >= 3}
-                    onClick={() => setZoom(Math.min(3, zoom + 0.5))}
+                    tooltip="Zoom in around the centre of the map view"
+                    onClick={() => navigation.zoomTo(zoom + 0.5)}
                   />
                 </>
               }
@@ -258,9 +272,13 @@ export const TacticalCommand = () => {
               )}
               <TacticalMap
                 data={data}
-                zoom={zoom}
+                navigation={navigation}
                 onPoint={(point) => send('map_click', point)}
               />
+              <Box color="label" fontSize="11px" mt={0.5}>
+                Middle-drag to pan · Wheel to zoom at cursor · Left-click to use
+                tool
+              </Box>
               <Stack mt={1} align="center">
                 <Stack.Item grow color="label">
                   <span style={{ color: '#7be4ff' }}>● Allied AI</span>
@@ -769,12 +787,183 @@ export const TacticalCommand = () => {
   );
 };
 
+const useTacticalMapNavigation = () => {
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const mapRef = useRef<SVGSVGElement>(null);
+  const [zoom, setZoom] = useState(1);
+  const zoomRef = useRef(1);
+  const [isPanning, setIsPanning] = useState(false);
+  const panRef = useRef<{
+    x: number;
+    y: number;
+    left: number;
+    top: number;
+  } | null>(null);
+  const suppressClickRef = useRef(false);
+  const anchorRef = useRef<{
+    x: number;
+    y: number;
+    clientX: number;
+    clientY: number;
+  } | null>(null);
+
+  const zoomTo = useCallback((requested: number, cursor?: Point) => {
+    const viewport = viewportRef.current;
+    const map = mapRef.current;
+    const nextZoom = Math.min(3, Math.max(1, requested));
+    if (!viewport || !map || nextZoom === zoomRef.current) return;
+    const bounds = map.getBoundingClientRect();
+    const view = viewport.getBoundingClientRect();
+    const clientX =
+      cursor?.x ?? view.left + viewport.clientLeft + viewport.clientWidth / 2;
+    const clientY =
+      cursor?.y ?? view.top + viewport.clientTop + viewport.clientHeight / 2;
+    // Use the rendered image bounds, including its centring margin and scroll.
+    anchorRef.current = {
+      x: (clientX - bounds.left) / bounds.width,
+      y: (clientY - bounds.top) / bounds.height,
+      clientX,
+      clientY,
+    };
+    zoomRef.current = nextZoom;
+    setZoom(nextZoom);
+  }, []);
+
+  useLayoutEffect(() => {
+    const viewport = viewportRef.current;
+    const map = mapRef.current;
+    const anchor = anchorRef.current;
+    if (!viewport || !map || !anchor) return;
+    const bounds = map.getBoundingClientRect();
+    // Adjust after React resizes the SVG, before paint. Native scroll limits
+    // clamp at the map edges; no CSS transform can desynchronise click mapping.
+    viewport.scrollLeft +=
+      bounds.left + anchor.x * bounds.width - anchor.clientX;
+    viewport.scrollTop +=
+      bounds.top + anchor.y * bounds.height - anchor.clientY;
+    anchorRef.current = null;
+  }, [zoom]);
+
+  useEffect(() => {
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+    const stopPan = () => {
+      if (!panRef.current) return;
+      panRef.current = null;
+      setIsPanning(false);
+    };
+    const handleMouseDown = (event: MouseEvent) => {
+      if (event.button === 0) {
+        // A fresh primary press is required after navigation, including on
+        // browsers which synthesize a click when the middle button is released.
+        suppressClickRef.current = !!panRef.current || !!(event.buttons & 4);
+      }
+      if (event.button !== 1) return;
+      event.preventDefault(); // Disable browser middle-button autoscroll.
+      event.stopPropagation();
+      suppressClickRef.current = true;
+      panRef.current = {
+        x: event.clientX,
+        y: event.clientY,
+        left: viewport.scrollLeft,
+        top: viewport.scrollTop,
+      };
+      setIsPanning(true);
+    };
+    const handleMouseMove = (event: MouseEvent) => {
+      const pan = panRef.current;
+      if (!pan) return;
+      if (!(event.buttons & 4)) {
+        stopPan();
+        return;
+      }
+      event.preventDefault();
+      viewport.scrollLeft = pan.left - (event.clientX - pan.x);
+      viewport.scrollTop = pan.top - (event.clientY - pan.y);
+    };
+    const handleMouseUp = (event: MouseEvent) => {
+      if (event.button === 1 || !(event.buttons & 4)) stopPan();
+    };
+    const handleVisibility = () => {
+      if (document.hidden) stopPan();
+    };
+    const handleWindowLeave = (event: MouseEvent) => {
+      if (!event.relatedTarget) stopPan();
+    };
+    const handleAuxClick = (event: MouseEvent) => {
+      if (event.button === 1) event.preventDefault();
+    };
+    const handleDragStart = (event: DragEvent) => event.preventDefault();
+    const handleWheel = (event: WheelEvent) => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (panRef.current) return;
+      // Normalize line/page wheels as well as high-resolution pixel trackpads.
+      const unit =
+        event.deltaMode === 1
+          ? 16
+          : event.deltaMode === 2
+            ? viewport.clientHeight
+            : 1;
+      const delta = Math.max(-240, Math.min(240, event.deltaY * unit));
+      zoomTo(zoomRef.current * Math.exp(-delta * 0.002), {
+        x: event.clientX,
+        y: event.clientY,
+      });
+    };
+    // React's delegated wheel listener may be passive. Attach directly so
+    // preventDefault reliably stops page scrolling in the embedded browser.
+    viewport.addEventListener('wheel', handleWheel, { passive: false });
+    viewport.addEventListener('mousedown', handleMouseDown);
+    viewport.addEventListener('auxclick', handleAuxClick);
+    viewport.addEventListener('dragstart', handleDragStart);
+    document.addEventListener('mousemove', handleMouseMove, true);
+    document.addEventListener('mouseup', handleMouseUp, true);
+    document.addEventListener('mouseout', handleWindowLeave);
+    document.addEventListener('visibilitychange', handleVisibility);
+    window.addEventListener('blur', stopPan);
+    return () => {
+      viewport.removeEventListener('wheel', handleWheel);
+      viewport.removeEventListener('mousedown', handleMouseDown);
+      viewport.removeEventListener('auxclick', handleAuxClick);
+      viewport.removeEventListener('dragstart', handleDragStart);
+      document.removeEventListener('mousemove', handleMouseMove, true);
+      document.removeEventListener('mouseup', handleMouseUp, true);
+      document.removeEventListener('mouseout', handleWindowLeave);
+      document.removeEventListener('visibilitychange', handleVisibility);
+      window.removeEventListener('blur', stopPan);
+      panRef.current = null;
+    };
+  }, [zoomTo]);
+
+  return {
+    viewportRef,
+    mapRef,
+    zoom,
+    zoomTo,
+    isPanning,
+    canDesignate: () => !panRef.current && !suppressClickRef.current,
+    reset: () => {
+      anchorRef.current = null;
+      panRef.current = null;
+      setIsPanning(false);
+      zoomRef.current = 1;
+      setZoom(1);
+      if (viewportRef.current) {
+        viewportRef.current.scrollLeft = 0;
+        viewportRef.current.scrollTop = 0;
+      }
+    },
+  };
+};
+
 const TacticalMap = (props: {
   data: Data;
-  zoom: number;
+  navigation: ReturnType<typeof useTacticalMapNavigation>;
   onPoint: (point: Point) => void;
 }) => {
-  const { data, zoom, onPoint } = props;
+  const { data, navigation, onPoint } = props;
+  const { zoom } = navigation;
   // SSminimaps paints two pixels per world tile, then shifts its static 480px image.
   const px = (x: number) => x * 2 - 1 + data.offset_x;
   const py = (y: number) => 481 - y * 2 - data.offset_y;
@@ -793,6 +982,7 @@ const TacticalMap = (props: {
 
   return (
     <div
+      ref={navigation.viewportRef}
       style={{
         height: '490px',
         width: '100%',
@@ -800,21 +990,26 @@ const TacticalMap = (props: {
         minWidth: 0,
         boxSizing: 'border-box',
         overflow: 'auto',
+        overscrollBehavior: 'contain',
+        userSelect: 'none',
+        cursor: navigation.isPanning ? 'grabbing' : undefined,
         background: '#071019',
         border: '1px solid #385766',
       }}
     >
       <svg
+        ref={navigation.mapRef}
         viewBox="0 0 480 480"
         style={{
           display: 'block',
           width: `${zoom * 480}px`,
           height: `${zoom * 480}px`,
           margin: '0 auto',
-          cursor: 'crosshair',
+          cursor: navigation.isPanning ? 'grabbing' : 'crosshair',
           background: '#071019',
         }}
         onClick={(event) => {
+          if (event.button !== 0 || !navigation.canDesignate()) return;
           const bounds = event.currentTarget.getBoundingClientRect();
           const x =
             Math.floor(
@@ -835,7 +1030,8 @@ const TacticalMap = (props: {
         }}
       >
         <title>
-          Tactical terrain map. Click to use the selected drawing tool.
+          Tactical terrain map. Middle-drag to pan, wheel to zoom, left-click to
+          use the selected drawing tool.
         </title>
         {data.map && (
           <image

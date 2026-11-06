@@ -11,6 +11,7 @@
 	var/turf/cursor
 	var/list/preview = list()
 	var/list/draft_route = list()
+	var/list/marker_undo = list()
 	var/notice = "Select a squad, or create one and recruit nearby AI marines."
 	var/notice_error = FALSE
 	var/map_image
@@ -23,15 +24,19 @@
 	commander = user
 	plan = get_tactical_plan(user.faction)
 	RegisterSignal(user, COMSIG_QDELETING, PROC_REF(owner_deleted))
+	RegisterSignals(user, list(COMSIG_MOB_LOGOUT, COMSIG_MOVABLE_Z_CHANGED, COMSIG_MOB_DEATH), PROC_REF(world_invalidated))
+	RegisterSignals(user, list(COMSIG_MOVABLE_MOVED, COMSIG_ATOM_DIR_CHANGE), PROC_REF(world_moved))
 
 /datum/tactical_command/proc/owner_deleted()
 	SIGNAL_HANDLER
 	qdel(src)
 
 /datum/tactical_command/Destroy()
+	close_world_menu()
+	disable_world_overlay()
 	SStgui.close_uis(src)
 	if(commander)
-		UnregisterSignal(commander, COMSIG_QDELETING)
+		UnregisterSignal(commander, list(COMSIG_QDELETING, COMSIG_MOB_LOGOUT, COMSIG_MOVABLE_Z_CHANGED, COMSIG_MOB_DEATH, COMSIG_MOVABLE_MOVED, COMSIG_ATOM_DIR_CHANGE))
 	commander = null
 	plan = null
 	preview = null
@@ -41,12 +46,17 @@
 /datum/tactical_command/ui_state(mob/user)
 	return GLOB.always_state
 
+/// Kept separate so native scenarios can supply authority without manufacturing a BYOND client.
+/datum/tactical_command/proc/has_command_access()
+	return can_use_tactical_command(commander)
+
 /datum/tactical_command/ui_status(mob/user, datum/ui_state/state)
-	return user == commander && can_use_tactical_command(user) && user.faction == plan?.faction ? UI_INTERACTIVE : UI_CLOSE
+	return user == commander && has_command_access() && user.faction == plan?.faction ? UI_INTERACTIVE : UI_CLOSE
 
 /datum/tactical_command/ui_interact(mob/user, datum/tgui/ui)
 	if(ui_status(user) != UI_INTERACTIVE)
 		return
+	set_world_overlay(TRUE)
 	ui = SStgui.try_update_ui(user, src, ui)
 	if(!ui)
 		ui = new(user, src, "TacticalCommand", "Tactical Command")
@@ -71,6 +81,7 @@
 	anchor = null
 	preview = list()
 	draft_route = list()
+	marker_undo = list()
 
 /datum/tactical_command/proc/check_level()
 	if(editor_z == commander.z)
@@ -81,6 +92,7 @@
 	selected_zone = null
 	selected_route = null
 	tool = "inspect"
+	world_target_order = null
 	var/datum/hud_displays/map = SSminimaps.minimaps_by_z["[editor_z]"]
 	map_image = map?.hud_image ? icon2base64(map.hud_image) : null
 
@@ -179,8 +191,15 @@
 
 /datum/tactical_command/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
-	if(. || ui_status(usr) != UI_INTERACTIVE)
+	if(.)
 		return
+	. = dispatch(action, params, usr)
+	refresh_world_overlay()
+
+/// All frontends enter here: permission, level and order validation cannot drift apart.
+/datum/tactical_command/proc/dispatch(action, list/params, mob/user)
+	if(ui_status(user) != UI_INTERACTIVE)
+		return FALSE
 	check_level()
 	// Refuse delayed actions sent from another level rather than applying old geometry here.
 	if(params["z"] != editor_z)
@@ -205,22 +224,26 @@
 			selected_zone = null
 			selected_route = null
 			tool = "inspect"
+			world_target_order = null
 			clear_draft()
 			return feedback("Selection cleared. Every squad keeps its current orders.")
 		if("tool")
 			if(!(params["tool"] in list("inspect", "rectangle", "room", "route", "entrance", "choke")))
 				return FALSE
 			tool = params["tool"]
+			world_target_order = null
 			clear_draft()
 			return feedback("[tool] tool selected. Click the terrain map.")
 		if("clear_draft")
 			clear_draft()
+			world_target_order = null
+			tool = "inspect"
 			return feedback("Draft cleared. Saved zones and orders were not changed.")
 		if("marker_facing")
 			if(!(params["direction"] in list(NORTH, EAST, SOUTH, WEST)))
 				return FALSE
 			marker_direction = params["direction"]
-			return TRUE
+			return feedback("Approach facing: [dir2text(marker_direction)].")
 		if("map_click")
 			var/turf/position = read_position(params)
 			if(!position)
@@ -254,10 +277,19 @@
 				if("entrance", "choke")
 					if(!zone)
 						return feedback("Select a saved zone before marking its entrances or choke points.", TRUE)
-					if(!zone.add_marker(tool, position, marker_direction))
+					var/old_direction
+					for(var/datum/tactical_marker/existing AS in zone.markers)
+						if(existing.position == position && existing.kind == tool)
+							old_direction = existing.direction
+							break
+					var/datum/tactical_marker/placed = zone.add_marker(tool, position, marker_direction)
+					if(!placed)
 						return feedback("Place markers in or directly beside the zone; maximum 16 per zone.", TRUE)
+					marker_undo += list(list("zone" = zone.id, "marker" = placed.id, "old_direction" = old_direction, "direction" = marker_direction))
+					if(length(marker_undo) > 32)
+						marker_undo.Cut(1, 2)
 					plan.touch()
-					return feedback("[tool] marker added to [zone.name].")
+					return feedback("[tool] marker saved on [zone.name]. Undo reverses the last marker; Cancel leaves saved markers intact.")
 			return feedback("Map target: [position.x], [position.y]. Hold at target applies to the selected squad.")
 		if("zone_save")
 			if(!length(preview))
@@ -274,7 +306,7 @@
 			if(!zone || zone.z != editor_z)
 				return feedback("That zone is no longer available.", TRUE)
 			selected_zone = zone.id
-			return TRUE
+			return feedback("Selected zone [zone.name]. Selection alone does not give orders.")
 		if("zone_rename")
 			if(!zone)
 				return feedback("Select a zone first.", TRUE)
@@ -299,7 +331,34 @@
 		if("route_undo")
 			if(length(draft_route))
 				draft_route.Cut(length(draft_route))
-			return TRUE
+			return feedback("Last draft waypoint removed. [length(draft_route)] remain.")
+		if("draft_undo")
+			if(tool == "entrance" || tool == "choke")
+				if(!length(marker_undo))
+					return feedback("No marker placement to undo in this drawing session.", TRUE)
+				var/list/last = marker_undo[length(marker_undo)]
+				marker_undo.Cut(length(marker_undo))
+				var/datum/tactical_zone/marked_zone = plan.find_zone(last["zone"])
+				for(var/datum/tactical_marker/marker AS in marked_zone?.markers)
+					if(marker.id != last["marker"])
+						continue
+					if(marker.direction != last["direction"])
+						return feedback("This marker was edited since your placement; leaving the newer change intact.", TRUE)
+					if(isnull(last["old_direction"]))
+						marked_zone.remove_marker(marker.id)
+					else
+						marker.direction = last["old_direction"]
+						plan.touch()
+					return feedback("Last marker placement undone.")
+				return feedback("That marker is no longer available.", TRUE)
+			if(tool == "route")
+				if(length(draft_route))
+					draft_route.Cut(length(draft_route))
+			else if(length(preview))
+				preview = list()
+			else
+				anchor = null
+			return feedback("Last draft step undone. Saved geometry and orders were not changed.")
 		if("route_save")
 			var/datum/tactical_route/new_route = plan.create_route(params["name"], draft_route, params["loop"] == TRUE)
 			if(!new_route)
@@ -313,7 +372,7 @@
 			if(!route || route.z != editor_z)
 				return feedback("That route is no longer available.", TRUE)
 			selected_route = route.id
-			return TRUE
+			return feedback("Selected route [route.name]. Selection alone does not give orders.")
 		if("route_rename")
 			if(!route)
 				return FALSE
@@ -330,13 +389,15 @@
 				return feedback("This faction already has 16 tactical squads.", TRUE)
 			var/datum/tactical_squad/new_squad = new(plan, params["name"])
 			selected_squad = new_squad.id
+			sync_legacy_selection(new_squad)
 			return feedback("Created [new_squad.name]. Recruit AI within seven tiles using the roster.")
 		if("squad_select")
 			squad = plan.find_squad(params["id"])
 			if(!squad)
 				return feedback("That squad is no longer available.", TRUE)
 			selected_squad = squad.id
-			return TRUE
+			sync_legacy_selection(squad)
+			return feedback("Selected [squad.name]: [squad.order].")
 		if("squad_rename")
 			if(!squad)
 				return FALSE
@@ -378,7 +439,16 @@
 			var/turf/hold_target = params["at_cursor"] ? cursor : get_turf(commander)
 			if(params["at_cursor"] && !hold_target)
 				return feedback("Click a location on the map first.", TRUE)
-			if(!squad.issue_order(params["order"], params["order"] == "guard" ? zone : null, params["order"] == "patrol" ? route : null, commander, hold_target))
+			var/mob/living/follow_target = commander
+			if(params["follow_ref"])
+				follow_target = null
+				for(var/mob/living/candidate in view(9, commander))
+					if(REF(candidate) == params["follow_ref"] && candidate.faction == plan.faction && candidate.stat == CONSCIOUS && world_target_visible(candidate))
+						follow_target = candidate
+						break
+				if(!follow_target)
+					return feedback("Choose a visible conscious ally on your level to follow.", TRUE)
+			if(!squad.issue_order(params["order"], params["order"] == "guard" ? zone : null, params["order"] == "patrol" ? route : null, follow_target, hold_target))
 				return feedback("Order rejected. Guard needs a zone; patrol needs a route; retreat needs a fallback on the squad's level.", TRUE)
 			plan.touch()
 			return feedback("[squad.name]: [squad.order]. This order persists until you change it.")
@@ -388,23 +458,21 @@
 /datum/action/tactical_command
 	name = "Tactical Command"
 	desc = "Manage AI squads, persistent orders, guard zones, fallback areas, and patrol routes."
-	action_icon_state = "minimap"
+	action_icon = 'icons/mob/tactical_command.dmi'
+	action_icon_state = "command"
 	var/datum/tactical_command/command_ui
 
 /datum/action/tactical_command/should_show()
 	return ..() && (owner?.client?.holder || owner?.skills?.getRating(SKILL_LEADERSHIP) >= SKILL_LEAD_TRAINED)
 
 /datum/action/tactical_command/can_use_action(silent, override_flags, selecting)
-	return can_use_tactical_command(owner)
+	return tactical_command_available(owner)
 
 /datum/action/tactical_command/action_activate()
 	if(!can_use_action())
 		return
-	if(command_ui && command_ui.plan?.faction != owner.faction)
-		QDEL_NULL(command_ui)
-	if(!command_ui)
-		command_ui = new(owner)
-	command_ui.ui_interact(owner)
+	var/datum/tactical_command/command = get_tactical_command(owner)
+	command?.ui_interact(owner)
 
 /datum/action/tactical_command/Destroy()
 	QDEL_NULL(command_ui)
